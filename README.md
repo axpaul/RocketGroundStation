@@ -11,3 +11,7 @@ MSE Rocket Serial Reception HMI est une application logicielle destinée à l'ac
 - **Affichage dynamique de la trâme et de la position GPS** : L'application est capable d'afficher dynamiquement la trâme et la position GPS de la fusée.
 
 - **Enregistrement des données** : L'application permet d'enregistrer les données recueillies dans un fichier local pour une analyse ultérieure.
+
+## Vidéo 
+
+[![GPS Demo](https://www.youtube.com/watch?v=_3WRKk8k2yQ&ab_channel=Paul)
