@@ -4,8 +4,7 @@
 
 MSE Rocket Serial Reception HMI est une application logicielle destinée à l'acquisition de données de fusées en temps réel via le module TTGO LORA 32. Cette application affiche de manière dynamique la trâme et la position GPS de la fusée. Elle permet également d'enregistrer les données dans un fichier local.
 
-*Apache License 2.0 with Commons Clause*
-*Copyright 2023 Miailhe Paul*
+*Apache License 2.0 with Commons Clause, Copyright 2023 Miailhe Paul, all rights reserved*
 
 ## Caractéristiques
 
