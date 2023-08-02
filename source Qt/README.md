@@ -1,6 +1,5 @@
-#Interface QT :
-
-*Version 1 de l'Interface*
+# Interface QT :
+*Version 1.3 de l'Interface, creathor Paul Miailhe*
 
 ## Classe SerialPort
 
