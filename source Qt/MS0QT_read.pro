@@ -1,4 +1,4 @@
-QT       += core gui serialport webengine webenginewidgets
+ += core gui serialport webenginewidgets
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets serialport
 
 CONFIG += c++11
