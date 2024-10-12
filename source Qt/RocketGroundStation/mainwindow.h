@@ -62,7 +62,7 @@ public slots :
     void handleErrorShow(QString error);
     void settingShow();
     void setSerialSettings();
-    void opennedSerial(SerialPort::Settings p);
+    void openedSerial(SerialPort::Settings p);
     void closedSerial();
     void openSerialPort();
     void closeSerialPort();

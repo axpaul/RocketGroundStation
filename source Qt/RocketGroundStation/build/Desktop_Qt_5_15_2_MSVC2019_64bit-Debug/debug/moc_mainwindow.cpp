@@ -23,7 +23,7 @@ QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_MainWindow_t {
     QByteArrayData data[19];
-    char stringdata0[232];
+    char stringdata0[231];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -43,21 +43,21 @@ QT_MOC_LITERAL(7, 83, 15), // "handleErrorShow"
 QT_MOC_LITERAL(8, 99, 5), // "error"
 QT_MOC_LITERAL(9, 105, 11), // "settingShow"
 QT_MOC_LITERAL(10, 117, 17), // "setSerialSettings"
-QT_MOC_LITERAL(11, 135, 13), // "opennedSerial"
-QT_MOC_LITERAL(12, 149, 12), // "closedSerial"
-QT_MOC_LITERAL(13, 162, 14), // "openSerialPort"
-QT_MOC_LITERAL(14, 177, 15), // "closeSerialPort"
-QT_MOC_LITERAL(15, 193, 13), // "receptionData"
-QT_MOC_LITERAL(16, 207, 13), // "receptionChek"
-QT_MOC_LITERAL(17, 221, 4), // "data"
-QT_MOC_LITERAL(18, 226, 5) // "about"
+QT_MOC_LITERAL(11, 135, 12), // "openedSerial"
+QT_MOC_LITERAL(12, 148, 12), // "closedSerial"
+QT_MOC_LITERAL(13, 161, 14), // "openSerialPort"
+QT_MOC_LITERAL(14, 176, 15), // "closeSerialPort"
+QT_MOC_LITERAL(15, 192, 13), // "receptionData"
+QT_MOC_LITERAL(16, 206, 13), // "receptionChek"
+QT_MOC_LITERAL(17, 220, 4), // "data"
+QT_MOC_LITERAL(18, 225, 5) // "about"
 
     },
     "MainWindow\0setSerialSettingsSig\0\0"
     "SerialPort::Settings\0serialOppened\0p\0"
     "serialClosed\0handleErrorShow\0error\0"
     "settingShow\0setSerialSettings\0"
-    "opennedSerial\0closedSerial\0openSerialPort\0"
+    "openedSerial\0closedSerial\0openSerialPort\0"
     "closeSerialPort\0receptionData\0"
     "receptionChek\0data\0about"
 };
@@ -123,7 +123,7 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 3: _t->handleErrorShow((*reinterpret_cast< QString(*)>(_a[1]))); break;
         case 4: _t->settingShow(); break;
         case 5: _t->setSerialSettings(); break;
-        case 6: _t->opennedSerial((*reinterpret_cast< SerialPort::Settings(*)>(_a[1]))); break;
+        case 6: _t->openedSerial((*reinterpret_cast< SerialPort::Settings(*)>(_a[1]))); break;
         case 7: _t->closedSerial(); break;
         case 8: _t->openSerialPort(); break;
         case 9: _t->closeSerialPort(); break;

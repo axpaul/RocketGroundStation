@@ -4,10 +4,10 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
       ui(new Ui::MainWindow),
-      m_serialThread(new SerialPort),
-      m_settings(new SettingsDialog),
       m_status(new QLabel(this)),
       m_connection(new QString),
+      m_serialThread(new SerialPort),
+      m_settings(new SettingsDialog),
       m_settingsInfo(new SerialPort::Settings)
 {
     ui->setupUi(this);
@@ -59,7 +59,7 @@ void MainWindow::initActionsConnections()
     connect(ui->actionConnect, &QAction::triggered, this, &MainWindow::openSerialPort);
     connect(ui->actionDisconnect, &QAction::triggered, this, &MainWindow::closeSerialPort);
 
-    connect(m_serialThread, &SerialPort::serialOpenned, this, &MainWindow::opennedSerial);
+    connect(m_serialThread, &SerialPort::serialOpenned, this, &MainWindow::openedSerial);
     connect(m_serialThread, &SerialPort::serialClosed, this, &MainWindow::closedSerial);
     connect(m_serialThread, &SerialPort::dataEmit, this, &MainWindow::receptionData);
 }
@@ -103,7 +103,7 @@ void MainWindow::setSerialSettings() {
 
 /* Function open/close serial */
 
-void MainWindow::opennedSerial(SerialPort::Settings p) {
+void MainWindow::openedSerial(SerialPort::Settings p) {
     qDebug() << "[" << QDateTime::currentDateTime().toString("dd-MM-yyyy_HH.mm.ss") << "][MAINWINDOW] Serial openned";
     m_serialRun = true;
     showStatusMessage(QString("Connected to %1 : %2, %3, %4, %5, %6")
