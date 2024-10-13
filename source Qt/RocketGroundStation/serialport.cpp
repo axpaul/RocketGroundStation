@@ -82,52 +82,46 @@ void SerialPort::readingData() {
     // Affichage pour déboguer le nombre d'octets disponibles
     qDebug() << "[" << QDateTime::currentDateTime().toString("hh:mm:ss.zzz") << "][SERIAL] Octets disponibles : " << m_serial->bytesAvailable();
 
-    if (m_serial->bytesAvailable() == NbTrame+3){
+    if (m_serial->bytesAvailable() >= NbTrame + 3) {  // Accepter si plus d'octets sont présents
 
-        QByteArray frame = m_serial->read(NbTrame+3);
-        //m_serial->clear(QSerialPort::Input); // Clear the read buffer
+        QByteArray frame = m_serial->read(NbTrame + 3);
+        if (frame.isEmpty()) {
+            qDebug() << "[" << QDateTime::currentDateTime().toString("hh:mm:ss.zzz") << "][SERIAL] Frame is empty, nothing read";
+            return;
+        }
 
         // Debugging: Print the frame
         qDebug() << "[" << QDateTime::currentDateTime().toString("hh:mm:ss.zzz") << "][SERIAL] Frame: " << frame.toHex(' ');
 
-
         // Vérifier la longueur de la trame
-        if (frame.size() != NbTrame+3) {
-        // La trame est trop courte, renvoyer une QByteArray vide pour indiquer une erreur
-            //emit dataEmit(false, QByteArray());
+        if (frame.size() != NbTrame + 3) {
             qDebug() << "[" << QDateTime::currentDateTime().toString("dd-MM-yyyy_HH.mm.ss") << "][SERIAL] Size frame is not good";
             return;
         }
-       else{
-        // Vérifier le premier bit
-            std::uint8_t firstBit = frame.at(0);
-            if (firstBit != 0xEE) {
-                // Le premier bit ne correspond pas à ce qui est attendu, renvoyer une QByteArray vide pour indiquer une erreur
-                qDebug() << "[" << QDateTime::currentDateTime().toString("dd-MM-yyyy_HH.mm.ss") << "][SERIAL] First bit is not good";
-                //emit dataEmit(false, QByteArray());
-                return;
-            }
-            else{
-                // Extraire le CRC et les données
-                std::uint8_t receivedCrc = frame.at(1);  // si le CRC est le deuxième byte
-                QByteArray receivedData = frame.mid(2, frame.size() - 3);  // supprime le premier bit, le CRC et le dernier bit
-                qDebug() << "[" << QDateTime::currentDateTime().toString("dd-MM-yyyy_HH.mm.ss") << "][SERIAL] Received CRC: " << QString::number(receivedCrc, 16);
 
-                // Vérifier le CRC
-                std::uint8_t calculatedCrc = calculate_crc8(receivedData);
-                if (receivedCrc != calculatedCrc) {
-                    // Le CRC ne correspond pas, renvoyer une QByteArray vide pour indiquer une erreur
-                    qDebug() << "[" << QDateTime::currentDateTime().toString("dd-MM-yyyy_HH.mm.ss") << "][SERIAL] CRC it's not good";
-                    emit dataEmit(false, QByteArray());
-                }
-                else {
-                    emit dataEmit(true, receivedData);
-                }
-            }
+        // Vérifier le premier bit
+        std::uint8_t firstBit = frame.at(0);
+        if (firstBit != 0xEE) {
+            qDebug() << "[" << QDateTime::currentDateTime().toString("dd-MM-yyyy_HH.mm.ss") << "][SERIAL] Invalid start byte, expected 0xEE, received: " << QString::number(firstBit, 16);
+            return;
+        }
+
+        // Extraire le CRC et les données
+        std::uint8_t receivedCrc = frame.at(1);  // si le CRC est le deuxième byte
+        QByteArray receivedData = frame.mid(2, NbTrame);  // Supprimer l'entête, le CRC et le dernier byte
+        qDebug() << "[" << QDateTime::currentDateTime().toString("dd-MM-yyyy_HH.mm.ss") << "][SERIAL] Received CRC: " << QString::number(receivedCrc, 16);
+
+        // Vérifier le CRC
+        std::uint8_t calculatedCrc = calculate_crc8(receivedData);
+        if (receivedCrc != calculatedCrc) {
+            qDebug() << "[" << QDateTime::currentDateTime().toString("dd-MM-yyyy_HH.mm.ss") << "][SERIAL] CRC check failed, calculated: " << QString::number(calculatedCrc, 16);
+            emit dataEmit(false, QByteArray());
+        } else {
+            qDebug() << "[" << QDateTime::currentDateTime().toString("dd-MM-yyyy_HH.mm.ss") << "][SERIAL] CRC check passed, emitting data";
+            emit dataEmit(true, receivedData);
         }
     }
 }
-
 
 uint8_t SerialPort::calculate_crc8(QByteArray data) {
     uint8_t crc = 0;
