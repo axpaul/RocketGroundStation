@@ -18,6 +18,7 @@
 
 #include "serialport.h"
 #include "settingsdialog.h"
+#include "telemetryframe.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -41,23 +42,23 @@ public:
     QString getSerialError();
     void addText(const QString &text);
 
-    // Définition de toutes les structures de données
-    typedef struct {
-        uint8_t sts; // status of rocket
-        int32_t lat; // GNSS latitute
-        int32_t lon; // GNSS longitude
-        int16_t alt; // GNSS Altitude
-        int32_t pressure; // ambiant pressure
-        int16_t temp; // ambiant temperature
-        int16_t accX; // Acceleration X
-        int16_t accY; // Acceleration Y
-        int16_t accZ; // Acceleration Z
-        int16_t annex0; // ADC0
-        int16_t annex1; // ADC1
-    }TmFrame_t;
+    // // Définition de toutes les structures de données
+    // typedef struct {
+    //     uint8_t sts; // status of rocket
+    //     int32_t lat; // GNSS latitute
+    //     int32_t lon; // GNSS longitude
+    //     int16_t alt; // GNSS Altitude
+    //     int32_t pressure; // ambiant pressure
+    //     int16_t temp; // ambiant temperature
+    //     int16_t accX; // Acceleration X
+    //     int16_t accY; // Acceleration Y
+    //     int16_t accZ; // Acceleration Z
+    //     int16_t annex0; // ADC0
+    //     int16_t annex1; // ADC1
+    // }TmFrame_t;
 
 
-public slots :
+public slots:
     // Slots qui vont être utilisés pour connecter les signaux et les méthodes.
     void handleErrorShow(QString error);
     void settingShow();
@@ -66,7 +67,7 @@ public slots :
     void closedSerial();
     void openSerialPort();
     void closeSerialPort();
-    void receptionData(bool receptionChek, const QByteArray data);
+    void receptionData(const TmFrame_t &frame, const QString &decodedString);
     void about();
 
 signals:
@@ -87,11 +88,11 @@ private:
     QObject *m_parent;
     QLabel *m_status = nullptr;
     SerialPort *m_serialThread = nullptr;
+    TelemetryFrame *m_frameTelemetry = nullptr;;
 
     QString m_connection;
     QString m_versionSW;
     bool m_serialRun;
-    TmFrame_t trame;
     QFile m_logFile;
     int m_msgCounter = 0;
 

@@ -1,4 +1,4 @@
-QT       += core gui serialport webenginecore webenginewidgets webengine
+QT       += core gui serialport webenginecore webenginewidgets webengine location
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -10,18 +10,18 @@ CONFIG += c++17
 
 SOURCES += \
    MapZone.cpp \
-   analysedata.cpp \
    main.cpp \
    mainwindow.cpp \
    serialport.cpp \
-   settingsdialog.cpp
+   settingsdialog.cpp \
+   telemetryframe.cpp
 
 HEADERS += \
    MapZone.h \
-   analysedata.h \
    mainwindow.h \
    serialport.h \
-   settingsdialog.h
+   settingsdialog.h \
+   telemetryframe.h
 
 
 FORMS += \

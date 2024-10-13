@@ -6,8 +6,10 @@ MainWindow::MainWindow(QWidget *parent)
       ui(new Ui::MainWindow),
       m_status(new QLabel(this)),
       m_serialThread(new SerialPort),
+      m_frameTelemetry(new TelemetryFrame),
       m_settings(new SettingsDialog),
       m_settingsInfo(new SerialPort::Settings)
+
 {
     ui->setupUi(this);
 
@@ -35,6 +37,7 @@ MainWindow::~MainWindow()
     m_serialThread->wait();
     delete m_serialThread;*/
 
+    delete m_frameTelemetry;
     delete m_settings;
     delete m_settingsInfo;
     delete m_status;
@@ -60,7 +63,9 @@ void MainWindow::initActionsConnections()
 
     connect(m_serialThread, &SerialPort::serialOpened, this, &MainWindow::openedSerial);
     connect(m_serialThread, &SerialPort::serialClosed, this, &MainWindow::closedSerial);
-    connect(m_serialThread, &SerialPort::dataEmit, this, &MainWindow::receptionData);
+    //connect(m_serialThread, &SerialPort::dataEmit, this, &MainWindow::receptionData);
+    connect(m_serialThread, &SerialPort::dataEmit, m_frameTelemetry, &TelemetryFrame::processData);
+    connect(m_frameTelemetry, &TelemetryFrame::frameDecoded, this, &MainWindow::receptionData);
 }
 
 void MainWindow::handleErrorShow(QString error)
@@ -111,9 +116,6 @@ void MainWindow::openedSerial(SerialPort::Settings p) {
 
     activateButtonSerial();
 
-   //ui->mapzone->setPosition(43.2184, -0.0475); // Point de passage 1
-   //ui->mapzone->setPosition(43.219, -0.048); // Point de passage 2
-   //ui->mapzone->setPosition(43.22, -0.049); // Point de passage 3
 
 }
 
@@ -163,94 +165,34 @@ void MainWindow::disactivateButtonSerial(){
 
 }
 
-void MainWindow::receptionData(bool receptionChek, const QByteArray byteArr) {
+void MainWindow::receptionData(const TmFrame_t &frame, const QString &decodedString) {
 
-    if (receptionChek){
 
         QString timestamp = QDateTime::currentDateTime().toString("[hh:mm:ss.zzz] ");
 
-        // Générer une chaîne contenant la trame en hexadécimal
-        QString frame = byteArr.toHex(' ');
-
         // Générer une chaîne contenant la trame en hexadécimal pour le fichier
-        QString frameFile = byteArr.toHex(' ');
+        QString frameFile = frame.frame.toHex(' ');
 
-        trame.pressure = (byteArr[3] & 0xFF) << 24 |
-        (byteArr[2] & 0xFF) << 16 |
-        (byteArr[1] & 0xFF) << 8 |
-        (byteArr[0] & 0xFF);
-        trame.lat = (byteArr[7] & 0xFF) << 24 |
-        (byteArr[6] & 0xFF) << 16 |
-        (byteArr[5] & 0xFF) << 8 |
-        (byteArr[4] & 0xFF);
-        //trame.lat = trame.lat * 1e-7;
-        trame.lon = (byteArr[11] & 0xFF) << 24 |
-        (byteArr[10] & 0xFF) << 16 |
-        (byteArr[9] & 0xFF) << 8 |
-        (byteArr[8] & 0xFF);
-        //trame.lon = trame.lon * 1e-7;
-        trame.alt = (byteArr[13] & 0xFF) << 8 |
-        (byteArr[12] & 0xFF);
-        trame.temp = (byteArr[15] & 0xFF) << 8 |
-        (byteArr[14] & 0xFF);
-        trame.accX = (byteArr[17] & 0xFF) << 8 |
-        (byteArr[16] & 0xFF);
-        trame.accY = (byteArr[19] & 0xFF) << 8 |
-        (byteArr[18] & 0xFF);
-        trame.accZ = (byteArr[21] & 0xFF) << 8 |
-        (byteArr[20] & 0xFF);
-        trame.annex0 = (byteArr[23] & 0xFF) << 8 |
-        (byteArr[22] & 0xFF);
-        trame.annex1 = (byteArr[25] & 0xFF) << 8 |
-        (byteArr[24] & 0xFF);
-        trame.sts = byteArr[26];
+        addText(timestamp + " " + frameFile);
+        addText(decodedString);
 
-        // Afficher les données décodées de trame
-        QString decodedData = QString("[Decoded data] "
-                                      "sts: %1 | "
-                                      "lat: %2 | "
-                                      "lon: %3 | "
-                                      "alt: %4 | "
-                                      "pressure: %5 | "
-                                      "temp: %6 | "
-                                      "annex0: %7 | "
-                                      "annex1: %8 | "
-                                      "accX: %12 | "
-                                      "accY: %13 | "
-                                      "accZ: %14")
-                                .arg(trame.sts)
-                                .arg(trame.lat)
-                                .arg(trame.lon)
-                                .arg(trame.alt)
-                                .arg(trame.pressure)
-                                .arg(trame.temp)
-                                .arg(trame.annex0)
-                                .arg(trame.annex1)
-                                .arg(trame.accX)
-                                .arg(trame.accY)
-                                .arg(trame.accZ);
-
-        addText(timestamp + " " + frame);
-        addText(decodedData);
-        ui->mapzone->setPosition((double)trame.lat * 1e-7, (double)trame.lon * 1e-7);
+        ui->mapzone->setPosition((double)frame.lat * 1e-7, (double)frame.lon * 1e-7);
 
         if (m_logFile.isOpen()) {
                 QTextStream out(&m_logFile);
                 out << timestamp << ";" << frameFile << ";"
-                    << trame.sts << ";"
-                    << trame.lat << ";"
-                    << trame.lon << ";"
-                    << trame.alt << ";"
-                    << trame.pressure << ";"
-                    << trame.temp << ";"
-                    << trame.accX << ";"
-                    << trame.accY << ";"
-                    << trame.accZ << ";"
-                    << trame.annex0 << ";"
-                    << trame.annex1 << "\n";
+                    << frame.sts << ";"
+                    << frame.lat << ";"
+                    << frame.lon << ";"
+                    << frame.alt << ";"
+                    << frame.pressure << ";"
+                    << frame.temp << ";"
+                    << frame.accX << ";"
+                    << frame.accY << ";"
+                    << frame.accZ << ";"
+                    << frame.annex0 << ";"
+                    << frame.annex1 << "\n";
         }
-
-    }
 }
 
 void MainWindow::addText(const QString &text) {

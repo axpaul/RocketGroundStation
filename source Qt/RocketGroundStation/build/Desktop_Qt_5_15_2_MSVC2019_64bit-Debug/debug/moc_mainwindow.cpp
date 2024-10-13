@@ -22,8 +22,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_MainWindow_t {
-    QByteArrayData data[19];
-    char stringdata0[230];
+    QByteArrayData data[20];
+    char stringdata0[241];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -48,9 +48,10 @@ QT_MOC_LITERAL(12, 147, 12), // "closedSerial"
 QT_MOC_LITERAL(13, 160, 14), // "openSerialPort"
 QT_MOC_LITERAL(14, 175, 15), // "closeSerialPort"
 QT_MOC_LITERAL(15, 191, 13), // "receptionData"
-QT_MOC_LITERAL(16, 205, 13), // "receptionChek"
-QT_MOC_LITERAL(17, 219, 4), // "data"
-QT_MOC_LITERAL(18, 224, 5) // "about"
+QT_MOC_LITERAL(16, 205, 9), // "TmFrame_t"
+QT_MOC_LITERAL(17, 215, 5), // "frame"
+QT_MOC_LITERAL(18, 221, 13), // "decodedString"
+QT_MOC_LITERAL(19, 235, 5) // "about"
 
     },
     "MainWindow\0setSerialSettingsSig\0\0"
@@ -58,8 +59,8 @@ QT_MOC_LITERAL(18, 224, 5) // "about"
     "serialClosed\0handleErrorShow\0error\0"
     "settingShow\0setSerialSettings\0"
     "openedSerial\0closedSerial\0openSerialPort\0"
-    "closeSerialPort\0receptionData\0"
-    "receptionChek\0data\0about"
+    "closeSerialPort\0receptionData\0TmFrame_t\0"
+    "frame\0decodedString\0about"
 };
 #undef QT_MOC_LITERAL
 
@@ -90,7 +91,7 @@ static const uint qt_meta_data_MainWindow[] = {
       13,    0,   90,    2, 0x0a /* Public */,
       14,    0,   91,    2, 0x0a /* Public */,
       15,    2,   92,    2, 0x0a /* Public */,
-      18,    0,   97,    2, 0x0a /* Public */,
+      19,    0,   97,    2, 0x0a /* Public */,
 
  // signals: parameters
     QMetaType::Void, 0x80000000 | 3,    2,
@@ -105,7 +106,7 @@ static const uint qt_meta_data_MainWindow[] = {
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::Bool, QMetaType::QByteArray,   16,   17,
+    QMetaType::Void, 0x80000000 | 16, QMetaType::QString,   17,   18,
     QMetaType::Void,
 
        0        // eod
@@ -127,7 +128,7 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 7: _t->closedSerial(); break;
         case 8: _t->openSerialPort(); break;
         case 9: _t->closeSerialPort(); break;
-        case 10: _t->receptionData((*reinterpret_cast< bool(*)>(_a[1])),(*reinterpret_cast< const QByteArray(*)>(_a[2]))); break;
+        case 10: _t->receptionData((*reinterpret_cast< const TmFrame_t(*)>(_a[1])),(*reinterpret_cast< const QString(*)>(_a[2]))); break;
         case 11: _t->about(); break;
         default: ;
         }
