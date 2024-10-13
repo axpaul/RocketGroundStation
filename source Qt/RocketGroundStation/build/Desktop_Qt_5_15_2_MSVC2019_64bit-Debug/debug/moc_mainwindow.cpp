@@ -23,7 +23,7 @@ QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_MainWindow_t {
     QByteArrayData data[19];
-    char stringdata0[231];
+    char stringdata0[230];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -36,25 +36,25 @@ QT_MOC_LITERAL(0, 0, 10), // "MainWindow"
 QT_MOC_LITERAL(1, 11, 20), // "setSerialSettingsSig"
 QT_MOC_LITERAL(2, 32, 0), // ""
 QT_MOC_LITERAL(3, 33, 20), // "SerialPort::Settings"
-QT_MOC_LITERAL(4, 54, 13), // "serialOppened"
-QT_MOC_LITERAL(5, 68, 1), // "p"
-QT_MOC_LITERAL(6, 70, 12), // "serialClosed"
-QT_MOC_LITERAL(7, 83, 15), // "handleErrorShow"
-QT_MOC_LITERAL(8, 99, 5), // "error"
-QT_MOC_LITERAL(9, 105, 11), // "settingShow"
-QT_MOC_LITERAL(10, 117, 17), // "setSerialSettings"
-QT_MOC_LITERAL(11, 135, 12), // "openedSerial"
-QT_MOC_LITERAL(12, 148, 12), // "closedSerial"
-QT_MOC_LITERAL(13, 161, 14), // "openSerialPort"
-QT_MOC_LITERAL(14, 176, 15), // "closeSerialPort"
-QT_MOC_LITERAL(15, 192, 13), // "receptionData"
-QT_MOC_LITERAL(16, 206, 13), // "receptionChek"
-QT_MOC_LITERAL(17, 220, 4), // "data"
-QT_MOC_LITERAL(18, 225, 5) // "about"
+QT_MOC_LITERAL(4, 54, 12), // "serialOpened"
+QT_MOC_LITERAL(5, 67, 1), // "p"
+QT_MOC_LITERAL(6, 69, 12), // "serialClosed"
+QT_MOC_LITERAL(7, 82, 15), // "handleErrorShow"
+QT_MOC_LITERAL(8, 98, 5), // "error"
+QT_MOC_LITERAL(9, 104, 11), // "settingShow"
+QT_MOC_LITERAL(10, 116, 17), // "setSerialSettings"
+QT_MOC_LITERAL(11, 134, 12), // "openedSerial"
+QT_MOC_LITERAL(12, 147, 12), // "closedSerial"
+QT_MOC_LITERAL(13, 160, 14), // "openSerialPort"
+QT_MOC_LITERAL(14, 175, 15), // "closeSerialPort"
+QT_MOC_LITERAL(15, 191, 13), // "receptionData"
+QT_MOC_LITERAL(16, 205, 13), // "receptionChek"
+QT_MOC_LITERAL(17, 219, 4), // "data"
+QT_MOC_LITERAL(18, 224, 5) // "about"
 
     },
     "MainWindow\0setSerialSettingsSig\0\0"
-    "SerialPort::Settings\0serialOppened\0p\0"
+    "SerialPort::Settings\0serialOpened\0p\0"
     "serialClosed\0handleErrorShow\0error\0"
     "settingShow\0setSerialSettings\0"
     "openedSerial\0closedSerial\0openSerialPort\0"
@@ -118,7 +118,7 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         Q_UNUSED(_t)
         switch (_id) {
         case 0: _t->setSerialSettingsSig((*reinterpret_cast< SerialPort::Settings(*)>(_a[1]))); break;
-        case 1: _t->serialOppened((*reinterpret_cast< SerialPort::Settings(*)>(_a[1]))); break;
+        case 1: _t->serialOpened((*reinterpret_cast< SerialPort::Settings(*)>(_a[1]))); break;
         case 2: _t->serialClosed(); break;
         case 3: _t->handleErrorShow((*reinterpret_cast< QString(*)>(_a[1]))); break;
         case 4: _t->settingShow(); break;
@@ -142,7 +142,7 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         }
         {
             using _t = void (MainWindow::*)(SerialPort::Settings );
-            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&MainWindow::serialOppened)) {
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&MainWindow::serialOpened)) {
                 *result = 1;
                 return;
             }
@@ -205,7 +205,7 @@ void MainWindow::setSerialSettingsSig(SerialPort::Settings _t1)
 }
 
 // SIGNAL 1
-void MainWindow::serialOppened(SerialPort::Settings _t1)
+void MainWindow::serialOpened(SerialPort::Settings _t1)
 {
     void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t1))) };
     QMetaObject::activate(this, &staticMetaObject, 1, _a);

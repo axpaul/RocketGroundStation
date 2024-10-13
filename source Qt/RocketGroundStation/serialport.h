@@ -37,7 +37,7 @@ public:
 signals:
     void errorEmit(QString);
     void dataEmit(bool receptionChek, QByteArray data = NULL);
-    void serialOpenned(SerialPort::Settings p);
+    void serialOpened(SerialPort::Settings p);
     void serialClosed();
 
 public slots:

@@ -5,8 +5,8 @@ Q_DECLARE_METATYPE(SerialPort::Settings);
 
 SerialPort::SerialPort() :
     QThread(nullptr),
-    m_serial(new QSerialPort(this)),
     m_settingsPort(new Settings),
+    m_serial(new QSerialPort(this)),
     m_serialRun(false)
 {
     qRegisterMetaType<QSerialPort::SerialPortError>();
@@ -56,7 +56,7 @@ void SerialPort::openSerial()
 
     if (m_serial->open(QIODevice::ReadOnly)) {
         m_serial->clear(QSerialPort::AllDirections);
-        emit serialOpenned(*m_settingsPort);
+        emit serialOpened(*m_settingsPort);
         m_serialRun = true;
 
         connect(m_serial, &QSerialPort::readyRead, this, &SerialPort::readingData);
@@ -78,6 +78,9 @@ void SerialPort::closeSerial()
 
 
 void SerialPort::readingData() {
+
+    // Affichage pour déboguer le nombre d'octets disponibles
+    qDebug() << "[" << QDateTime::currentDateTime().toString("hh:mm:ss.zzz") << "][SERIAL] Octets disponibles : " << m_serial->bytesAvailable();
 
     if (m_serial->bytesAvailable() == NbTrame+3){
 

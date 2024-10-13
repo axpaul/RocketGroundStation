@@ -23,7 +23,7 @@ QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_SerialPort_t {
     QByteArrayData data[17];
-    char stringdata0[196];
+    char stringdata0[195];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -38,21 +38,21 @@ QT_MOC_LITERAL(2, 21, 0), // ""
 QT_MOC_LITERAL(3, 22, 8), // "dataEmit"
 QT_MOC_LITERAL(4, 31, 13), // "receptionChek"
 QT_MOC_LITERAL(5, 45, 4), // "data"
-QT_MOC_LITERAL(6, 50, 13), // "serialOpenned"
-QT_MOC_LITERAL(7, 64, 20), // "SerialPort::Settings"
-QT_MOC_LITERAL(8, 85, 1), // "p"
-QT_MOC_LITERAL(9, 87, 12), // "serialClosed"
-QT_MOC_LITERAL(10, 100, 10), // "openSerial"
-QT_MOC_LITERAL(11, 111, 11), // "closeSerial"
-QT_MOC_LITERAL(12, 123, 13), // "settingUpdate"
-QT_MOC_LITERAL(13, 137, 11), // "settingPort"
-QT_MOC_LITERAL(14, 149, 11), // "handleError"
-QT_MOC_LITERAL(15, 161, 28), // "QSerialPort::SerialPortError"
-QT_MOC_LITERAL(16, 190, 5) // "error"
+QT_MOC_LITERAL(6, 50, 12), // "serialOpened"
+QT_MOC_LITERAL(7, 63, 20), // "SerialPort::Settings"
+QT_MOC_LITERAL(8, 84, 1), // "p"
+QT_MOC_LITERAL(9, 86, 12), // "serialClosed"
+QT_MOC_LITERAL(10, 99, 10), // "openSerial"
+QT_MOC_LITERAL(11, 110, 11), // "closeSerial"
+QT_MOC_LITERAL(12, 122, 13), // "settingUpdate"
+QT_MOC_LITERAL(13, 136, 11), // "settingPort"
+QT_MOC_LITERAL(14, 148, 11), // "handleError"
+QT_MOC_LITERAL(15, 160, 28), // "QSerialPort::SerialPortError"
+QT_MOC_LITERAL(16, 189, 5) // "error"
 
     },
     "SerialPort\0errorEmit\0\0dataEmit\0"
-    "receptionChek\0data\0serialOpenned\0"
+    "receptionChek\0data\0serialOpened\0"
     "SerialPort::Settings\0p\0serialClosed\0"
     "openSerial\0closeSerial\0settingUpdate\0"
     "settingPort\0handleError\0"
@@ -111,7 +111,7 @@ void SerialPort::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 0: _t->errorEmit((*reinterpret_cast< QString(*)>(_a[1]))); break;
         case 1: _t->dataEmit((*reinterpret_cast< bool(*)>(_a[1])),(*reinterpret_cast< QByteArray(*)>(_a[2]))); break;
         case 2: _t->dataEmit((*reinterpret_cast< bool(*)>(_a[1]))); break;
-        case 3: _t->serialOpenned((*reinterpret_cast< SerialPort::Settings(*)>(_a[1]))); break;
+        case 3: _t->serialOpened((*reinterpret_cast< SerialPort::Settings(*)>(_a[1]))); break;
         case 4: _t->serialClosed(); break;
         case 5: _t->openSerial(); break;
         case 6: _t->closeSerial(); break;
@@ -137,7 +137,7 @@ void SerialPort::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         }
         {
             using _t = void (SerialPort::*)(SerialPort::Settings );
-            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&SerialPort::serialOpenned)) {
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&SerialPort::serialOpened)) {
                 *result = 3;
                 return;
             }
@@ -207,7 +207,7 @@ void SerialPort::dataEmit(bool _t1, QByteArray _t2)
 }
 
 // SIGNAL 3
-void SerialPort::serialOpenned(SerialPort::Settings _t1)
+void SerialPort::serialOpened(SerialPort::Settings _t1)
 {
     void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t1))) };
     QMetaObject::activate(this, &staticMetaObject, 3, _a);

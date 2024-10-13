@@ -1,0 +1,3 @@
+Timestamp;Frame;Sts;Lat;Lon;Altitude;Pressure;Temperature;Acceleration X;Acceleration Y;Acceleration Z; Annex 0;Annex 1;
+[14:11:45.329] ;29 71 3c 00 f0 8d c2 19 b6 e2 f8 ff b2 01 36 10 f7 ff f8 07 b3 01 e9 ff 00 00 48;72;432180720;-466250;434;3961129;4150;-9;2040;435;-23;0
+[14:11:45.830] ;38 71 3c 00 f0 8d c2 19 b7 e2 f8 ff b2 01 35 10 f7 ff fc 07 b1 01 e9 ff 00 00 48;72;432180720;-466249;434;3961144;4149;-9;2044;433;-23;0

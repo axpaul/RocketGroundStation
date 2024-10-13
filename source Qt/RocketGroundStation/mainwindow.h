@@ -72,7 +72,7 @@ public slots :
 signals:
     // Définition des signaux qui peuvent être émis par l'objet MainWindow
     void setSerialSettingsSig(SerialPort::Settings);
-    void serialOppened(SerialPort::Settings p);
+    void serialOpened(SerialPort::Settings p);
     void serialClosed();
 
 private:
@@ -86,9 +86,10 @@ private:
     Ui::MainWindow *ui;
     QObject *m_parent;
     QLabel *m_status = nullptr;
-    QString *m_connection;
-    QString *m_versionSW;
     SerialPort *m_serialThread = nullptr;
+
+    QString m_connection;
+    QString m_versionSW;
     bool m_serialRun;
     TmFrame_t trame;
     QFile m_logFile;

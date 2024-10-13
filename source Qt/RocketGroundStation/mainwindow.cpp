@@ -5,7 +5,6 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
       ui(new Ui::MainWindow),
       m_status(new QLabel(this)),
-      m_connection(new QString),
       m_serialThread(new SerialPort),
       m_settings(new SettingsDialog),
       m_settingsInfo(new SerialPort::Settings)
@@ -59,7 +58,7 @@ void MainWindow::initActionsConnections()
     connect(ui->actionConnect, &QAction::triggered, this, &MainWindow::openSerialPort);
     connect(ui->actionDisconnect, &QAction::triggered, this, &MainWindow::closeSerialPort);
 
-    connect(m_serialThread, &SerialPort::serialOpenned, this, &MainWindow::openedSerial);
+    connect(m_serialThread, &SerialPort::serialOpened, this, &MainWindow::openedSerial);
     connect(m_serialThread, &SerialPort::serialClosed, this, &MainWindow::closedSerial);
     connect(m_serialThread, &SerialPort::dataEmit, this, &MainWindow::receptionData);
 }
@@ -81,12 +80,12 @@ void MainWindow::showStatusMessage(const QString &stringConnection)
 {
     QString message;
 
-    if (stringConnection != "" && stringConnection != *m_connection)
+    if (stringConnection != "" && stringConnection != m_connection)
     {
-        *m_connection = stringConnection;
+        m_connection = stringConnection;
     }
 
-    message = QString("%1").arg(*m_connection);
+    message = QString("%1").arg(m_connection);
 
     m_status->setText(message);
 }
