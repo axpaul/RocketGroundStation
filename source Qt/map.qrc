@@ -1,5 +1,9 @@
 <RCC>
     <qresource prefix="/">
         <file>map.html</file>
+        <file>leaflet.css</file>
+        <file>leaflet.js</file>
+        <file>leaflet-routing-machine.css</file>
+        <file>leaflet-routing-machine.js</file>
     </qresource>
 </RCC>

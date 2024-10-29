@@ -20,14 +20,16 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     serialport.cpp \
-    settingsdialog.cpp
+    settingsdialog.cpp \
+    tilesServer.cpp
 
 HEADERS += \
     MapZone.h \
     analysedata.h \
     mainwindow.h \
     serialport.h \
-    settingsdialog.h
+    settingsdialog.h \
+    tilesServer.h
 
 FORMS += \
     MapZone.ui \
@@ -44,4 +46,6 @@ RC_ICONS = antenne-satellite.ico
 RESOURCES += \
     icone.qrc \
     map.qrc
+
+DISTFILES += map/
 
