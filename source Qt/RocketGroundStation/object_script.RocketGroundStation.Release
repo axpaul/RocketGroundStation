@@ -1,0 +1,13 @@
+release/MapZone.o
+release/main.o
+release/mainwindow.o
+release/serialport.o
+release/settingsdialog.o
+release/telemetryframe.o
+release/qrc_icone.o
+release/qrc_map.o
+release/moc_MapZone.o
+release/moc_mainwindow.o
+release/moc_serialport.o
+release/moc_settingsdialog.o
+release/moc_telemetryframe.o

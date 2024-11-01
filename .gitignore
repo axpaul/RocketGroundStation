@@ -1,5 +1,9 @@
-source\ Qt/MS0QT_read.pro.user*
-source\ Qt/map/*
-source\ Qt/MS0QT_read.pro.user
+source\ Qt/RocketGroundStation/MS0QT_read.pro.user*
+source\ Qt/RocketGroundStation/map/*
+source\ Qt/RocketGroundStation/MS0QT_read.pro.user
+source\ Qt/RocketGroundStation/build/*
+source\ Qt/RocketGroundStation/RocketGroundStation.pro.user
+source\ Qt/RocketGroundStation/.qtc_clangd
+source\ Qt/RocketGroundStation/.idea
+source\ Qt/RocketGroundStation/debug/*
 source\ Qt/build/*
-source\ Qt/RocketGroundStation/*
