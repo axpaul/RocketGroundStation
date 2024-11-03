@@ -19,7 +19,7 @@ def calculate_crc8(data):
     return crc
 
 # Configurer le port COM (remplacer 'COM7' par le port série utilisé)
-ser = serial.Serial('COM7', baudrate=9600, timeout=1)
+ser = serial.Serial('COM8', baudrate=9600, timeout=1)
 
 # Ouvrir le fichier contenant les messages hexadécimaux
 with open('C:/Users/paulm/OneDrive/Bureau/Software/VirtualCom/log-MSE.txt', 'r') as file:
@@ -49,7 +49,7 @@ with open('C:/Users/paulm/OneDrive/Bureau/Software/VirtualCom/log-MSE.txt', 'r')
             print(f"Envoyé : {frame.hex()}")
 
             # Attendre un court instant entre les envois
-            time.sleep(0.5)
+            time.sleep(0.05)
         else:
             print(f"Trame ignorée : taille incorrecte ({len(byte_data)} octets)")
 

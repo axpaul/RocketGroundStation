@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1222</width>
-    <height>475</height>
+    <width>1022</width>
+    <height>495</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,12 +20,18 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout_3">
     <item>
-     <widget class="QTextBrowser" name="console">
+     <widget class="QPlainTextEdit" name="console">
       <property name="minimumSize">
        <size>
-        <width>600</width>
-        <height>200</height>
+        <width>400</width>
+        <height>400</height>
        </size>
+      </property>
+      <property name="cursor" stdset="0">
+       <cursorShape>ArrowCursor</cursorShape>
+      </property>
+      <property name="readOnly">
+       <bool>true</bool>
       </property>
      </widget>
     </item>
@@ -36,8 +42,8 @@
      <widget class="MapZone" name="mapzone" native="true">
       <property name="minimumSize">
        <size>
-        <width>600</width>
-        <height>200</height>
+        <width>400</width>
+        <height>400</height>
        </size>
       </property>
      </widget>
@@ -49,8 +55,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1222</width>
-     <height>17</height>
+     <width>1022</width>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuConnect">

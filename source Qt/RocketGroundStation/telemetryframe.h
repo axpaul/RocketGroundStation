@@ -5,6 +5,8 @@
 #include <QByteArray>
 #include <QString>
 
+constexpr float acc_factor = 16.0 / 32768.0;
+
 // Structure pour représenter la trame décodée
 struct TmFrame_t {
     QByteArray frame;  // Trame brute
@@ -22,10 +24,23 @@ struct TmFrame_t {
     uint8_t crcReceived;  // CRC reçu avec la trame
     uint8_t crcCalculated;  // CRC calculé à partir des données de la trame
     uint8_t crcCheck;  // Informe si le CRC est calculé correpond à celui recu
-    uint8_t id;
-    uint8_t gnssStatus;
-    uint8_t flightStatus;
+    uint8_t id; // identification Software
+    uint8_t gnssStatus; // GNSS reception
+    uint8_t flightStatus; // Statut du vol
+
+    // Champs calculés en flottant avec coefficients appliqués
+    float latFloat;         // Latitude GNSS en degrés
+    float lonFloat ;         // Longitude GNSS en degrés
+    float pressureFloat; // Pression en mBar
+    float tempFloat;      // Température en °C
+    float accXFloat;     // Accélération X en g
+    float accYFloat;     // Accélération Y en g
+    float accZFloat;     // Accélération Z en g
+    float annex0Float;    // Valeur ADC0 en V
+    float annex1Float;    // Valeur ADC1 en V
 };
+
+typedef enum {PRE_FLIGHT = 0, PYRO_RDY, ASCEND, DEPLOY_ALGO, DEPLOY_TIMER, DESCEND, TOUCHDOWN} RocketState_t;
 
 class TelemetryFrame : public QObject
 {

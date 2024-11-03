@@ -73,71 +73,41 @@ TmFrame_t TelemetryFrame::decodeFrame(const QByteArray &data)
     frame.lonFloat = frame.lon * 1e-7;
     frame.pressureFloat = frame.pressure / 4096.0;
     frame.tempFloat = frame.temp / 100.0;
-    frame.accXFloat = frame.accX / 1000.0;
-    frame.accYFloat = frame.accY / 1000.0;
-    frame.accZFloat = frame.accZ / 1000.0;
+    frame.accXFloat = frame.accX * acc_factor;
+    frame.accYFloat = frame.accY * acc_factor;
+    frame.accZFloat = frame.accZ * acc_factor;
     frame.annex0Float = frame.annex0 * 1.0;
     frame.annex1Float = frame.annex1 * 1.0;
 
     return frame;
 }
 
-/*QString TelemetryFrame::toString(const TmFrame_t &frame)
-{
-    return QString("[Decoded data] "
-                   "sts: %1 | "
-                   "lat: %2 | "
-                   "lon: %3 | "
-                   "alt: %4 | "
-                   "pressure: %5 | "
-                   "temp: %6 | "
-                   "annex0: %7 | "
-                   "annex1: %8 | "
-                   "accX: %12 | "
-                   "accY: %13 | "
-                   "accZ: %14 | "
-                   "id: %15 | "
-                   "gnssStatus: %16 | "
-                   "flightStatus: %17")
-        .arg(frame.sts)
-        .arg(frame.lat)
-        .arg(frame.lon)
-        .arg(frame.alt)
-        .arg(frame.pressure)
-        .arg(frame.temp)
-        .arg(frame.annex0)
-        .arg(frame.annex1)
-        .arg(frame.accX)
-        .arg(frame.accY)
-        .arg(frame.accZ)
-        .arg(frame.id )
-        .arg(frame.gnssStatus)
-        .arg(frame.flightStatus);
-}
-*/
-
-QString TelemetryFrame::toString(const TmFrame_t &frame) {
+/*QString TelemetryFrame::toString(const TmFrame_t &frame) {
     return QString("<style>"
                    "td { padding: 4px 8px; } "
                    ".header { font-weight: bold; color: #4CAF50; } "
                    ".value { color: #2196F3; } "
                    ".critical { color: #FF5722; font-weight: bold; } "
-                   ".ground { color: #1E90FF; font-weight: bold; } "      // Bleu pour attente au sol
-                   ".flight { color: #32CD32; font-weight: bold; } "     // Vert pour vol
-                   ".parachute { color: #FFA500; font-weight: bold; } "  // Orange pour déploiement parachute
+                   ".pre_flight { color: #1E90FF; font-weight: bold; } "  // Bleu clair pour PRE_FLIGHT
+                   ".pyro_rdy { color: #FF0000; font-weight: bold; } "    // Rouge pour PYRO_RDY
+                   ".ascend { color: #32CD32; font-weight: bold; } "      // Vert pour ASCEND
+                   ".deploy_algo { color: #FFA500; font-weight: bold; } " // Orange pour DEPLOY_ALGO
+                   ".deploy_timer { color: #800080; font-weight: bold; } "// Violet pour DEPLOY_TIMER
+                   ".descend { color: #8B4513; font-weight: bold; } "     // Marron pour DESCEND
+                   ".touchdown { color: #808080; font-weight: bold; } "   // Gris pour TOUCHDOWN
                    "</style> "
                    "<b>[Decoded data]</b> "
                    "<span class='header'>sts:</span> <span class='%1'>%2</span> | "
-                   "<span class='header'>lat:</span> <span class='%3'>%4</span> | "
-                   "<span class='header'>lon:</span> <span class='%5'>%6</span> | "
-                   "<span class='header'>alt:</span> <span class='%7'>%8</span> | "
-                   "<span class='header'>pressure:</span> <span class='%9'>%10</span> | "
-                   "<span class='header'>temp:</span> <span class='%11'>%12</span> | "
-                   "<span class='header'>annex0:</span> <span class='%13'>%14</span> | "
-                   "<span class='header'>annex1:</span> <span class='%15'>%16</span> | "
-                   "<span class='header'>accX:</span> <span class='%17'>%18</span> | "
-                   "<span class='header'>accY:</span> <span class='%19'>%20</span> | "
-                   "<span class='header'>accZ:</span> <span class='%21'>%22</span> | "
+                   "<span class='header'>lat:</span> <span class='%3'>%4 °</span> | "
+                   "<span class='header'>lon:</span> <span class='%5'>%6 °</span> | "
+                   "<span class='header'>alt:</span> <span class='%7'>%8 m</span> | "
+                   "<span class='header'>pressure:</span> <span class='%9'>%10 mBar</span> | "
+                   "<span class='header'>temp:</span> <span class='%11'>%12 °C</span> | "
+                   "<span class='header'>annex0:</span> <span class='%13'>%14 V</span> | "
+                   "<span class='header'>annex1:</span> <span class='%15'>%16 V</span> | "
+                   "<span class='header'>accX:</span> <span class='%17'>%18 g</span> | "
+                   "<span class='header'>accY:</span> <span class='%19'>%20 g</span> | "
+                   "<span class='header'>accZ:</span> <span class='%21'>%22 g</span> | "
                    "<span class='header'>id:</span> <span class='%23'>%24</span> | "
                    "<span class='header'>gnssStatus:</span> <span class='%25'>%26</span> | "
                    "<span class='header'>flightStatus:</span> <span class='%27'>%28</span>")
@@ -145,7 +115,7 @@ QString TelemetryFrame::toString(const TmFrame_t &frame) {
         .arg(frame.sts == 0 ? "critical" : "value")
         .arg(frame.sts)
         .arg(frame.latFloat < -90 || frame.latFloat > 90 ? "critical" : "value")
-        .arg(frame.latFloat)
+        .arg(QString::number(frame.latFloat, 'f', 7))
         .arg(frame.lonFloat < -180 || frame.lonFloat > 180 ? "critical" : "value")
         .arg(frame.lonFloat)
         .arg(frame.alt < 0 || frame.alt > 10000 ? "critical" : "value")
@@ -168,8 +138,80 @@ QString TelemetryFrame::toString(const TmFrame_t &frame) {
         .arg(frame.id)
         .arg(frame.gnssStatus == 0 ? "critical" : "value")
         .arg(frame.gnssStatus)
-        // Classe en fonction du statut de vol
-        .arg(frame.flightStatus == 0 ? "ground" : (frame.flightStatus == 1 ? "flight" : "parachute"))
+        // Classe pour chaque statut de vol selon RocketState_t
+        .arg(frame.flightStatus == PRE_FLIGHT ? "pre_flight" :
+                 frame.flightStatus == PYRO_RDY ? "pyro_rdy" :
+                 frame.flightStatus == ASCEND ? "ascend" :
+                 frame.flightStatus == DEPLOY_ALGO ? "deploy_algo" :
+                 frame.flightStatus == DEPLOY_TIMER ? "deploy_timer" :
+                 frame.flightStatus == DESCEND ? "descend" :
+                 "touchdown")  // Par défaut pour TOUCHDOWN
         .arg(frame.flightStatus);
+}*/
+
+QString TelemetryFrame::toString(const TmFrame_t &frame) {
+    return QString("<style>"
+                   "td { padding: 4px 8px; } "
+                   ".header { font-weight: bold; color: #4CAF50; } "
+                   ".value { color: #2196F3; } "
+                   ".critical { color: #FF5722; font-weight: bold; } "
+                   ".pre_flight { color: #1E90FF; font-weight: bold; } "  // Bleu clair pour PRE_FLIGHT
+                   ".pyro_rdy { color: #FF0000; font-weight: bold; } "    // Rouge pour PYRO_RDY
+                   ".ascend { color: #32CD32; font-weight: bold; } "      // Vert pour ASCEND
+                   ".deploy_algo { color: #FFA500; font-weight: bold; } " // Orange pour DEPLOY_ALGO
+                   ".deploy_timer { color: #800080; font-weight: bold; } "// Violet pour DEPLOY_TIMER
+                   ".descend { color: #8B4513; font-weight: bold; } "     // Marron pour DESCEND
+                   ".touchdown { color: #808080; font-weight: bold; } "   // Gris pour TOUCHDOWN
+                   "</style> "
+                   "<b>[Decoded data]</b> "
+                   "<span class='header'>sts:</span> <span class='%1'>%2</span> | "
+                   "<span class='header'>lat:</span> <span class='%3'>%4 °</span> | "
+                   "<span class='header'>lon:</span> <span class='%5'>%6 °</span> | "
+                   "<span class='header'>alt:</span> <span class='%7'>%8 m</span> | "
+                   "<span class='header'>pressure:</span> <span class='%9'>%10 mBar</span> | "
+                   "<span class='header'>temp:</span> <span class='%11'>%12 °C</span> | "
+                   "<span class='header'>annex0:</span> <span class='%13'>%14 V</span> | "
+                   "<span class='header'>annex1:</span> <span class='%15'>%16 V</span> | "
+                   "<span class='header'>accX:</span> <span class='%17'>%18 g</span> | "
+                   "<span class='header'>accY:</span> <span class='%19'>%20 g</span> | "
+                   "<span class='header'>accZ:</span> <span class='%21'>%22 g</span> | "
+                   "<span class='header'>id:</span> <span class='%23'>%24</span> | "
+                   "<span class='header'>gnssStatus:</span> <span class='%25'>%26</span> | "
+                   "<span class='header'>flightStatus:</span> <span class='%27'>%28</span>")
+        .arg(frame.sts == 0 ? "critical" : "value",
+             QString::number(frame.sts),
+             frame.latFloat < -90 || frame.latFloat > 90 ? "critical" : "value",
+             QString::number(frame.latFloat, 'f', 7),
+             frame.lonFloat < -180 || frame.lonFloat > 180 ? "critical" : "value",
+             QString::number(frame.lonFloat, 'f', 7),
+             frame.alt < 0 || frame.alt > 10000 ? "critical" : "value",
+             QString::number(frame.alt),
+             frame.pressureFloat < 0.1 || frame.pressureFloat > 1200 ? "critical" : "value",
+             QString::number(frame.pressureFloat, 'f', 2),
+             frame.tempFloat > 50 ? "critical" : "value",
+             QString::number(frame.tempFloat, 'f', 2),
+             frame.annex0Float < 0 || frame.annex0Float > 5 ? "critical" : "value",
+             QString::number(frame.annex0Float, 'f', 2),
+             frame.annex1Float < 0 || frame.annex1Float > 5 ? "critical" : "value",
+             QString::number(frame.annex1Float, 'f', 2),
+             frame.accXFloat < -16 || frame.accXFloat > 16 ? "critical" : "value",
+             QString::number(frame.accXFloat, 'f', 5),
+             frame.accYFloat < -16 || frame.accYFloat > 16 ? "critical" : "value",
+             QString::number(frame.accYFloat, 'f', 5),
+             frame.accZFloat < -16 || frame.accZFloat > 16 ? "critical" : "value",
+             QString::number(frame.accZFloat, 'f', 5),
+             frame.id == 0 ? "critical" : "value",
+             QString::number(frame.id),
+             frame.gnssStatus == 0 ? "critical" : "value",
+             QString::number(frame.gnssStatus),
+             frame.flightStatus == PRE_FLIGHT ? "pre_flight" :
+                 frame.flightStatus == PYRO_RDY ? "pyro_rdy" :
+                 frame.flightStatus == ASCEND ? "ascend" :
+                 frame.flightStatus == DEPLOY_ALGO ? "deploy_algo" :
+                 frame.flightStatus == DEPLOY_TIMER ? "deploy_timer" :
+                 frame.flightStatus == DESCEND ? "descend" :
+                 "touchdown",
+             QString::number(frame.flightStatus));
 }
+
 
