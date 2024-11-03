@@ -10,7 +10,6 @@ TelemetryFrame::~TelemetryFrame()
 
 void TelemetryFrame::processData(bool receptionChek, const QByteArray &data)
 {
-
     if (receptionChek){
         TmFrame_t frame = decodeFrame(data);
         QString decodedString = toString(frame);
@@ -69,10 +68,21 @@ TmFrame_t TelemetryFrame::decodeFrame(const QByteArray &data)
     frame.gnssStatus = (frame.sts & 0b00111000) >> 3;   // Bits 5-3 pour GNSS Status
     frame.flightStatus = (frame.sts & 0b00000111);      // Bits 2-0 pour Flight Status
 
+    // Initialisation des valeurs calculées en flottant
+    frame.latFloat = frame.lat * 1e-7;
+    frame.lonFloat = frame.lon * 1e-7;
+    frame.pressureFloat = frame.pressure / 4096.0;
+    frame.tempFloat = frame.temp / 100.0;
+    frame.accXFloat = frame.accX / 1000.0;
+    frame.accYFloat = frame.accY / 1000.0;
+    frame.accZFloat = frame.accZ / 1000.0;
+    frame.annex0Float = frame.annex0 * 1.0;
+    frame.annex1Float = frame.annex1 * 1.0;
+
     return frame;
 }
 
-QString TelemetryFrame::toString(const TmFrame_t &frame)
+/*QString TelemetryFrame::toString(const TmFrame_t &frame)
 {
     return QString("[Decoded data] "
                    "sts: %1 | "
@@ -104,3 +114,62 @@ QString TelemetryFrame::toString(const TmFrame_t &frame)
         .arg(frame.gnssStatus)
         .arg(frame.flightStatus);
 }
+*/
+
+QString TelemetryFrame::toString(const TmFrame_t &frame) {
+    return QString("<style>"
+                   "td { padding: 4px 8px; } "
+                   ".header { font-weight: bold; color: #4CAF50; } "
+                   ".value { color: #2196F3; } "
+                   ".critical { color: #FF5722; font-weight: bold; } "
+                   ".ground { color: #1E90FF; font-weight: bold; } "      // Bleu pour attente au sol
+                   ".flight { color: #32CD32; font-weight: bold; } "     // Vert pour vol
+                   ".parachute { color: #FFA500; font-weight: bold; } "  // Orange pour déploiement parachute
+                   "</style> "
+                   "<b>[Decoded data]</b> "
+                   "<span class='header'>sts:</span> <span class='%1'>%2</span> | "
+                   "<span class='header'>lat:</span> <span class='%3'>%4</span> | "
+                   "<span class='header'>lon:</span> <span class='%5'>%6</span> | "
+                   "<span class='header'>alt:</span> <span class='%7'>%8</span> | "
+                   "<span class='header'>pressure:</span> <span class='%9'>%10</span> | "
+                   "<span class='header'>temp:</span> <span class='%11'>%12</span> | "
+                   "<span class='header'>annex0:</span> <span class='%13'>%14</span> | "
+                   "<span class='header'>annex1:</span> <span class='%15'>%16</span> | "
+                   "<span class='header'>accX:</span> <span class='%17'>%18</span> | "
+                   "<span class='header'>accY:</span> <span class='%19'>%20</span> | "
+                   "<span class='header'>accZ:</span> <span class='%21'>%22</span> | "
+                   "<span class='header'>id:</span> <span class='%23'>%24</span> | "
+                   "<span class='header'>gnssStatus:</span> <span class='%25'>%26</span> | "
+                   "<span class='header'>flightStatus:</span> <span class='%27'>%28</span>")
+
+        .arg(frame.sts == 0 ? "critical" : "value")
+        .arg(frame.sts)
+        .arg(frame.latFloat < -90 || frame.latFloat > 90 ? "critical" : "value")
+        .arg(frame.latFloat)
+        .arg(frame.lonFloat < -180 || frame.lonFloat > 180 ? "critical" : "value")
+        .arg(frame.lonFloat)
+        .arg(frame.alt < 0 || frame.alt > 10000 ? "critical" : "value")
+        .arg(frame.alt)
+        .arg(frame.pressureFloat < 0.1 || frame.pressureFloat > 1100 ? "critical" : "value")
+        .arg(frame.pressureFloat)
+        .arg(frame.tempFloat > 50 ? "critical" : "value")
+        .arg(frame.tempFloat)
+        .arg(frame.annex0Float < 0 || frame.annex0Float > 5 ? "critical" : "value")
+        .arg(frame.annex0Float)
+        .arg(frame.annex1Float < 0 || frame.annex1Float > 5 ? "critical" : "value")
+        .arg(frame.annex1Float)
+        .arg(frame.accXFloat < -16 || frame.accXFloat > 16 ? "critical" : "value")
+        .arg(frame.accXFloat)
+        .arg(frame.accYFloat < -16 || frame.accYFloat > 16 ? "critical" : "value")
+        .arg(frame.accYFloat)
+        .arg(frame.accZFloat < -16 || frame.accZFloat > 16 ? "critical" : "value")
+        .arg(frame.accZFloat)
+        .arg(frame.id == 0 ? "critical" : "value")
+        .arg(frame.id)
+        .arg(frame.gnssStatus == 0 ? "critical" : "value")
+        .arg(frame.gnssStatus)
+        // Classe en fonction du statut de vol
+        .arg(frame.flightStatus == 0 ? "ground" : (frame.flightStatus == 1 ? "flight" : "parachute"))
+        .arg(frame.flightStatus);
+}
+

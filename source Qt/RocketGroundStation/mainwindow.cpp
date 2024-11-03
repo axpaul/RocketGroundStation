@@ -195,18 +195,46 @@ void MainWindow::receptionData(const TmFrame_t &frame, const QString &decodedStr
         }
 }
 
-void MainWindow::addText(const QString &text) {
-    ui->console->append(text); // ajoute le texte à la console
+/*void MainWindow::addText(const QString &text) {
+    // Ajoute le texte à la console
+    ui->console->appendHtml(text);
 
-    // obtenir toutes les lignes actuellement dans la console
+    // Obtenir toutes les lignes actuellement dans la console
     QStringList allLines = ui->console->toPlainText().split("\n");
 
-    // si plus de 10 lignes, supprimer les lignes supplémentaires
-    while (allLines.size() > 500) {
-        allLines.removeFirst();
-    }
+    // Si plus de 500 lignes, mettre à jour uniquement si nécessaire
+    if (allLines.size() > 500) {
+        // Conserver seulement les 500 dernières lignes
+        allLines = allLines.mid(allLines.size() - 500);
 
-    // mettre à jour la console avec les 10 dernières lignes
-    ui->console->clear();
-    ui->console->append(allLines.join("\n"));
+        // Mettre à jour la console avec les dernières lignes
+        ui->console->clear();
+        ui->console->appendHtml(allLines.join("\n"));
+    }
+}*/
+
+void MainWindow::addText(const QString &text) {
+    // Ajoute le texte formaté en HTML à la console
+    ui->console->appendHtml(text);
+
+    // Limite le nombre de lignes à 500
+    int maxLines = 500;
+
+    // Vérifie si le nombre de lignes a dépassé la limite
+    QTextDocument *doc = ui->console->document();
+    int lineCount = doc->blockCount();
+
+    if (lineCount > maxLines) {
+        // Calculer le nombre de lignes à supprimer
+        int excessLines = lineCount - maxLines;
+
+        // Supprimer les blocs de texte excédentaires du début
+        QTextCursor cursor(doc);
+        cursor.movePosition(QTextCursor::Start);  // Aller au début
+        for (int i = 0; i < excessLines; ++i) {
+            cursor.select(QTextCursor::BlockUnderCursor);
+            cursor.removeSelectedText();
+            cursor.deleteChar();  // Supprimer le caractère de fin de ligne
+        }
+    }
 }
