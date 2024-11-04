@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1022</width>
-    <height>495</height>
+    <width>646</width>
+    <height>470</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,34 +18,207 @@
     <normaloff>:/iconeWindows/icone/antenne-satellite.png</normaloff>:/iconeWindows/icone/antenne-satellite.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QHBoxLayout" name="horizontalLayout_3">
+   <layout class="QVBoxLayout" name="verticalLayout_2">
     <item>
-     <widget class="QPlainTextEdit" name="console">
-      <property name="minimumSize">
-       <size>
-        <width>400</width>
-        <height>400</height>
-       </size>
+     <widget class="QGroupBox" name="groupBox_2">
+      <property name="title">
+       <string/>
       </property>
-      <property name="cursor" stdset="0">
-       <cursorShape>ArrowCursor</cursorShape>
-      </property>
-      <property name="readOnly">
-       <bool>true</bool>
-      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <item>
+        <widget class="QWidget" name="telemetryPanel" native="true">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_4">
+          <item>
+           <widget class="QLabel" name="flightStatusLabel">
+            <property name="text">
+             <string>Flight Statut : </string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="gnssStatusLabel">
+            <property name="text">
+             <string>Statut GNSS : </string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="crcCheckLabel">
+            <property name="text">
+             <string>CrcCheck :</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="latitudeLabel">
+            <property name="text">
+             <string>Latitude : </string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="longitudeLabel">
+            <property name="text">
+             <string>Longitude : </string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="altitudeLabel">
+            <property name="text">
+             <string>Altitude : </string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="pressureLabel">
+            <property name="text">
+             <string>Pression : </string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="temperatureLabel">
+            <property name="text">
+             <string>Température : </string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="accZLabel">
+            <property name="text">
+             <string>Accélération Z : </string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="accXLabel">
+            <property name="text">
+             <string>Accélération X : </string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="accYLabel">
+            <property name="text">
+             <string>Accélération Y : </string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="verticalSpacer">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QTabWidget" name="tabWidget">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="currentIndex">
+          <number>1</number>
+         </property>
+         <widget class="QWidget" name="tab_map">
+          <attribute name="title">
+           <string>Map</string>
+          </attribute>
+          <layout class="QHBoxLayout" name="horizontalLayout">
+           <item>
+            <widget class="MapZone" name="mapzone" native="true">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="tab_data">
+          <attribute name="title">
+           <string>Data</string>
+          </attribute>
+          <layout class="QVBoxLayout" name="verticalLayout_3"/>
+         </widget>
+        </widget>
+       </item>
+      </layout>
      </widget>
     </item>
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout"/>
-    </item>
-    <item>
-     <widget class="MapZone" name="mapzone" native="true">
-      <property name="minimumSize">
-       <size>
-        <width>400</width>
-        <height>400</height>
-       </size>
+     <widget class="QGroupBox" name="groupBox">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
       </property>
+      <property name="title">
+       <string/>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <widget class="QPlainTextEdit" name="console">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+           <horstretch>0</horstretch>
+           <verstretch>200</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="cursor" stdset="0">
+          <cursorShape>ArrowCursor</cursorShape>
+         </property>
+         <property name="tabChangesFocus">
+          <bool>false</bool>
+         </property>
+         <property name="documentTitle">
+          <string/>
+         </property>
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+         <property name="plainText">
+          <string notr="true"/>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </widget>
     </item>
    </layout>
@@ -55,8 +228,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1022</width>
-     <height>22</height>
+     <width>646</width>
+     <height>18</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuConnect">
@@ -73,6 +246,7 @@
      <string>Tools</string>
     </property>
     <addaction name="actionConfigure"/>
+    <addaction name="actionClean"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -152,6 +326,15 @@
    </property>
    <property name="text">
     <string>About Qt</string>
+   </property>
+  </action>
+  <action name="actionClean">
+   <property name="icon">
+    <iconset resource="icone.qrc">
+     <normaloff>:/iconeWindows/icone/broom.png</normaloff>:/iconeWindows/icone/broom.png</iconset>
+   </property>
+   <property name="text">
+    <string>Clean</string>
    </property>
   </action>
  </widget>

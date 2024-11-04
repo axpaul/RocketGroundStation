@@ -49,7 +49,7 @@ with open('C:/Users/paulm/OneDrive/Bureau/Software/VirtualCom/log-MSE.txt', 'r')
             print(f"Envoyé : {frame.hex()}")
 
             # Attendre un court instant entre les envois
-            time.sleep(0.05)
+            time.sleep(0.1)
         else:
             print(f"Trame ignorée : taille incorrecte ({len(byte_data)} octets)")
 

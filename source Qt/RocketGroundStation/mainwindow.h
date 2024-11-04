@@ -42,22 +42,6 @@ public:
     QString getSerialError();
     void addText(const QString &text);
 
-    // // Définition de toutes les structures de données
-    // typedef struct {
-    //     uint8_t sts; // status of rocket
-    //     int32_t lat; // GNSS latitute
-    //     int32_t lon; // GNSS longitude
-    //     int16_t alt; // GNSS Altitude
-    //     int32_t pressure; // ambiant pressure
-    //     int16_t temp; // ambiant temperature
-    //     int16_t accX; // Acceleration X
-    //     int16_t accY; // Acceleration Y
-    //     int16_t accZ; // Acceleration Z
-    //     int16_t annex0; // ADC0
-    //     int16_t annex1; // ADC1
-    // }TmFrame_t;
-
-
 public slots:
     // Slots qui vont être utilisés pour connecter les signaux et les méthodes.
     void handleErrorShow(QString error);
@@ -83,6 +67,21 @@ private:
     void activateButtonSerial();
     void disactivateButtonSerial();
     void showStatusMessage(const QString &stringConnection);
+    void clearConsole();
+
+    void applyTelemetryPanelStyle();
+
+    void updateLatitude(float latitude);
+    void updateLongitude(float longitude);
+    void updateAltitude(int altitude);
+    void updatePressure(float pressure);
+    void updateTemperature(float temperature);
+    void updateAccelerationX(float accX);
+    void updateAccelerationY(float accY);
+    void updateAccelerationZ(float accZ);
+    void updateGnssStatus(uint8_t gnssStatus);
+    void updateFlightStatus(uint8_t flightStatus);
+    void updateCrcCheckLabel(bool crcCheck);
 
     Ui::MainWindow *ui;
     QObject *m_parent;

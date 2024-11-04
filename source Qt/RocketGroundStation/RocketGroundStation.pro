@@ -25,7 +25,6 @@ HEADERS += \
 
 
 FORMS += \
-   MapZone.ui \
    mainwindow.ui \
    settingsdialog.ui
 

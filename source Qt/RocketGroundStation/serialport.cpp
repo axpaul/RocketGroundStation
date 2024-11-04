@@ -115,7 +115,7 @@ void SerialPort::readingData() {
         std::uint8_t calculatedCrc = calculate_crc8(receivedData);
         if (receivedCrc != calculatedCrc) {
             qDebug() << "[" << QDateTime::currentDateTime().toString("dd-MM-yyyy_HH.mm.ss") << "][SERIAL] CRC check failed, calculated: " << QString::number(calculatedCrc, 16);
-            emit dataEmit(false, QByteArray());
+            emit dataEmit(false, receivedData);
         } else {
             qDebug() << "[" << QDateTime::currentDateTime().toString("dd-MM-yyyy_HH.mm.ss") << "][SERIAL] CRC check passed, emitting data";
             emit dataEmit(true, receivedData);
