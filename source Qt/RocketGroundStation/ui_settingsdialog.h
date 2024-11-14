@@ -27,9 +27,6 @@ class Ui_SettingsDialog
 {
 public:
     QGridLayout *gridLayout_3;
-    QHBoxLayout *horizontalLayout;
-    QSpacerItem *horizontalSpacer;
-    QPushButton *applyButton;
     QGroupBox *selectBox;
     QGridLayout *gridLayout;
     QComboBox *serialPortInfoListBox;
@@ -51,31 +48,26 @@ public:
     QComboBox *stopBitsBox;
     QLabel *flowControlLabel;
     QComboBox *flowControlBox;
+    QGroupBox *gridGroupBox;
+    QGridLayout *gridLayout_4;
+    QComboBox *mapSourceBox;
+    QLabel *mapSourceLabel;
+    QLabel *mapLocationLabel;
+    QComboBox *mapLocationBox;
+    QHBoxLayout *horizontalLayout;
+    QSpacerItem *horizontalSpacer;
+    QPushButton *applyButton;
 
     void setupUi(QDialog *SettingsDialog)
     {
         if (SettingsDialog->objectName().isEmpty())
             SettingsDialog->setObjectName(QString::fromUtf8("SettingsDialog"));
-        SettingsDialog->resize(281, 217);
+        SettingsDialog->resize(574, 240);
         QIcon icon;
         icon.addFile(QString::fromUtf8(":/iconeSerial/icone/settings.png"), QSize(), QIcon::Normal, QIcon::Off);
         SettingsDialog->setWindowIcon(icon);
         gridLayout_3 = new QGridLayout(SettingsDialog);
         gridLayout_3->setObjectName(QString::fromUtf8("gridLayout_3"));
-        horizontalLayout = new QHBoxLayout();
-        horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
-        horizontalSpacer = new QSpacerItem(96, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-
-        horizontalLayout->addItem(horizontalSpacer);
-
-        applyButton = new QPushButton(SettingsDialog);
-        applyButton->setObjectName(QString::fromUtf8("applyButton"));
-
-        horizontalLayout->addWidget(applyButton);
-
-
-        gridLayout_3->addLayout(horizontalLayout, 1, 0, 1, 2);
-
         selectBox = new QGroupBox(SettingsDialog);
         selectBox->setObjectName(QString::fromUtf8("selectBox"));
         gridLayout = new QGridLayout(selectBox);
@@ -175,6 +167,47 @@ public:
 
         gridLayout_3->addWidget(parametersBox, 0, 1, 1, 1);
 
+        gridGroupBox = new QGroupBox(SettingsDialog);
+        gridGroupBox->setObjectName(QString::fromUtf8("gridGroupBox"));
+        gridLayout_4 = new QGridLayout(gridGroupBox);
+        gridLayout_4->setObjectName(QString::fromUtf8("gridLayout_4"));
+        mapSourceBox = new QComboBox(gridGroupBox);
+        mapSourceBox->setObjectName(QString::fromUtf8("mapSourceBox"));
+
+        gridLayout_4->addWidget(mapSourceBox, 0, 1, 1, 1);
+
+        mapSourceLabel = new QLabel(gridGroupBox);
+        mapSourceLabel->setObjectName(QString::fromUtf8("mapSourceLabel"));
+
+        gridLayout_4->addWidget(mapSourceLabel, 0, 0, 1, 1);
+
+        mapLocationLabel = new QLabel(gridGroupBox);
+        mapLocationLabel->setObjectName(QString::fromUtf8("mapLocationLabel"));
+
+        gridLayout_4->addWidget(mapLocationLabel, 1, 0, 1, 1);
+
+        mapLocationBox = new QComboBox(gridGroupBox);
+        mapLocationBox->setObjectName(QString::fromUtf8("mapLocationBox"));
+
+        gridLayout_4->addWidget(mapLocationBox, 1, 1, 1, 1);
+
+
+        gridLayout_3->addWidget(gridGroupBox, 0, 2, 1, 1);
+
+        horizontalLayout = new QHBoxLayout();
+        horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
+        horizontalSpacer = new QSpacerItem(96, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout->addItem(horizontalSpacer);
+
+        applyButton = new QPushButton(SettingsDialog);
+        applyButton->setObjectName(QString::fromUtf8("applyButton"));
+
+        horizontalLayout->addWidget(applyButton);
+
+
+        gridLayout_3->addLayout(horizontalLayout, 1, 0, 1, 3);
+
 
         retranslateUi(SettingsDialog);
 
@@ -184,7 +217,6 @@ public:
     void retranslateUi(QDialog *SettingsDialog)
     {
         SettingsDialog->setWindowTitle(QCoreApplication::translate("SettingsDialog", "Settings", nullptr));
-        applyButton->setText(QCoreApplication::translate("SettingsDialog", "Apply", nullptr));
         selectBox->setTitle(QCoreApplication::translate("SettingsDialog", "Select Serial Port", nullptr));
         descriptionLabel->setText(QCoreApplication::translate("SettingsDialog", "Description:", nullptr));
         manufacturerLabel->setText(QCoreApplication::translate("SettingsDialog", "Manufacturer:", nullptr));
@@ -198,6 +230,10 @@ public:
         parityLabel->setText(QCoreApplication::translate("SettingsDialog", "Parity:", nullptr));
         stopBitsLabel->setText(QCoreApplication::translate("SettingsDialog", "Stop bits:", nullptr));
         flowControlLabel->setText(QCoreApplication::translate("SettingsDialog", "Flow control:", nullptr));
+        gridGroupBox->setTitle(QCoreApplication::translate("SettingsDialog", "Map Parameters", nullptr));
+        mapSourceLabel->setText(QCoreApplication::translate("SettingsDialog", "Map Source", nullptr));
+        mapLocationLabel->setText(QCoreApplication::translate("SettingsDialog", "Location", nullptr));
+        applyButton->setText(QCoreApplication::translate("SettingsDialog", "Apply", nullptr));
     } // retranslateUi
 
 };

@@ -64,6 +64,7 @@ public slots:
     void handleErrorShow(QString error);
     void settingShow();
     void setSerialSettings();
+    void setMapSettings();
     void openedSerial(SerialPort::Settings p);
     void closedSerial();
     void openSerialPort();
@@ -74,6 +75,7 @@ public slots:
 signals:
     // Définition des signaux qui peuvent être émis par l'objet MainWindow
     void setSerialSettingsSig(SerialPort::Settings);
+    void setMapSettingsSig(MapZone::Settings);
     void serialOpened(SerialPort::Settings p);
     void serialClosed();
 

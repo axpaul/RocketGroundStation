@@ -114,6 +114,11 @@ void MainWindow::setSerialSettings() {
     emit setSerialSettingsSig(m_settings->settings());
 }
 
+void MainWindow::setMapSettings()
+{
+    emit setSerialSettingsSig(m_settings->settings());
+}
+
 /* Function open/close serial */
 
 void MainWindow::openedSerial(SerialPort::Settings p) {

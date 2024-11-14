@@ -14,18 +14,25 @@ MapZone::MapZone(QWidget *parent) :
     //view->load(QUrl::fromLocalFile("C:/Users/paulm/OneDrive/Bureau/InterfaceReadGrounStation-main/Map.html"));  // Changez ceci pour pointer vers votre fichier HTML
 
     // Chargez le fichier HTML à partir des ressources Qt
-    view->load(QUrl(QStringLiteral("qrc:/map.html")));
+    if(QString::compare(m_settingsMap->mapSource, QString("Camp de Ger - Tarbes")))
+    {
+        QString mapSource = "mapTarbes.html";
+    }
+    else
+    {
+        QString mapSource = "mapBourg.html";
+    }
+        view->load(QUrl(QStringLiteral("qrc:/map.html")));
 
-    // Vérifier si le chargement a réussi
-    connect(view, &QWebEngineView::loadFinished, [this](bool success) {
-        if (success) {
-            qDebug() << "[" << QDateTime::currentDateTime().toString("dd-MM-yyyy_HH.mm.ss") << "][MAINWINDOW] Le chargement du fichier HTML a réussi";
+        // Vérifier si le chargement a réussi
+        connect(view, &QWebEngineView::loadFinished, [this](bool success) {
+            if (success) {
+                qDebug() << "[" << QDateTime::currentDateTime().toString("dd-MM-yyyy_HH.mm.ss") << "][MAINWINDOW] Le chargement du fichier HTML a réussi";
 
-        } else {
-            qDebug() << "[" << QDateTime::currentDateTime().toString("dd-MM-yyyy_HH.mm.ss") << "][MAINWINDOW] Le chargement du fichier HTML a échoué.";
-        }
-    });
-
+            } else {
+                qDebug() << "[" << QDateTime::currentDateTime().toString("dd-MM-yyyy_HH.mm.ss") << "][MAINWINDOW] Le chargement du fichier HTML a échoué.";
+            }
+        });
     // Lier la fonction setPosition au contexte JavaScript de la page
     connect(view->page(), &QWebEnginePage::loadFinished, [this]() {
         view->page()->runJavaScript("function setPosition(x, y) { addMarker(x, y); }");
@@ -45,4 +52,10 @@ void MapZone::setPosition(double x, double y)
 {
     QString javaScriptCode = QString("setPosition(%1, %2)").arg(x).arg(y);
     view->page()->runJavaScript(javaScriptCode);
+}
+
+void MapZone::settingsUpdate(MapZone::Settings settingsMap)
+{
+    qDebug() << "[" << QDateTime::currentDateTime().toString("dd-MM-yyyy_HH.mm.ss") << "][SERIAL] settingUpdate for Map";
+    *m_settingsMap = settingsMap;
 }

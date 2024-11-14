@@ -20,14 +20,21 @@ class MapZone : public QWidget
     Q_OBJECT
 
 public:
+
+    struct Settings{
+        QString location;
+        QString mapSource;
+    };
+
     explicit MapZone(QWidget *parent = nullptr);
     ~MapZone();
 
     void setPosition(double x, double y);
+    void MapZone::settingsUpdate(MapZone::Settings settingsMap);
 
 private:
     Ui::MapZone *ui;
-
+    Settings *m_settingsMap;
     QWebEngineView *view;
 
 

@@ -270,6 +270,7 @@ Makefile: RocketGroundStation.pro E:\Qt\5.15.2\msvc2019_64\mkspecs\win32-msvc\qm
 		E:\Qt\5.15.2\msvc2019_64\mkspecs\features\qt_config.prf \
 		E:\Qt\5.15.2\msvc2019_64\mkspecs\win32-msvc\qmake.conf \
 		E:\Qt\5.15.2\msvc2019_64\mkspecs\features\spec_post.prf \
+		.qmake.stash \
 		E:\Qt\5.15.2\msvc2019_64\mkspecs\features\exclusive_builds.prf \
 		E:\Qt\5.15.2\msvc2019_64\mkspecs\common\msvc-version.conf \
 		E:\Qt\5.15.2\msvc2019_64\mkspecs\features\toolchain.prf \
@@ -312,7 +313,6 @@ Makefile: RocketGroundStation.pro E:\Qt\5.15.2\msvc2019_64\mkspecs\win32-msvc\qm
 		E:\Qt\5.15.2\msvc2019_64\lib\Qt5Positioning.prl \
 		E:\Qt\5.15.2\msvc2019_64\lib\Qt5Core.prl \
 		E:\Qt\5.15.2\msvc2019_64\lib\qtmain.prl \
-		.qmake.stash \
 		E:\Qt\5.15.2\msvc2019_64\mkspecs\features\build_pass.prf \
 		icone.qrc \
 		map.qrc \
@@ -520,6 +520,7 @@ E:\Qt\5.15.2\msvc2019_64\mkspecs\features\qt_functions.prf:
 E:\Qt\5.15.2\msvc2019_64\mkspecs\features\qt_config.prf:
 E:\Qt\5.15.2\msvc2019_64\mkspecs\win32-msvc\qmake.conf:
 E:\Qt\5.15.2\msvc2019_64\mkspecs\features\spec_post.prf:
+.qmake.stash:
 E:\Qt\5.15.2\msvc2019_64\mkspecs\features\exclusive_builds.prf:
 E:\Qt\5.15.2\msvc2019_64\mkspecs\common\msvc-version.conf:
 E:\Qt\5.15.2\msvc2019_64\mkspecs\features\toolchain.prf:
@@ -562,7 +563,6 @@ E:\Qt\5.15.2\msvc2019_64\lib\Qt5Network.prl:
 E:\Qt\5.15.2\msvc2019_64\lib\Qt5Positioning.prl:
 E:\Qt\5.15.2\msvc2019_64\lib\Qt5Core.prl:
 E:\Qt\5.15.2\msvc2019_64\lib\qtmain.prl:
-.qmake.stash:
 E:\Qt\5.15.2\msvc2019_64\mkspecs\features\build_pass.prf:
 icone.qrc:
 map.qrc:

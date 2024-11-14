@@ -11,7 +11,8 @@ TileServer::~TileServer() {
 
 bool TileServer::startServer() {
     QString pythonExecutable = "python"; // Remplace par le chemin complet de Python si nécessaire
-    QString scriptPath = QCoreApplication::applicationDirPath() + "/rc_gen.py";
+    //QString scriptPath = QCoreApplication::applicationDirPath() + "/rc_gen.py";
+    QString scriptPath = "qrc:/rc_gen.py";
 
     m_pythonProcess->setProgram(pythonExecutable);
     m_pythonProcess->setArguments({scriptPath});

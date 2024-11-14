@@ -7,3 +7,4 @@ source\ Qt/RocketGroundStation/.qtc_clangd
 source\ Qt/RocketGroundStation/.idea
 source\ Qt/RocketGroundStation/debug/*
 source\ Qt/build/*
+source\ Qt/RocketGroundStation/log*
