@@ -12,6 +12,7 @@ SOURCES += \
    MapZone.cpp \
    main.cpp \
    mainwindow.cpp \
+   mapsettingsdialog.cpp \
    serialport.cpp \
    settingsdialog.cpp \
    tileServer.cpp\
@@ -20,6 +21,7 @@ SOURCES += \
 HEADERS += \
    MapZone.h \
    mainwindow.h \
+   mapsettingsdialog.h \
    serialport.h \
    settingsdialog.h \
    telemetryframe.h \
@@ -29,6 +31,7 @@ HEADERS += \
 FORMS += \
    MapZone.ui \
    mainwindow.ui \
+   mapsettingsdialog.ui \
    settingsdialog.ui
 
 

@@ -6,6 +6,9 @@ MapZone::MapZone(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::MapZone)
 {
+
+    QString mapSource;
+
     ui->setupUi(this);
 
     view = new QWebEngineView(this);
@@ -14,15 +17,16 @@ MapZone::MapZone(QWidget *parent) :
     //view->load(QUrl::fromLocalFile("C:/Users/paulm/OneDrive/Bureau/InterfaceReadGrounStation-main/Map.html"));  // Changez ceci pour pointer vers votre fichier HTML
 
     // Chargez le fichier HTML à partir des ressources Qt
-    if(QString::compare(m_settingsMap->mapSource, QString("Camp de Ger - Tarbes")))
+    //if(QString::compare(m_settingsMap->mapSource, QString("Camp de Ger - Tarbes")))
+    if(1==1)
     {
-        QString mapSource = "mapTarbes.html";
+        mapSource = "mapTarbes.html";
     }
     else
     {
-        QString mapSource = "mapBourg.html";
+        mapSource = "mapBourg.html";
     }
-        view->load(QUrl(QStringLiteral("qrc:/map.html")));
+        view->load(QUrl(mapSource));
 
         // Vérifier si le chargement a réussi
         connect(view, &QWebEngineView::loadFinished, [this](bool success) {

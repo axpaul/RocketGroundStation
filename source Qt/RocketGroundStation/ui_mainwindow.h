@@ -34,6 +34,7 @@ public:
     QAction *actionConfigure;
     QAction *actionAbout;
     QAction *actionAbout_Qt;
+    QAction *actionMap_Settings;
     QWidget *centralwidget;
     QHBoxLayout *horizontalLayout_3;
     QTextBrowser *console;
@@ -50,7 +51,7 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
-        MainWindow->resize(1222, 475);
+        MainWindow->resize(1232, 475);
         QIcon icon;
         icon.addFile(QString::fromUtf8(":/iconeWindows/icone/antenne-satellite.png"), QSize(), QIcon::Normal, QIcon::Off);
         MainWindow->setWindowIcon(icon);
@@ -84,6 +85,12 @@ public:
         QIcon icon6;
         icon6.addFile(QString::fromUtf8(":/iconeWindows/icone/Qt_logo_2016.svg.png"), QSize(), QIcon::Normal, QIcon::Off);
         actionAbout_Qt->setIcon(icon6);
+        actionMap_Settings = new QAction(MainWindow);
+        actionMap_Settings->setObjectName(QString::fromUtf8("actionMap_Settings"));
+        actionMap_Settings->setCheckable(false);
+        QIcon icon7;
+        icon7.addFile(QString::fromUtf8(":/iconeMap/icone/map.png"), QSize(), QIcon::Normal, QIcon::Off);
+        actionMap_Settings->setIcon(icon7);
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
         horizontalLayout_3 = new QHBoxLayout(centralwidget);
@@ -108,7 +115,7 @@ public:
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName(QString::fromUtf8("menubar"));
-        menubar->setGeometry(QRect(0, 0, 1222, 17));
+        menubar->setGeometry(QRect(0, 0, 1232, 22));
         menuConnect = new QMenu(menubar);
         menuConnect->setObjectName(QString::fromUtf8("menuConnect"));
         menuTools = new QMenu(menubar);
@@ -121,6 +128,8 @@ public:
         MainWindow->setStatusBar(statusbar);
         toolBar = new QToolBar(MainWindow);
         toolBar->setObjectName(QString::fromUtf8("toolBar"));
+        toolBar->setMovable(true);
+        toolBar->setFloatable(true);
         MainWindow->addToolBar(Qt::TopToolBarArea, toolBar);
 
         menubar->addAction(menuConnect->menuAction());
@@ -131,6 +140,7 @@ public:
         menuConnect->addSeparator();
         menuConnect->addAction(actionQuit);
         menuTools->addAction(actionConfigure);
+        menuTools->addAction(actionMap_Settings);
         menuHelp->addAction(actionAbout);
         menuHelp->addAction(actionAbout_Qt);
         toolBar->addAction(actionConnect);
@@ -151,6 +161,7 @@ public:
         actionConfigure->setText(QCoreApplication::translate("MainWindow", "Configure", nullptr));
         actionAbout->setText(QCoreApplication::translate("MainWindow", "About", nullptr));
         actionAbout_Qt->setText(QCoreApplication::translate("MainWindow", "About Qt", nullptr));
+        actionMap_Settings->setText(QCoreApplication::translate("MainWindow", "Map Settings", nullptr));
         menuConnect->setTitle(QCoreApplication::translate("MainWindow", "Menu", nullptr));
         menuTools->setTitle(QCoreApplication::translate("MainWindow", "Tools", nullptr));
         menuHelp->setTitle(QCoreApplication::translate("MainWindow", "Help", nullptr));

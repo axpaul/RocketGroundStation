@@ -11,4 +11,7 @@
         <file>icone/usb.png</file>
         <file>icone/antenne-satellite.png</file>
     </qresource>
+    <qresource prefix="/iconeMap">
+        <file>icone/map.png</file>
+    </qresource>
 </RCC>

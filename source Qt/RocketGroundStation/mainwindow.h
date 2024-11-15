@@ -18,8 +18,10 @@
 
 #include "serialport.h"
 #include "settingsdialog.h"
+#include "mapsettingsdialog.h"
 #include "telemetryframe.h"
 #include "tileServer.h"
+#include "MapZone.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -64,20 +66,20 @@ public slots:
     void handleErrorShow(QString error);
     void settingShow();
     void setSerialSettings();
-    void setMapSettings();
     void openedSerial(SerialPort::Settings p);
     void closedSerial();
     void openSerialPort();
     void closeSerialPort();
     void receptionData(const TmFrame_t &frame, const QString &decodedString);
     void about();
+    void on_actionMap_Settings_triggered();
 
 signals:
     // Définition des signaux qui peuvent être émis par l'objet MainWindow
     void setSerialSettingsSig(SerialPort::Settings);
-    void setMapSettingsSig(MapZone::Settings);
     void serialOpened(SerialPort::Settings p);
     void serialClosed();
+
 
 private:
     // Définition des méthodes privées et des membres de données
@@ -102,6 +104,9 @@ private:
 
     SettingsDialog *m_settings = nullptr;
     SerialPort::Settings *m_settingsInfo = nullptr;
+
+    MapSettingsDialog *m_mapSettings =nullptr;
+    MapZone::Settings *m_mapSettingsInfo = nullptr;
 };
 
 #endif // MAINWINDOW_H

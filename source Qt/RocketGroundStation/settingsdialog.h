@@ -4,7 +4,7 @@
 #include <QDialog>
 #include <QSerialPort>
 #include "serialport.h"
-#include "MapZone.h"
+
 
 QT_BEGIN_NAMESPACE
 
@@ -24,7 +24,6 @@ class SettingsDialog : public QDialog
 public:
     explicit SettingsDialog(QWidget *parent = nullptr);
     ~SettingsDialog();
-    MapZone::Settings mapSettings() const;
     SerialPort::Settings settings() const;
 
 signals:
@@ -40,7 +39,6 @@ public slots:
     void showSetting();
 
 private:
-    void fillMapParameters();
     void fillPortsParameters();
     void fillPortsInfo();
     void updateSettings();
@@ -48,7 +46,6 @@ private:
 private:
     Ui::SettingsDialog *m_ui = nullptr;
     SerialPort::Settings m_currentSettings;
-    MapZone::Settings m_currentMapSettings;
     QIntValidator *m_intValidator = nullptr;
 };
 

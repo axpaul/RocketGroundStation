@@ -9,7 +9,9 @@ MainWindow::MainWindow(QWidget *parent)
       m_serialThread(new SerialPort),
       m_frameTelemetry(new TelemetryFrame),
       m_settings(new SettingsDialog),
-      m_settingsInfo(new SerialPort::Settings)
+      m_settingsInfo(new SerialPort::Settings),
+      m_mapSettings(new MapSettingsDialog),
+      m_mapSettingsInfo(new MapZone::Settings)
 
 {
     QString tilePath = QCoreApplication::applicationDirPath() + "/map/";
@@ -114,10 +116,6 @@ void MainWindow::setSerialSettings() {
     emit setSerialSettingsSig(m_settings->settings());
 }
 
-void MainWindow::setMapSettings()
-{
-    emit setSerialSettingsSig(m_settings->settings());
-}
 
 /* Function open/close serial */
 
@@ -129,8 +127,6 @@ void MainWindow::openedSerial(SerialPort::Settings p) {
                       .arg(p.stringParity).arg(p.stringStopBits).arg(p.stringFlowControl));
 
     activateButtonSerial();
-
-
 }
 
 void MainWindow::closedSerial() {
@@ -224,3 +220,9 @@ void MainWindow::addText(const QString &text) {
     ui->console->clear();
     ui->console->append(allLines.join("\n"));
 }
+
+void MainWindow::on_actionMap_Settings_triggered()
+{
+    m_mapSettings->show();
+}
+

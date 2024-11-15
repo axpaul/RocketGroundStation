@@ -18,7 +18,6 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     connect(m_ui->baudRateBox,  QOverload<int>::of(&QComboBox::currentIndexChanged), this, &SettingsDialog::checkCustomBaudRatePolicy);
     connect(m_ui->serialPortInfoListBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &SettingsDialog::checkCustomDevicePathPolicy);
 
-    fillMapParameters();
     fillPortsParameters();
     fillPortsInfo();
 
@@ -30,10 +29,6 @@ SettingsDialog::~SettingsDialog()
     delete m_ui;
 }
 
-MapZone::Settings SettingsDialog::mapSettings() const
-{
-    return m_currentMapSettings;
-}
 
 SerialPort::Settings SettingsDialog::settings() const
 {
@@ -86,17 +81,7 @@ void SettingsDialog::checkCustomDevicePathPolicy(int idx)
         m_ui->serialPortInfoListBox->clearEditText();
 }
 
-void SettingsDialog::fillMapParameters()
-{
-    m_ui->mapSourceBox->addItem(QString("Offline"));
-    m_ui->mapSourceBox->addItem(QString("Online"));
-    m_ui->mapSourceBox->setCurrentIndex(0);
-    m_ui->mapLocationBox->addItem(QString("Camp de Ger - Tarbes"));
-    m_ui->mapLocationBox->addItem(QString("Bourg-St-Bernard"));
-    m_ui->mapLocationBox->setCurrentIndex(0);
 
-
-}
 
 void SettingsDialog::fillPortsParameters()
 {
@@ -185,9 +170,6 @@ void SettingsDialog::updateSettings()
 
     m_currentSettings.flowControl = static_cast<QSerialPort::FlowControl>(m_ui->flowControlBox->itemData(m_ui->flowControlBox->currentIndex()).toInt());
     m_currentSettings.stringFlowControl = m_ui->flowControlBox->currentText();
-
-    m_currentMapSettings.location = m_ui->mapLocationBox->currentText();
-    m_currentMapSettings.mapSource = m_ui->mapSourceBox->currentText();
 
 }
 
