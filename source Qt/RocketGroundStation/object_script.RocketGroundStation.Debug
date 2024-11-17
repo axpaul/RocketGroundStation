@@ -1,0 +1,13 @@
+debug/MapZone.o
+debug/main.o
+debug/mainwindow.o
+debug/serialport.o
+debug/settingsdialog.o
+debug/telemetryframe.o
+debug/qrc_icone.o
+debug/qrc_map.o
+debug/moc_MapZone.o
+debug/moc_mainwindow.o
+debug/moc_serialport.o
+debug/moc_settingsdialog.o
+debug/moc_telemetryframe.o
