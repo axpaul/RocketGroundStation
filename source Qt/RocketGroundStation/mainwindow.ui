@@ -159,6 +159,9 @@
    <property name="checkable">
     <bool>false</bool>
    </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="icone.qrc">
      <normaloff>:/iconeMap/icone/map.png</normaloff>:/iconeMap/icone/map.png</iconset>

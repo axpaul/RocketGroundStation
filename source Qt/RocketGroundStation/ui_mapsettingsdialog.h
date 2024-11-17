@@ -14,23 +14,28 @@
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QComboBox>
 #include <QtWidgets/QDialog>
-#include <QtWidgets/QDialogButtonBox>
 #include <QtWidgets/QFormLayout>
 #include <QtWidgets/QGroupBox>
 #include <QtWidgets/QLabel>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QSpacerItem>
+#include <QtWidgets/QWidget>
 
 QT_BEGIN_NAMESPACE
 
 class Ui_MapSettingsDialog
 {
 public:
-    QDialogButtonBox *buttonBox;
     QGroupBox *formGroupBox;
     QFormLayout *formLayout;
     QLabel *mapSourceLabel;
     QComboBox *mapSourceBox;
     QLabel *mapLocationLabel;
     QComboBox *mapLocationBox;
+    QWidget *formLayoutWidget;
+    QFormLayout *formLayout_2;
+    QPushButton *applyPushButton;
+    QSpacerItem *horizontalSpacer;
 
     void setupUi(QDialog *MapSettingsDialog)
     {
@@ -42,11 +47,6 @@ public:
         icon.addFile(QString::fromUtf8(":/iconeMap/icone/map.png"), QSize(), QIcon::Normal, QIcon::Off);
         MapSettingsDialog->setWindowIcon(icon);
         MapSettingsDialog->setModal(false);
-        buttonBox = new QDialogButtonBox(MapSettingsDialog);
-        buttonBox->setObjectName(QString::fromUtf8("buttonBox"));
-        buttonBox->setGeometry(QRect(120, 260, 161, 32));
-        buttonBox->setOrientation(Qt::Horizontal);
-        buttonBox->setStandardButtons(QDialogButtonBox::Cancel|QDialogButtonBox::Ok);
         formGroupBox = new QGroupBox(MapSettingsDialog);
         formGroupBox->setObjectName(QString::fromUtf8("formGroupBox"));
         formGroupBox->setGeometry(QRect(10, 0, 261, 251));
@@ -72,10 +72,23 @@ public:
 
         formLayout->setWidget(1, QFormLayout::FieldRole, mapLocationBox);
 
+        formLayoutWidget = new QWidget(MapSettingsDialog);
+        formLayoutWidget->setObjectName(QString::fromUtf8("formLayoutWidget"));
+        formLayoutWidget->setGeometry(QRect(10, 260, 261, 31));
+        formLayout_2 = new QFormLayout(formLayoutWidget);
+        formLayout_2->setObjectName(QString::fromUtf8("formLayout_2"));
+        formLayout_2->setContentsMargins(0, 0, 0, 0);
+        applyPushButton = new QPushButton(formLayoutWidget);
+        applyPushButton->setObjectName(QString::fromUtf8("applyPushButton"));
+
+        formLayout_2->setWidget(0, QFormLayout::FieldRole, applyPushButton);
+
+        horizontalSpacer = new QSpacerItem(175, 20, QSizePolicy::Maximum, QSizePolicy::Minimum);
+
+        formLayout_2->setItem(0, QFormLayout::LabelRole, horizontalSpacer);
+
 
         retranslateUi(MapSettingsDialog);
-        QObject::connect(buttonBox, SIGNAL(accepted()), MapSettingsDialog, SLOT(accept()));
-        QObject::connect(buttonBox, SIGNAL(rejected()), MapSettingsDialog, SLOT(reject()));
 
         QMetaObject::connectSlotsByName(MapSettingsDialog);
     } // setupUi
@@ -86,6 +99,7 @@ public:
         formGroupBox->setTitle(QCoreApplication::translate("MapSettingsDialog", "Settings", nullptr));
         mapSourceLabel->setText(QCoreApplication::translate("MapSettingsDialog", "Map Source", nullptr));
         mapLocationLabel->setText(QCoreApplication::translate("MapSettingsDialog", "Map Location", nullptr));
+        applyPushButton->setText(QCoreApplication::translate("MapSettingsDialog", "Apply", nullptr));
     } // retranslateUi
 
 };

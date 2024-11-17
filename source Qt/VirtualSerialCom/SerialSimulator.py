@@ -18,7 +18,7 @@ def calculate_crc8(data):
     return crc
 
 # Configurer le port COM (remplacer 'COM7' par le port série utilisé)
-ser = Serial('COM10', baudrate=9600, timeout=1)
+ser = Serial('COM11', baudrate=9600, timeout=1)
 
 # Ouvrir le fichier contenant les messages hexadécimaux
 with open('./log-MSE.txt', 'r') as file:

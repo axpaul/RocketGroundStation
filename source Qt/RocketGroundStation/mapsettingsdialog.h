@@ -2,7 +2,6 @@
 #define MAPSETTINGSDIALOG_H
 
 #include <QDialog>
-
 #include "MapZone.h"
 
 namespace Ui {
@@ -16,6 +15,7 @@ class MapSettingsDialog : public QDialog
 public:
     explicit MapSettingsDialog(QWidget *parent = nullptr);
     ~MapSettingsDialog();
+    MapZone::Settings settings() const;
 
 private slots:
 
@@ -23,13 +23,16 @@ private slots:
 
     void on_applyPushButton_clicked();
 
+
 signals:
-    void applyParameters();
+    void applyMapParameters();
+
+
 
 private:
     Ui::MapSettingsDialog *ui;
 
-    MapZone::Settings m_CurrentMapSettings;
+    MapZone::Settings m_currentMapSettings;
 };
 
 #endif // MAPSETTINGSDIALOG_H

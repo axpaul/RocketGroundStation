@@ -38,5 +38,14 @@ void MapSettingsDialog::on_mapSourceBox_currentIndexChanged(int index)
 void MapSettingsDialog::on_applyPushButton_clicked()
 {
 
+    m_currentMapSettings.mapSource = ui->mapSourceBox->currentText();
+    m_currentMapSettings.location = ui->mapLocationBox->currentText();
+
+    emit applyMapParameters();
+    hide();
 }
 
+MapZone::Settings MapSettingsDialog::settings() const
+{
+    return m_currentMapSettings;
+}

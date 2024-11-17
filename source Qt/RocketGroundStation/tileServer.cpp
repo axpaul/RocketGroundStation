@@ -1,49 +1,94 @@
 #include "TileServer.h"
-#include <QCoreApplication>
 #include <QDebug>
 
+// Constructeur
 TileServer::TileServer(QObject *parent)
-    : QObject(parent), m_pythonProcess(new QProcess(this)) {}
+    : QObject(parent), server(nullptr), tilePath(QDir::currentPath() + "/map") {}
 
-TileServer::~TileServer() {
-    stopServer();
+// Configure le chemin des tuiles
+void TileServer::setTilePath(const QString &path) {
+    tilePath = path;
 }
 
-bool TileServer::startServer() {
-    QString pythonExecutable = "python"; // Remplace par le chemin complet de Python si nécessaire
-    //QString scriptPath = QCoreApplication::applicationDirPath() + "/rc_gen.py";
-    QString scriptPath = "qrc:/rc_gen.py";
+// Démarre le serveur
+void TileServer::startServer(quint16 port) {
+    if (server) {
+        qWarning() << "Le serveur est déjà démarré.";
+        return;
+    }
 
-    m_pythonProcess->setProgram(pythonExecutable);
-    m_pythonProcess->setArguments({scriptPath});
-    m_pythonProcess->setProcessChannelMode(QProcess::MergedChannels);
+    server = new QTcpServer(this);
 
-    // Connecte les signaux pour rediriger les sorties du serveur Python vers qCritical
-    connect(m_pythonProcess, &QProcess::readyReadStandardOutput, [this]() {
-        QString output = m_pythonProcess->readAllStandardOutput();
-        qCritical().noquote() << output.trimmed();  // Utiliser qCritical pour afficher les logs
+    connect(server, &QTcpServer::newConnection, this, [this]() {
+        QTcpSocket *socket = server->nextPendingConnection();
+        connect(socket, &QTcpSocket::readyRead, this, [this, socket]() {
+            handleRequest(socket);
+        });
+        connect(socket, &QTcpSocket::disconnected, socket, &QTcpSocket::deleteLater);
     });
 
-    connect(m_pythonProcess, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
-            this, [](int exitCode, QProcess::ExitStatus exitStatus) {
-                qCritical() << "Le serveur Python s'est arrêté avec le code" << exitCode;
-            });
-
-    // Démarre le processus Python
-    m_pythonProcess->start();
-    if (!m_pythonProcess->waitForStarted()) {
-        qCritical() << "Erreur : Impossible de démarrer le serveur Python";
-        return false;
+    if (!server->listen(QHostAddress::Any, port)) {
+        qCritical() << "Erreur : Impossible de démarrer le serveur sur le port" << port;
+        return;
     }
 
-    qCritical() << "Serveur Python de tuiles démarré";
-    return true;
+    qDebug() << "Serveur de tuiles démarré sur le port" << port;
 }
 
+// Arrête le serveur
 void TileServer::stopServer() {
-    if (m_pythonProcess->state() == QProcess::Running) {
-        m_pythonProcess->terminate();
-        m_pythonProcess->waitForFinished();
-        qCritical() << "Serveur Python de tuiles arrêté";
+    if (server) {
+        server->close();
+        server->deleteLater();
+        server = nullptr;
     }
+    qDebug() << "Serveur de tuiles arrêté.";
+}
+
+// Gère les requêtes HTTP
+void TileServer::handleRequest(QTcpSocket *socket) {
+    QByteArray request = socket->readAll();
+    QString requestString(request);
+
+    QStringList requestLines = requestString.split("\r\n");
+    if (requestLines.isEmpty()) {
+        socket->disconnectFromHost();
+        return;
+    }
+
+    QString firstLine = requestLines.first();
+    QStringList requestParts = firstLine.split(" ");
+    if (requestParts.size() < 2) {
+        socket->disconnectFromHost();
+        return;
+    }
+
+    QString filePath = requestParts[1];
+    if (filePath.startsWith("/")) {
+        filePath = filePath.mid(1); // Supprimer le premier '/'
+    }
+
+    QString fullPath = QDir(tilePath).filePath(filePath);
+
+    QFile file(fullPath);
+    if (file.exists() && file.open(QIODevice::ReadOnly)) {
+        QByteArray response = "HTTP/1.1 200 OK\r\n";
+        response += "Content-Type: image/png\r\n";
+        response += "Content-Length: " + QByteArray::number(file.size()) + "\r\n";
+        response += "\r\n";
+        response += file.readAll();
+        socket->write(response);
+        socket->flush();
+        qDebug() << "Servi:" << fullPath;
+    } else {
+        QByteArray response = "HTTP/1.1 404 Not Found\r\n";
+        response += "Content-Type: text/plain\r\n";
+        response += "\r\n";
+        response += "Tile not found";
+        socket->write(response);
+        socket->flush();
+        qDebug() << "Erreur 404:" << fullPath << "non trouvé";
+    }
+
+    socket->disconnectFromHost();
 }

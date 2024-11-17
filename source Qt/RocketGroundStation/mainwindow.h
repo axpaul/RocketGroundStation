@@ -15,6 +15,7 @@
 #include <QFile>
 #include <QFileDialog>
 #include <QMutex>
+#include <QDir>
 
 #include "serialport.h"
 #include "settingsdialog.h"
@@ -66,6 +67,7 @@ public slots:
     void handleErrorShow(QString error);
     void settingShow();
     void setSerialSettings();
+    void setMapSettings();
     void openedSerial(SerialPort::Settings p);
     void closedSerial();
     void openSerialPort();
@@ -77,6 +79,7 @@ public slots:
 signals:
     // Définition des signaux qui peuvent être émis par l'objet MainWindow
     void setSerialSettingsSig(SerialPort::Settings);
+    void setMapSettingsSig(MapZone::Settings settings);
     void serialOpened(SerialPort::Settings p);
     void serialClosed();
 
@@ -94,7 +97,8 @@ private:
     QLabel *m_status = nullptr;
     SerialPort *m_serialThread = nullptr;
     TelemetryFrame *m_frameTelemetry = nullptr;;
-    TileServer *m_tileServer = nullptr;
+    TileServer *m_tileServer; // Serveur de tuiles
+    QThread *m_tileServerThread; // Thread pour le TileServer
 
     QString m_connection;
     QString m_versionSW;

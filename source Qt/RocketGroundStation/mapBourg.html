@@ -20,6 +20,9 @@
     <script>
         // Création de la carte et détermination de la vue initiale
         var map = L.map('map').setView([43.2133, -0.048532], 16);
+        var marker = L.icon({
+            iconUrl: './point.png',
+            shadowUrl: './point.png'});
 
         // Ajout des tuiles OpenStreetMap à la carte
         L.tileLayer('http://localhost:8081/tarbes/{z}/{x}/{y}.png', {

@@ -88,6 +88,7 @@ public:
         actionMap_Settings = new QAction(MainWindow);
         actionMap_Settings->setObjectName(QString::fromUtf8("actionMap_Settings"));
         actionMap_Settings->setCheckable(false);
+        actionMap_Settings->setChecked(false);
         QIcon icon7;
         icon7.addFile(QString::fromUtf8(":/iconeMap/icone/map.png"), QSize(), QIcon::Normal, QIcon::Off);
         actionMap_Settings->setIcon(icon7);

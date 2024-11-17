@@ -5,7 +5,7 @@
 #define MAPZONE_H
 
 #include <QWidget>
-
+#include <QThread>
 #include <QDesktopServices>
 #include <QtWebEngine>
 #include <QWebEngineView>
@@ -26,11 +26,14 @@ public:
         QString mapSource;
     };
 
+    //void settingsUpdate(Settings settingsMap);
+
     explicit MapZone(QWidget *parent = nullptr);
     ~MapZone();
 
     void setPosition(double x, double y);
-    void MapZone::settingsUpdate(MapZone::Settings settingsMap);
+public slots :
+    void settingsUpdate(MapZone::Settings settings);
 
 private:
     Ui::MapZone *ui;

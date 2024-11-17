@@ -14,4 +14,8 @@
     <qresource prefix="/iconeMap">
         <file>icone/map.png</file>
     </qresource>
+    <qresource prefix="/images">
+        <file>marker-icon.png</file>
+        <file>marker-shadow.png</file>
+    </qresource>
 </RCC>

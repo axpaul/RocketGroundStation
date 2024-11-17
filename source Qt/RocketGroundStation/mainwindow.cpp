@@ -3,23 +3,18 @@
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
-      m_tileServer(new TileServer(this)),
       ui(new Ui::MainWindow),
       m_status(new QLabel(this)),
       m_serialThread(new SerialPort),
       m_frameTelemetry(new TelemetryFrame),
+         m_tileServer(new TileServer),
+        m_tileServerThread(new QThread(this)),
       m_settings(new SettingsDialog),
       m_settingsInfo(new SerialPort::Settings),
       m_mapSettings(new MapSettingsDialog),
       m_mapSettingsInfo(new MapZone::Settings)
 
 {
-    QString tilePath = QCoreApplication::applicationDirPath() + "/map/";
-    if (!m_tileServer->startServer()) {
-        qCritical() << "Impossible de démarrer le serveur de tuiles Python";
-    } else {
-        qDebug() << "Serveur de tuiles Python démarré avec succès";
-    }
 
     ui->setupUi(this);
 
@@ -28,9 +23,23 @@ MainWindow::MainWindow(QWidget *parent)
     m_serialRun = false;
     m_serialThread->start();
 
+    m_tileServer->moveToThread(m_tileServerThread);
+
+    connect(m_tileServerThread, &QThread::started, m_tileServer, [=]() {
+        m_tileServer->setTilePath(QCoreApplication::applicationDirPath() + "/map");
+        m_tileServer->startServer(8081);
+    });
+
+    connect(this, &MainWindow::destroyed, m_tileServer, &TileServer::stopServer);
+    connect(this, &MainWindow::destroyed, m_tileServerThread, &QThread::quit);
+
+    m_tileServerThread->start();
+
+
     initActionsConnectionsPrio();
 
     setSerialSettings();
+    setMapSettings();
 
     ui->statusbar->addWidget(m_status);
 
@@ -40,6 +49,29 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     qDebug() << "[" << QDateTime::currentDateTime().toString("dd-MM-yyyy_HH.mm.ss") << "][MAINWINDOW] " << QThread::currentThread();
+
+
+    //
+    // Répertoire des ressources
+    QString path = ":/";
+    QDir resourceDir(path);
+
+    if (!resourceDir.exists()) {
+        qDebug() << "Le chemin de ressource n'existe pas :" << path;
+        return;
+    }
+
+    // Parcourir les fichiers dans le répertoire actuel
+    QStringList files = resourceDir.entryList(QDir::Files);
+    for (const QString &file : files) {
+        QString filePath = path + file;
+        qDebug() << "Fichier :" << filePath;
+    }
+
+
+    //
+
+
 }
 
 MainWindow::~MainWindow()
@@ -47,18 +79,28 @@ MainWindow::~MainWindow()
     /*m_serialThread->quit();
     m_serialThread->wait();
     delete m_serialThread;*/
-
+    if (m_tileServerThread->isRunning()) {
+        m_tileServerThread->quit();
+        m_tileServerThread->wait();
+    }
+    delete m_tileServer;
+    delete m_tileServerThread;
     delete m_frameTelemetry;
     delete m_settings;
     delete m_settingsInfo;
+    delete m_mapSettingsInfo;
+    delete m_mapSettings;
     delete m_status;
     delete ui;
 }
 
-void MainWindow::initActionsConnectionsPrio(){
+void MainWindow::initActionsConnectionsPrio()
+{
 
     connect(this, SIGNAL(setSerialSettingsSig(SerialPort::Settings)), m_serialThread, SLOT(settingUpdate(SerialPort::Settings)));
+    connect(this, &MainWindow::setMapSettingsSig, ui->mapzone, &MapZone::settingsUpdate);
     connect(m_serialThread, SIGNAL(errorEmit(QString)), this, SLOT(handleErrorShow(QString)));
+
 }
 
 void MainWindow::initActionsConnections()
@@ -68,6 +110,7 @@ void MainWindow::initActionsConnections()
     connect(ui->actionAbout, &QAction::triggered, this, &MainWindow::about);
     connect(ui->actionConfigure, &QAction::triggered, m_settings, &SettingsDialog::showSetting); // set setting serial
     connect(m_settings, &SettingsDialog::applyParameter, this, &MainWindow::setSerialSettings);
+    connect(m_mapSettings, &MapSettingsDialog::applyMapParameters, this, &MainWindow::setMapSettings);
 
     connect(ui->actionConnect, &QAction::triggered, this, &MainWindow::openSerialPort);
     connect(ui->actionDisconnect, &QAction::triggered, this, &MainWindow::closeSerialPort);
@@ -114,6 +157,16 @@ void MainWindow::settingShow(){
 
 void MainWindow::setSerialSettings() {
     emit setSerialSettingsSig(m_settings->settings());
+}
+
+
+void MainWindow::setMapSettings()
+{
+    emit setMapSettingsSig(m_mapSettings->settings());
+}
+void MainWindow::on_actionMap_Settings_triggered()
+{
+    m_mapSettings->show();
 }
 
 
@@ -219,10 +272,5 @@ void MainWindow::addText(const QString &text) {
     // mettre à jour la console avec les 10 dernières lignes
     ui->console->clear();
     ui->console->append(allLines.join("\n"));
-}
-
-void MainWindow::on_actionMap_Settings_triggered()
-{
-    m_mapSettings->show();
 }
 
