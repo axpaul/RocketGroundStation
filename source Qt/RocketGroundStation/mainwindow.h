@@ -16,6 +16,17 @@
 #include <QFileDialog>
 #include <QMutex>
 
+#include <QtCharts/QChart>
+#include <QtCharts/QChartView>
+#include <QtCharts/QLineSeries>
+#include <QtCharts/QDateTimeAxis>
+#include <QtCharts/QValueAxis>
+#include <QtCharts/QSplineSeries>
+#include <QtCharts/QAbstractAxis>
+
+#include <QtCore/QTimer>
+#include <QtCore/QDateTime>
+
 #include "serialport.h"
 #include "settingsdialog.h"
 #include "telemetryframe.h"
@@ -69,6 +80,11 @@ private:
     void showStatusMessage(const QString &stringConnection);
     void clearConsole();
 
+    void initGraphicAcc();
+    void addAccelerationsAndScroll(float accX, float accY, float accZ);
+    void initGraphicPressureAltitude();
+    void addPressureAltitudeAndScroll(float pressure, float altitudeGNSS, float altitudeBaro);
+
     void applyTelemetryPanelStyle();
 
     void updateLatitude(float latitude);
@@ -97,6 +113,19 @@ private:
 
     SettingsDialog *m_settings = nullptr;
     SerialPort::Settings *m_settingsInfo = nullptr;
+
+    QtCharts::QLineSeries *m_seriesAccX;
+    QtCharts::QLineSeries *m_seriesAccY;
+    QtCharts::QLineSeries *m_seriesAccZ;
+    QtCharts::QDateTimeAxis *m_axisAccX;
+    QtCharts::QValueAxis *m_axisAccY;
+
+    QtCharts::QLineSeries *m_seriesPressure;
+    QtCharts::QLineSeries *m_seriesAltitudeGNSS;
+    QtCharts::QLineSeries *m_seriesAltitudeBaro;
+    QtCharts::QDateTimeAxis *m_axisPressX;
+    QtCharts::QValueAxis *m_axisPressY;
+    QtCharts::QValueAxis *m_axisAltY;
 };
 
 #endif // MAINWINDOW_H

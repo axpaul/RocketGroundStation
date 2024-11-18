@@ -12,4 +12,9 @@
         <file>icone/antenne-satellite.png</file>
         <file>icone/broom.png</file>
     </qresource>
+    <qresource prefix="/IconeFlight">
+        <file>icone/air.png</file>
+        <file>icone/latitude.png</file>
+        <file>icone/longitude.png</file>
+    </qresource>
 </RCC>

@@ -1,4 +1,4 @@
-QT       += core gui serialport webenginecore webenginewidgets webengine location
+QT       += core gui serialport webenginecore webenginewidgets webengine location charts
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -25,6 +25,7 @@ HEADERS += \
 
 
 FORMS += \
+   MapZone.ui \
    mainwindow.ui \
    settingsdialog.ui
 

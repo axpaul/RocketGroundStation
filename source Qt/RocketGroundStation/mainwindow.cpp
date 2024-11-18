@@ -9,7 +9,6 @@ MainWindow::MainWindow(QWidget *parent)
       m_frameTelemetry(new TelemetryFrame),
       m_settings(new SettingsDialog),
       m_settingsInfo(new SerialPort::Settings)
-
 {
     ui->setupUi(this);
 
@@ -27,6 +26,20 @@ MainWindow::MainWindow(QWidget *parent)
     initActionsConnections();
     disactivateButtonSerial();
 
+    /*ui->latitudeLabel->setFixedSize(250, 25);
+    ui->longitudeLabel->setFixedSize(250, 25);
+    ui->altitudeLabel->setFixedSize(250, 25);
+    ui->pressureLabel->setFixedSize(250, 25);
+    ui->temperatureLabel->setFixedSize(250, 25);
+    ui->accXLabel->setFixedSize(250, 25);
+    ui->accYLabel_3->setFixedSize(250, 25);
+    ui->accZLabel->setFixedSize(250, 25);
+    ui->gnssStatusLabel->setFixedSize(250, 25);
+    ui->crcCheckLabel->setFixedSize(250, 25);
+    ui->flightStatusLabel->setFixedSize(250, 25);*/
+
+    initGraphicAcc();
+    initGraphicPressureAltitude();
 
     qDebug() << "[" << QDateTime::currentDateTime().toString("dd-MM-yyyy_HH.mm.ss") << "][MAINWINDOW] " << QThread::currentThread();
 }
@@ -42,6 +55,12 @@ MainWindow::~MainWindow()
     delete m_settingsInfo;
     delete m_status;
     delete ui;
+
+    delete m_seriesAccX;
+    delete m_seriesAccY;
+    delete m_seriesAccZ;
+    delete m_axisAccX;
+    delete m_axisAccY;
 }
 
 void MainWindow::initActionsConnectionsPrio(){
@@ -162,8 +181,9 @@ void MainWindow::disactivateButtonSerial(){
     ui->actionConfigure->setEnabled(true);
 }
 
-void MainWindow::receptionData(const TmFrame_t &frame, const QString &decodedString) {
+/* Function reception and data distribution */
 
+void MainWindow::receptionData(const TmFrame_t &frame, const QString &decodedString) {
 
         QString timestamp = QDateTime::currentDateTime().toString("[hh:mm:ss.zzz] ");
 
@@ -175,7 +195,7 @@ void MainWindow::receptionData(const TmFrame_t &frame, const QString &decodedStr
 
         updateLatitude(frame.latFloat);
         updateLongitude(frame.lonFloat);
-        updateAltitude(frame.alt);
+        updateAltitude(frame.altGNSS);
         updatePressure(frame.pressureFloat);
         updateTemperature(frame.tempFloat);
         updateAccelerationX(frame.accXFloat);
@@ -193,7 +213,8 @@ void MainWindow::receptionData(const TmFrame_t &frame, const QString &decodedStr
                     << frame.sts << ";"
                     << frame.lat << ";"
                     << frame.lon << ";"
-                    << frame.alt << ";"
+                    << frame.altGNSS << ";"
+                    << frame.altitudeBaroFloat << ";"
                     << frame.pressure << ";"
                     << frame.temp << ";"
                     << frame.accX << ";"
@@ -202,7 +223,14 @@ void MainWindow::receptionData(const TmFrame_t &frame, const QString &decodedStr
                     << frame.annex0 << ";"
                     << frame.annex1 << "\n";
         }
+
+        if (frame.crcCheck){
+            addAccelerationsAndScroll(frame.accXFloat, frame.accYFloat, frame.accZFloat);
+            addPressureAltitudeAndScroll(frame.pressureFloat, frame.altGNSS, frame.altitudeBaroFloat);
+        }
 }
+
+/* Console management function */
 
 void MainWindow::addText(const QString &text) {
     // Ajoute le texte formaté en HTML à la console
@@ -233,6 +261,8 @@ void MainWindow::addText(const QString &text) {
 void MainWindow::clearConsole() {
     ui->console->clear();
 }
+
+/* Dashboard update function */
 
 void MainWindow::updateLatitude(float latitude) {
     QString text = QString("Latitude : %1 °").arg(latitude, 0, 'f', 7);
@@ -370,3 +400,193 @@ void MainWindow::updateFlightStatus(uint8_t flightStatus) {
     ui->flightStatusLabel->setText("Statut de Vol : " + statusText);
     ui->flightStatusLabel->setStyleSheet(colorStyle);
 }
+
+/* Chart management function */
+
+void MainWindow::initGraphicAcc() {
+    // Obtenir le QChart déjà associé au QChartView
+    QChart *chart = ui->graphicsViewAcceleration->chart();
+    if (!chart) {
+        qDebug() << "Erreur : Le graphique (chart) n'est pas initialisé.";
+        return; // Assurez-vous que le QChart existe
+    }
+
+    // Configurer le titre, légende et animation
+    //chart->setTitle("Graphique des accélérations");
+    chart->legend()->setVisible(true); // Affiche la légende pour identifier les séries
+    chart->setAnimationOptions(QChart::AllAnimations);
+
+    // Créer les séries pour accX, accY et accZ
+    m_seriesAccX = new QLineSeries();
+    m_seriesAccX->setName("Accélération X");
+    chart->addSeries(m_seriesAccX);
+
+    m_seriesAccY = new QLineSeries();
+    m_seriesAccY->setName("Accélération Y");
+    chart->addSeries(m_seriesAccY);
+
+    m_seriesAccZ = new QLineSeries();
+    m_seriesAccZ->setName("Accélération Z");
+    chart->addSeries(m_seriesAccZ);
+
+    // Configurer l'axe X (temps)
+    m_axisAccX = new QDateTimeAxis();
+    m_axisAccX->setTickCount(15);
+    m_axisAccX->setFormat("hh:mm:ss");
+    m_axisAccX->setTitleText("Temps");
+    chart->addAxis(m_axisAccX, Qt::AlignBottom);
+
+    // Attacher les séries à l'axe X
+    m_seriesAccX->attachAxis(m_axisAccX);
+    m_seriesAccY->attachAxis(m_axisAccX);
+    m_seriesAccZ->attachAxis(m_axisAccX);
+
+    // Configurer l'axe Y (accélération)
+    m_axisAccY = new QValueAxis();
+    m_axisAccY->setLabelFormat("%.2f");
+    m_axisAccY->setTitleText("Accélération (g)");
+    m_axisAccY->setRange(-16, 16); // Ajustez selon vos besoins
+    chart->addAxis(m_axisAccY, Qt::AlignLeft);
+
+    // Attacher les séries à l'axe Y
+    m_seriesAccX->attachAxis(m_axisAccY);
+    m_seriesAccY->attachAxis(m_axisAccY);
+    m_seriesAccZ->attachAxis(m_axisAccY);
+
+    // Définir les limites initiales de l'axe X
+    m_axisAccX->setMin(QDateTime::currentDateTime().addSecs(0)); // Afficher les 30 dernières secondes
+    m_axisAccX->setMax(QDateTime::currentDateTime().addSecs(120));
+
+    QPen penX(Qt::red);
+    penX.setWidth(2);
+    m_seriesAccX->setPen(penX);
+
+    QPen penY(Qt::green);
+    penY.setWidth(2);
+    m_seriesAccY->setPen(penY);
+
+    QPen penZ(Qt::blue);
+    penZ.setWidth(2);
+    m_seriesAccZ->setPen(penZ);
+}
+
+void MainWindow::addAccelerationsAndScroll(float accX, float accY, float accZ) {
+    // Obtenir le temps actuel
+    qint64 currentTime = QDateTime::currentDateTime().toMSecsSinceEpoch();
+
+    // Ajouter les données aux séries respectives
+    m_seriesAccX->append(currentTime, accX);
+    m_seriesAccY->append(currentTime, accY);
+    m_seriesAccZ->append(currentTime, accZ);
+
+    // Vérifier si le temps actuel dépasse la limite de l'axe X
+    if (QDateTime::currentDateTime() >= m_axisAccX->max()) {
+        ui->graphicsViewAcceleration->chart()->scroll(120, 0); // Faire défiler le graphique vers la droite
+    }
+
+    // Limiter le nombre de points dans chaque série pour éviter une surcharge
+    if (m_seriesAccX->count() > 1000) {
+        m_seriesAccX->remove(0);
+        m_seriesAccY->remove(0);
+        m_seriesAccZ->remove(0);
+    }
+}
+
+void MainWindow::initGraphicPressureAltitude() {
+    // Obtenir le QChart associé au QChartView pour la pression et l'altitude
+    QChart *chart = ui->graphicsViewAltitude->chart();
+    if (!chart) {
+        qDebug() << "Erreur : Le graphique (chart) n'est pas initialisé.";
+        return; // Vérifiez que le QChart existe
+    }
+
+    // Configurer le titre, légende et animation
+    //chart->setTitle("Graphique Pression et Altitude");
+    chart->legend()->setVisible(true); // Affiche la légende pour identifier les séries
+    chart->setAnimationOptions(QChart::AllAnimations);
+
+    // Créer les séries pour pression et altitude
+    m_seriesPressure = new QLineSeries();
+    m_seriesPressure->setName("Pression (hPa)");
+    chart->addSeries(m_seriesPressure);
+
+    m_seriesAltitudeGNSS = new QLineSeries();
+    m_seriesAltitudeGNSS->setName("Altitude GNSS (m)");
+    chart->addSeries(m_seriesAltitudeGNSS);
+
+    m_seriesAltitudeBaro = new QLineSeries();
+    m_seriesAltitudeBaro ->setName("Altitude Baro (m)");
+    chart->addSeries(m_seriesAltitudeBaro);
+
+    // Configurer l'axe X (temps)
+    m_axisPressX = new QDateTimeAxis();
+    m_axisPressX->setTickCount(15);
+    m_axisPressX->setFormat("hh:mm:ss");
+    m_axisPressX->setTitleText("Temps");
+    chart->addAxis(m_axisPressX, Qt::AlignBottom);
+
+    // Attacher les séries à l'axe X
+    m_seriesPressure->attachAxis(m_axisPressX);
+    m_seriesAltitudeGNSS->attachAxis(m_axisPressX);
+    m_seriesAltitudeBaro->attachAxis(m_axisPressX);
+
+    // Configurer l'axe Y (pression)
+    m_axisPressY = new QValueAxis();
+    m_axisPressY->setLabelFormat("%.2f");
+    m_axisPressY->setTitleText("Pressure (hP)");
+    m_axisPressY->setRange(500, 1100);
+    chart->addAxis(m_axisPressY, Qt::AlignLeft);
+
+    // Configurer l'axe Y (altitude)
+    m_axisAltY = new QValueAxis();
+    m_axisAltY->setLabelFormat("%.2f");
+    m_axisAltY->setTitleText("Altitude (m)");
+    m_axisAltY->setRange(0, 5000);
+    chart->addAxis(m_axisAltY, Qt::AlignRight);
+
+    // Attacher les séries à l'axe Y
+    m_seriesPressure->attachAxis(m_axisPressY);
+    m_seriesAltitudeGNSS->attachAxis(m_axisAltY);
+    m_seriesAltitudeBaro->attachAxis(m_axisAltY);
+
+    // Définir les limites initiales de l'axe X
+    m_axisPressX->setMin(QDateTime::currentDateTime().addSecs(0));
+    m_axisPressX->setMax(QDateTime::currentDateTime().addSecs(120));
+
+    // Personnaliser les couleurs des séries
+    QPen penPressure(Qt::magenta);
+    penPressure.setWidth(2);
+    m_seriesPressure->setPen(penPressure);
+
+    QPen penAltitudeGNSS(Qt::cyan);
+    penAltitudeGNSS.setWidth(2);
+    m_seriesAltitudeGNSS->setPen(penAltitudeGNSS);
+
+    QPen penAltitudeBaro(Qt::gray);
+    penAltitudeBaro.setWidth(2);
+    m_seriesAltitudeGNSS->setPen(penAltitudeBaro);
+}
+
+void MainWindow::addPressureAltitudeAndScroll(float pressure, float altitudeGNSS, float altitudeBaro) {
+    // Obtenir le temps actuel
+    qint64 currentTime = QDateTime::currentDateTime().toMSecsSinceEpoch();
+
+    // Ajouter les données aux séries respectives
+    m_seriesPressure->append(currentTime, pressure);
+    m_seriesAltitudeGNSS->append(currentTime, altitudeGNSS);
+    m_seriesAltitudeBaro->append(currentTime, altitudeBaro);
+
+
+    // Vérifier si le temps actuel dépasse la limite de l'axe X
+    if (QDateTime::currentDateTime() >= m_axisPressX->max()) {
+        ui->graphicsViewAltitude->chart()->scroll(120, 0); // Faire défiler le graphique vers la droite
+    }
+
+    // Limiter le nombre de points dans chaque série
+    while (m_seriesPressure->count() > 1000) {
+        m_seriesPressure->remove(0);
+        m_seriesAltitudeGNSS->remove(0);
+    }
+}
+
+

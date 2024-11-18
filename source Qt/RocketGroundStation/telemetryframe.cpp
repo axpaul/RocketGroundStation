@@ -25,7 +25,6 @@ void TelemetryFrame::processData(bool receptionCheck, const QByteArray &data)
         qDebug() << "[TelemetryFrame] CRC check (invalid):" << frame.crcCheck;
         emit frameDecoded(frame, decodedString);
     }
-
 }
 
 TmFrame_t TelemetryFrame::decodeFrame(const QByteArray &data)
@@ -50,7 +49,7 @@ TmFrame_t TelemetryFrame::decodeFrame(const QByteArray &data)
                 (data[9] & 0xFF) << 8 |
                 (data[8] & 0xFF);
 
-    frame.alt = (data[13] & 0xFF) << 8 |
+    frame.altGNSS = (data[13] & 0xFF) << 8 |
                 (data[12] & 0xFF);
 
     frame.temp = (data[15] & 0xFF) << 8 |
@@ -89,6 +88,7 @@ TmFrame_t TelemetryFrame::decodeFrame(const QByteArray &data)
     frame.accZFloat = frame.accZ * acc_factor;
     frame.annex0Float = frame.annex0 * 1.0;
     frame.annex1Float = frame.annex1 * 1.0;
+    frame.altitudeBaroFloat = calculateAltitude(frame.pressureFloat);
 
     return frame;
 }
@@ -111,7 +111,8 @@ QString TelemetryFrame::toString(const TmFrame_t &frame) {
                    "<span class='header'>sts:</span> <span class='%1'>%2</span> | "
                    "<span class='header'>lat:</span> <span class='%3'>%4 °</span> | "
                    "<span class='header'>lon:</span> <span class='%5'>%6 °</span> | "
-                   "<span class='header'>alt:</span> <span class='%7'>%8 m</span> | "
+                   "<span class='header'>altGNSS:</span> <span class='%7'>%8 m</span> | "
+                   "<span class='header'>AltBaro:</span> <span class='%29'>%30 m</span> | "
                    "<span class='header'>pressure:</span> <span class='%9'>%10 mBar</span> | "
                    "<span class='header'>temp:</span> <span class='%11'>%12 °C</span> | "
                    "<span class='header'>annex0:</span> <span class='%13'>%14 V</span> | "
@@ -121,7 +122,7 @@ QString TelemetryFrame::toString(const TmFrame_t &frame) {
                    "<span class='header'>accZ:</span> <span class='%21'>%22 g</span> | "
                    "<span class='header'>id:</span> <span class='%23'>%24</span> | "
                    "<span class='header'>gnssStatus:</span> <span class='%25'>%26</span> | "
-                   "<span class='header'>flightStatus:</span> <span class='%27'>%28</span>")
+                   "<span class='header'>flightStatus:</span> <span class='%27'>%28</span")
 
         .arg(frame.sts == 0 ? "critical" : "value",
                  QString::number(frame.sts),
@@ -129,8 +130,8 @@ QString TelemetryFrame::toString(const TmFrame_t &frame) {
                  QString::number(frame.latFloat, 'f', 7),
                  frame.lonFloat < -180 || frame.lonFloat > 180 ? "critical" : "value",
                  QString::number(frame.lonFloat, 'f', 7),
-                 frame.alt < 0 || frame.alt > 10000 ? "critical" : "value",
-                 QString::number(frame.alt),
+                 frame.altGNSS < 0 || frame.altGNSS > 10000 ? "critical" : "value",
+                 QString::number(frame.altGNSS),
                  frame.pressureFloat < 0.1 || frame.pressureFloat > 1200 ? "critical" : "value",
                  QString::number(frame.pressureFloat, 'f', 2),
                  frame.tempFloat > 50 ? "critical" : "value",
@@ -156,7 +157,25 @@ QString TelemetryFrame::toString(const TmFrame_t &frame) {
                      frame.flightStatus == DEPLOY_TIMER ? "deploy_timer" :
                      frame.flightStatus == DESCEND ? "descend" :
                      "touchdown",
-                 QString::number(frame.flightStatus));
+                 QString::number(frame.flightStatus),
+                 frame.altitudeBaroFloat < 0 || frame.altitudeBaroFloat > 10000 ? "critical" : "value",
+                 QString::number(frame.altitudeBaroFloat));
 }
 
+float TelemetryFrame::calculateAltitude(float pressure) {
+    // Constante : Pression au niveau de la mer (standard)
+    const float basePressure = 1013.25; // en hPa
 
+    // Vérifier que la pression est valide (non nulle ou négative)
+    if (pressure <= 0) {
+        qWarning() << "La pression mesurée est invalide.";
+        return 0.0; // Altitude non calculable
+    }
+
+    // Constantes
+    const float factor = 1.0 / 5.255; // Exposant de la formule simplifiée
+
+    // Calcul de l'altitude
+    float altitude = 44330.0 * (1.0 - pow(pressure / basePressure, factor));
+    return altitude;
+}
