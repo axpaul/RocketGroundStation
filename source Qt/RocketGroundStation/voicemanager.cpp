@@ -7,8 +7,8 @@ VoiceManager::VoiceManager(QObject *parent)
     m_enabled(true), // Par défaut activé
     m_previousStatus(static_cast<RocketState_t>(-1)) // Initialiser à un état invalide
 {
-    m_speech->setRate(0.0);    // Vitesse normale
-    m_speech->setPitch(0.50);   // Tonalité normale
+    m_speech->setRate(-0.10);    // Vitesse normale
+    m_speech->setPitch(0.10);   // Tonalité normale
     m_speech->setVolume(1.0);  // Volume maximum
 
     // Set the English language
