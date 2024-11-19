@@ -54,7 +54,7 @@ struct TmFrame_t {
 
 };
 
-typedef enum {PRE_FLIGHT = 0, PYRO_RDY, ASCEND, DEPLOY_ALGO, DEPLOY_TIMER, DESCEND, TOUCHDOWN} RocketState_t;
+typedef enum {PRE_FLIGHT = 0, PYRO_RDY, ASCEND, DEPLOY_ALGO, DEPLOY_TIMER, DESCEND, TOUCHDOWN, LOST} RocketState_t;
 
 class TelemetryFrame : public QObject
 {

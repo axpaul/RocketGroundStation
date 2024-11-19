@@ -1,4 +1,4 @@
-QT       += core gui serialport webenginecore webenginewidgets webengine location charts
+QT       += core gui serialport webenginecore webenginewidgets webengine location charts texttospeech
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -10,22 +10,27 @@ CONFIG += c++17
 
 SOURCES += \
    MapZone.cpp \
+   TimeZone.cpp \
    main.cpp \
    mainwindow.cpp \
    serialport.cpp \
    settingsdialog.cpp \
-   telemetryframe.cpp
+   telemetryframe.cpp \
+   voicemanager.cpp
 
 HEADERS += \
    MapZone.h \
+   TimeZone.h \
    mainwindow.h \
    serialport.h \
    settingsdialog.h \
-   telemetryframe.h
+   telemetryframe.h \
+   voicemanager.h
 
 
 FORMS += \
    MapZone.ui \
+   TimeZone.ui \
    mainwindow.ui \
    settingsdialog.ui
 

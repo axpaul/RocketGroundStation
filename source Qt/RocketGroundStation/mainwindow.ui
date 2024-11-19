@@ -2,13 +2,22 @@
 <ui version="4.0">
  <class>MainWindow</class>
  <widget class="QMainWindow" name="MainWindow">
+  <property name="enabled">
+   <bool>true</bool>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>730</width>
-    <height>598</height>
+    <width>1600</width>
+    <height>1100</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>1600</width>
+    <height>1100</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>Rocket Ground Station</string>
@@ -47,6 +56,16 @@
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_4">
           <item>
+           <widget class="TimeZone" name="chronoWidget" native="true">
+            <property name="minimumSize">
+             <size>
+              <width>200</width>
+              <height>100</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item>
            <widget class="QLabel" name="flightStatusLabel">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -56,13 +75,13 @@
             </property>
             <property name="minimumSize">
              <size>
-              <width>250</width>
+              <width>200</width>
               <height>0</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>250</width>
+              <width>200</width>
               <height>16777215</height>
              </size>
             </property>
@@ -78,18 +97,18 @@
            <widget class="QLabel" name="gnssStatusLabel">
             <property name="minimumSize">
              <size>
-              <width>250</width>
+              <width>200</width>
               <height>0</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>250</width>
+              <width>200</width>
               <height>16777215</height>
              </size>
             </property>
             <property name="text">
-             <string>Statut GNSS : Wait</string>
+             <string>GNSS Statut : Wait</string>
             </property>
            </widget>
           </item>
@@ -97,13 +116,13 @@
            <widget class="QLabel" name="crcCheckLabel">
             <property name="minimumSize">
              <size>
-              <width>250</width>
+              <width>200</width>
               <height>0</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>250</width>
+              <width>200</width>
               <height>16777215</height>
              </size>
             </property>
@@ -116,18 +135,18 @@
            <widget class="QLabel" name="latitudeLabel">
             <property name="minimumSize">
              <size>
-              <width>250</width>
+              <width>200</width>
               <height>0</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>250</width>
+              <width>200</width>
               <height>16777215</height>
              </size>
             </property>
             <property name="text">
-             <string>Latitude : Wait</string>
+             <string>Latitude : --</string>
             </property>
            </widget>
           </item>
@@ -135,37 +154,56 @@
            <widget class="QLabel" name="longitudeLabel">
             <property name="minimumSize">
              <size>
-              <width>250</width>
+              <width>200</width>
               <height>0</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>250</width>
+              <width>200</width>
               <height>16777215</height>
              </size>
             </property>
             <property name="text">
-             <string>Longitude : Wait</string>
+             <string>Longitude : --</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QLabel" name="altitudeLabel">
+           <widget class="QLabel" name="altitudeGPSLabel">
             <property name="minimumSize">
              <size>
-              <width>250</width>
+              <width>200</width>
               <height>0</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>250</width>
+              <width>200</width>
               <height>16777215</height>
              </size>
             </property>
             <property name="text">
-             <string>Altitude :  Wait</string>
+             <string>Altitude GPS  :  -- m</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="altitudeBaroLabel">
+            <property name="minimumSize">
+             <size>
+              <width>200</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>200</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Altitude Baro : -- m</string>
             </property>
            </widget>
           </item>
@@ -173,18 +211,18 @@
            <widget class="QLabel" name="pressureLabel">
             <property name="minimumSize">
              <size>
-              <width>250</width>
+              <width>200</width>
               <height>0</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>250</width>
+              <width>200</width>
               <height>16777215</height>
              </size>
             </property>
             <property name="text">
-             <string>Pression :  Wait</string>
+             <string>Pression :  -- hPa</string>
             </property>
            </widget>
           </item>
@@ -192,18 +230,18 @@
            <widget class="QLabel" name="temperatureLabel">
             <property name="minimumSize">
              <size>
-              <width>250</width>
+              <width>200</width>
               <height>0</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>250</width>
+              <width>200</width>
               <height>16777215</height>
              </size>
             </property>
             <property name="text">
-             <string>Température : Wait</string>
+             <string>Température : -- °C</string>
             </property>
            </widget>
           </item>
@@ -211,18 +249,18 @@
            <widget class="QLabel" name="accZLabel">
             <property name="minimumSize">
              <size>
-              <width>250</width>
+              <width>200</width>
               <height>0</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>250</width>
+              <width>200</width>
               <height>16777215</height>
              </size>
             </property>
             <property name="text">
-             <string>Accélération Z : Wait</string>
+             <string>Accélération Z : -- g</string>
             </property>
            </widget>
           </item>
@@ -230,18 +268,18 @@
            <widget class="QLabel" name="accXLabel">
             <property name="minimumSize">
              <size>
-              <width>250</width>
+              <width>200</width>
               <height>0</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>250</width>
+              <width>200</width>
               <height>16777215</height>
              </size>
             </property>
             <property name="text">
-             <string>Accélération X : Wait</string>
+             <string>Accélération X : -- g</string>
             </property>
            </widget>
           </item>
@@ -249,18 +287,18 @@
            <widget class="QLabel" name="accYLabel">
             <property name="minimumSize">
              <size>
-              <width>250</width>
+              <width>200</width>
               <height>0</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>250</width>
+              <width>200</width>
               <height>16777215</height>
              </size>
             </property>
             <property name="text">
-             <string>Accélération Y : Wait</string>
+             <string>Accélération Y : -- g</string>
             </property>
            </widget>
           </item>
@@ -290,8 +328,8 @@
          </property>
          <property name="minimumSize">
           <size>
-           <width>500</width>
-           <height>200</height>
+           <width>1200</width>
+           <height>800</height>
           </size>
          </property>
          <property name="currentIndex">
@@ -332,14 +370,27 @@
             <widget class="QChartView" name="graphicsViewAcceleration">
              <property name="minimumSize">
               <size>
-               <width>0</width>
-               <height>0</height>
+               <width>1200</width>
+               <height>300</height>
               </size>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QChartView" name="graphicsViewAltitude"/>
+            <widget class="QChartView" name="graphicsViewAltitude">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>1200</width>
+               <height>300</height>
+              </size>
+             </property>
+            </widget>
            </item>
           </layout>
          </widget>
@@ -351,7 +402,7 @@
     <item>
      <widget class="QGroupBox" name="groupBox">
       <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+       <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
@@ -363,9 +414,9 @@
        <item>
         <widget class="QPlainTextEdit" name="console">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
            <horstretch>0</horstretch>
-           <verstretch>200</verstretch>
+           <verstretch>0</verstretch>
           </sizepolicy>
          </property>
          <property name="minimumSize">
@@ -401,7 +452,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>730</width>
+     <width>1600</width>
      <height>18</height>
     </rect>
    </property>
@@ -530,6 +581,12 @@
   </action>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>TimeZone</class>
+   <extends>QWidget</extends>
+   <header>TimeZone.h</header>
+   <container>1</container>
+  </customwidget>
   <customwidget>
    <class>MapZone</class>
    <extends>QWidget</extends>

@@ -30,6 +30,7 @@
 #include "serialport.h"
 #include "settingsdialog.h"
 #include "telemetryframe.h"
+#include "voicemanager.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -64,6 +65,7 @@ public slots:
     void closeSerialPort();
     void receptionData(const TmFrame_t &frame, const QString &decodedString);
     void about();
+    void watchdogLostHandler();
 
 signals:
     // Définition des signaux qui peuvent être émis par l'objet MainWindow
@@ -89,7 +91,7 @@ private:
 
     void updateLatitude(float latitude);
     void updateLongitude(float longitude);
-    void updateAltitude(int altitude);
+    void updateAltitudeGPS(int altitude);
     void updatePressure(float pressure);
     void updateTemperature(float temperature);
     void updateAccelerationX(float accX);
@@ -98,12 +100,14 @@ private:
     void updateGnssStatus(uint8_t gnssStatus);
     void updateFlightStatus(uint8_t flightStatus);
     void updateCrcCheckLabel(bool crcCheck);
+    void updateAltitudeBaro(float altitude);
 
     Ui::MainWindow *ui;
     QObject *m_parent;
     QLabel *m_status = nullptr;
     SerialPort *m_serialThread = nullptr;
-    TelemetryFrame *m_frameTelemetry = nullptr;;
+    TelemetryFrame *m_frameTelemetry = nullptr;
+    VoiceManager *m_voiceManager = nullptr;
 
     QString m_connection;
     QString m_versionSW;

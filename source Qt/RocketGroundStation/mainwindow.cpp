@@ -7,6 +7,7 @@ MainWindow::MainWindow(QWidget *parent)
       m_status(new QLabel(this)),
       m_serialThread(new SerialPort),
       m_frameTelemetry(new TelemetryFrame),
+      m_voiceManager(new VoiceManager),
       m_settings(new SettingsDialog),
       m_settingsInfo(new SerialPort::Settings)
 {
@@ -41,6 +42,8 @@ MainWindow::MainWindow(QWidget *parent)
     initGraphicAcc();
     initGraphicPressureAltitude();
 
+    m_voiceManager->isEnabled();
+
     qDebug() << "[" << QDateTime::currentDateTime().toString("dd-MM-yyyy_HH.mm.ss") << "][MAINWINDOW] " << QThread::currentThread();
 }
 
@@ -51,6 +54,7 @@ MainWindow::~MainWindow()
     delete m_serialThread;*/
 
     delete m_frameTelemetry;
+    delete m_voiceManager;
     delete m_settings;
     delete m_settingsInfo;
     delete m_status;
@@ -85,6 +89,8 @@ void MainWindow::initActionsConnections()
     connect(m_serialThread, &SerialPort::serialClosed, this, &MainWindow::closedSerial);
     connect(m_serialThread, &SerialPort::dataEmit, m_frameTelemetry, &TelemetryFrame::processData);
     connect(m_frameTelemetry, &TelemetryFrame::frameDecoded, this, &MainWindow::receptionData);
+
+    connect(ui->chronoWidget, &TimeZone::watchdogTimeout, this, &MainWindow::watchdogLostHandler);
 }
 
 void MainWindow::handleErrorShow(QString error)
@@ -195,7 +201,7 @@ void MainWindow::receptionData(const TmFrame_t &frame, const QString &decodedStr
 
         updateLatitude(frame.latFloat);
         updateLongitude(frame.lonFloat);
-        updateAltitude(frame.altGNSS);
+        updateAltitudeGPS(frame.altGNSS);
         updatePressure(frame.pressureFloat);
         updateTemperature(frame.tempFloat);
         updateAccelerationX(frame.accXFloat);
@@ -204,8 +210,10 @@ void MainWindow::receptionData(const TmFrame_t &frame, const QString &decodedStr
         updateGnssStatus(frame.gnssStatus);
         updateFlightStatus(frame.flightStatus);
         updateCrcCheckLabel(frame.crcCheck);
+        updateAltitudeBaro(frame.altitudeBaroFloat);
 
         ui->mapzone->setPosition((double)frame.lat * 1e-7, (double)frame.lon * 1e-7);
+        ui->chronoWidget->resetWatchdog();
 
         if (m_logFile.isOpen()) {
                 QTextStream out(&m_logFile);
@@ -260,6 +268,49 @@ void MainWindow::addText(const QString &text) {
 
 void MainWindow::clearConsole() {
     ui->console->clear();
+
+    // Réinitialiser les graphes
+    if (m_seriesAccX) m_seriesAccX->clear();
+    if (m_seriesAccY) m_seriesAccY->clear();
+    if (m_seriesAccZ) m_seriesAccZ->clear();
+    if (m_seriesPressure) m_seriesPressure->clear();
+    if (m_seriesAltitudeGNSS) m_seriesAltitudeGNSS->clear();
+    if (m_seriesAltitudeBaro) m_seriesAltitudeBaro->clear();
+
+    // Recentrer les graphes
+    QDateTime currentTime = QDateTime::currentDateTime();
+    if (m_axisAccX) {
+        m_axisAccX->setMin(currentTime);
+        m_axisAccX->setMax(currentTime.addSecs(120));
+    }
+    if (m_axisPressX) {
+        m_axisPressX->setMin(currentTime);
+        m_axisPressX->setMax(currentTime.addSecs(120));
+    }
+
+    // Réinitialiser les labels de l'interface
+    ui->latitudeLabel->setText("Latitude : --");
+    ui->longitudeLabel->setText("Longitude : --");
+    ui->altitudeGPSLabel->setText("Altitude GPS : -- m");
+    ui->altitudeBaroLabel->setText("Altitude Baro : -- m");
+    ui->pressureLabel->setText("Pression : -- hPa");
+    ui->temperatureLabel->setText("Temperature : -- °C");
+    ui->accXLabel->setText("Accélération X: -- g");
+    ui->accYLabel->setText("Accélération Y: -- g");
+    ui->accZLabel->setText("Accélération Z: -- g");
+    ui->gnssStatusLabel->setText("GNSS Status: Wait");
+    ui->gnssStatusLabel->setStyleSheet("color: black;");
+    ui->crcCheckLabel->setText("CRCCheck : Wait");
+    ui->crcCheckLabel->setStyleSheet("color: black;");
+    ui->flightStatusLabel->setText("Flight Status : Wait");
+    ui->flightStatusLabel->setStyleSheet("color: black;");
+
+    // Ajouter un message dans la console
+    addText("<span style='color: gray;'>Interface reset to initial state.</span>");
+
+    // Log dans la console pour le débogage
+    qDebug() << "[" << QDateTime::currentDateTime().toString("dd-MM-yyyy_HH.mm.ss")
+             << "][MAINWINDOW] Interface reset.";
 }
 
 /* Dashboard update function */
@@ -274,15 +325,27 @@ void MainWindow::updateLongitude(float longitude) {
     ui->longitudeLabel->setText(text);
 }
 
-void MainWindow::updateAltitude(int altitude) {
-    QString text = QString("Altitude : %1 m").arg(altitude);
-    ui->altitudeLabel->setText(text);
+void MainWindow::updateAltitudeGPS(int altitude) {
+    QString text = QString("Altitude GPS : %1 m").arg(altitude);
+    ui->altitudeGPSLabel->setText(text);
 
     // Colorer en rouge si l'altitude dépasse 10 000 m
     if (altitude > 10000) {
-        ui->altitudeLabel->setStyleSheet("color: red;");
+        ui->altitudeGPSLabel->setStyleSheet("color: red;");
     } else {
-        ui->altitudeLabel->setStyleSheet("color: black;");
+        ui->altitudeGPSLabel->setStyleSheet("color: black;");
+    }
+}
+
+void MainWindow::updateAltitudeBaro(float altitude) {
+    QString text = QString("Altitude Baro : %1 m").arg(altitude, 0, 'f', 2);
+    ui->altitudeBaroLabel->setText(text);
+
+    // Colorer en rouge si l'altitude dépasse 10 000 m
+    if (altitude > 10000) {
+        ui->altitudeBaroLabel->setStyleSheet("color: red;");
+    } else {
+        ui->altitudeBaroLabel->setStyleSheet("color: black;");
     }
 }
 
@@ -338,7 +401,7 @@ void MainWindow::updateGnssStatus(uint8_t gnssStatus) {
         colorStyle = "color: green;";
     }
 
-    ui->gnssStatusLabel->setText("Statut GNSS : " + statusText);
+    ui->gnssStatusLabel->setText("GNSS Statut : " + statusText);
     ui->gnssStatusLabel->setStyleSheet(colorStyle);
 }
 
@@ -367,21 +430,30 @@ void MainWindow::updateFlightStatus(uint8_t flightStatus) {
     case PRE_FLIGHT:
         statusText = "Pré-Vol";
         colorStyle = "color: blue;";
+        if(ui->chronoWidget->isChronoRunning() || ui->chronoWidget->getChrono_ms() != 0){
+            ui->chronoWidget->stopChrono();
+            ui->chronoWidget->resetChrono();
+        }
         break;
     case PYRO_RDY:
-        statusText = "Prêt Pyrotechnique";
+        statusText = "Prêt Pyro";
         colorStyle = "color: red;";
+        if(ui->chronoWidget->isChronoRunning() || ui->chronoWidget->getChrono_ms() != 0){
+            ui->chronoWidget->stopChrono();
+            ui->chronoWidget->resetChrono();
+        }
         break;
     case ASCEND:
         statusText = "Ascension";
         colorStyle = "color: green;";
+        ui->chronoWidget->startChrono();
         break;
     case DEPLOY_ALGO:
-        statusText = "Déploiement Algorithme";
+        statusText = "Algo";
         colorStyle = "color: orange;";
         break;
     case DEPLOY_TIMER:
-        statusText = "Déploiement Timer";
+        statusText = "Timer";
         colorStyle = "color: purple;";
         break;
     case DESCEND:
@@ -391,14 +463,28 @@ void MainWindow::updateFlightStatus(uint8_t flightStatus) {
     case TOUCHDOWN:
         statusText = "Atterrissage";
         colorStyle = "color: gray;";
+        ui->chronoWidget->stopChrono();
+        break;
+    case LOST:
+        statusText = "Signal perdu";
+        colorStyle = "color: red;";
         break;
     default:
         statusText = "Inconnu";
         colorStyle = "color: black;";
     }
 
-    ui->flightStatusLabel->setText("Statut de Vol : " + statusText);
+    ui->flightStatusLabel->setText("Flight Statut : " + statusText);
     ui->flightStatusLabel->setStyleSheet(colorStyle);
+    ui->chronoWidget->setFlightStatus(flightStatus);
+
+    // Appeler le gestionnaire pour lire la voix si nécessaire
+    m_voiceManager->updateStatus(flightStatus);
+}
+
+void MainWindow::watchdogLostHandler()
+{
+    updateFlightStatus(LOST);
 }
 
 /* Chart management function */
