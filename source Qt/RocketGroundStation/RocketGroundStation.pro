@@ -1,4 +1,4 @@
-QT       += core gui serialport webenginecore webenginewidgets webengine location charts texttospeech multimedia
+QT       += core gui serialport webenginecore webenginewidgets location charts texttospeech multimedia
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 

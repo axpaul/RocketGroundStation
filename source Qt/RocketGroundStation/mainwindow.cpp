@@ -29,7 +29,7 @@ MainWindow::MainWindow(QWidget *parent)
     initGraphicAcc();
     initGraphicPressureAltitude();
 
-    fontLabel();
+    //fontLabel();
 
     m_voiceManager->isEnabled();
 }

@@ -19,40 +19,33 @@ TimeZone::TimeZone(QWidget *parent) :
     m_watchdog->setSingleShot(true);  // Le watchdog sera réinitialisé manuellement
 }
 
-TimeZone::~TimeZone()
-{
+TimeZone::~TimeZone(){
     delete ui;
 }
 
-void TimeZone::startChrono()
-{
+void TimeZone::startChrono(){
     m_isChronoActivated = true;
     m_watchdog->start();  // Lancer le watchdog en même temps que le chrono
 }
-void TimeZone::stopChrono()
-{
+void TimeZone::stopChrono(){
     m_isChronoActivated = false;
     m_watchdog->stop();  // Arrêter le watchdog
 }
 
-void TimeZone::resetChrono()
-{
+void TimeZone::resetChrono(){
     m_chrono = 0;
     refreshChrono();
 }
 
-int TimeZone::getChrono_ms()
-{
+int TimeZone::getChrono_ms(){
     return m_chrono;
 }
 
-bool TimeZone::isChronoRunning() const
-{
+bool TimeZone::isChronoRunning() const{
     return m_isChronoActivated;
 }
 
-void TimeZone::refreshHour()
-{
+void TimeZone::refreshHour(){
     QDateTime TodayDate = QDateTime::currentDateTime();
     ui->hour_lbl->setText(TodayDate.toString("hh:mm:ss"));
 
@@ -63,8 +56,7 @@ void TimeZone::refreshHour()
     }
 }
 
-void TimeZone::refreshChrono()
-{
+void TimeZone::refreshChrono(){
     QTime time(0, 0, 0, 0);
     time = time.addMSecs(m_chrono);
 
@@ -72,16 +64,14 @@ void TimeZone::refreshChrono()
     ui->time_lbl->setText(time.toString("mm:ss.zz"));  // Format "mm:ss.zz" pour inclure les millisecondes
 }
 
-void TimeZone::resetWatchdog()
-{
+void TimeZone::resetWatchdog(){
     if (m_watchdog->isActive()) {
         m_watchdog->stop();  // Arrêter le watchdog si déjà actif
     }
     m_watchdog->start();  // Relancer le watchdog
 }
 
-void TimeZone::handleLostSignal()
-{
+void TimeZone::handleLostSignal(){
     // Stop chrono
     stopChrono();
 
@@ -93,8 +83,7 @@ void TimeZone::handleLostSignal()
 }
 
 
-void TimeZone::setFlightStatus(uint8_t flightStatus)
-{
+void TimeZone::setFlightStatus(uint8_t flightStatus){
     QString colorStyle;
 
     // Définir les couleurs en fonction du statut

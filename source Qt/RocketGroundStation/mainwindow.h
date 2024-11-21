@@ -120,18 +120,18 @@ private:
     SettingsDialog *m_settings = nullptr;
     SerialPort::Settings *m_settingsInfo = nullptr;
 
-    QtCharts::QLineSeries *m_seriesAccX;
-    QtCharts::QLineSeries *m_seriesAccY;
-    QtCharts::QLineSeries *m_seriesAccZ;
-    QtCharts::QDateTimeAxis *m_axisAccX;
-    QtCharts::QValueAxis *m_axisAccY;
+    QLineSeries *m_seriesAccX;
+    QLineSeries *m_seriesAccY;
+    QLineSeries *m_seriesAccZ;
+    QDateTimeAxis *m_axisAccX;
+    QValueAxis *m_axisAccY;
 
-    QtCharts::QLineSeries *m_seriesPressure;
-    QtCharts::QLineSeries *m_seriesAltitudeGNSS;
-    QtCharts::QLineSeries *m_seriesAltitudeBaro;
-    QtCharts::QDateTimeAxis *m_axisPressX;
-    QtCharts::QValueAxis *m_axisPressY;
-    QtCharts::QValueAxis *m_axisAltY;
+    QLineSeries *m_seriesPressure;
+    QLineSeries *m_seriesAltitudeGNSS;
+    QLineSeries *m_seriesAltitudeBaro;
+    QDateTimeAxis *m_axisPressX;
+    QValueAxis *m_axisPressY;
+    QValueAxis *m_axisAltY;
 };
 
 #endif // MAINWINDOW_H

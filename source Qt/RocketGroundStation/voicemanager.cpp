@@ -1,6 +1,6 @@
 #include "voicemanager.h"
 #include "telemetryframe.h"
-#include <QSound>
+#include <QSoundEffect>
 
 VoiceManager::VoiceManager(QObject *parent)
     : QThread(nullptr),
@@ -19,18 +19,15 @@ VoiceManager::VoiceManager(QObject *parent)
     qDebug() << "[" << QDateTime::currentDateTime().toString("dd-MM-yyyy_HH.mm.ss") << "][VOICEMANAGER] " << QThread::currentThread();
 }
 
-VoiceManager::~VoiceManager()
-{
+VoiceManager::~VoiceManager(){
     delete m_speech;
 }
 
-void VoiceManager::run()
-{
+void VoiceManager::run(){
     exec();  // démarrage de la boucle d'événements
 }
 
-void VoiceManager::updateStatus(uint8_t newStatus)
-{
+void VoiceManager::updateStatus(uint8_t newStatus){
     // Lire uniquement si le statut a changé
     if (newStatus == m_previousStatus || !m_enabled)
         return;
@@ -76,19 +73,16 @@ void VoiceManager::updateStatus(uint8_t newStatus)
 
 }
 
-void VoiceManager::setEnabled(bool enabled)
-{
+void VoiceManager::setEnabled(bool enabled){
     m_enabled = !enabled;
 }
 
-bool VoiceManager::isEnabled() const
-{
+bool VoiceManager::isEnabled() const{
     return m_enabled;
 }
 
-void VoiceManager::emitBeep()
-{
+void VoiceManager::emitBeep(){
     // Jouer un bip sonore
     //QSound::play(":/song/bip/sound/bleep-126625.wav");
-    QSound::play(":/song/bip/sound/beep-21.wav");
+    //play(":/song/bip/sound/beep-21.wav");
 }

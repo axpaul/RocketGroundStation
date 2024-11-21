@@ -99,6 +99,14 @@
               <height>16777215</height>
              </size>
             </property>
+            <property name="font">
+             <font>
+              <bold>true</bold>
+              <underline>false</underline>
+              <strikeout>false</strikeout>
+              <kerning>false</kerning>
+             </font>
+            </property>
             <property name="text">
              <string>Flight Statut :  Wait</string>
             </property>
@@ -148,6 +156,14 @@
               <height>16777215</height>
              </size>
             </property>
+            <property name="font">
+             <font>
+              <bold>true</bold>
+              <underline>false</underline>
+              <strikeout>false</strikeout>
+              <kerning>false</kerning>
+             </font>
+            </property>
             <property name="text">
              <string>CRC : Wait</string>
             </property>
@@ -174,6 +190,14 @@
               <height>16777215</height>
              </size>
             </property>
+            <property name="font">
+             <font>
+              <bold>true</bold>
+              <underline>false</underline>
+              <strikeout>false</strikeout>
+              <kerning>false</kerning>
+             </font>
+            </property>
             <property name="text">
              <string>Latitude : -- °</string>
             </property>
@@ -193,6 +217,14 @@
               <height>16777215</height>
              </size>
             </property>
+            <property name="font">
+             <font>
+              <bold>true</bold>
+              <underline>false</underline>
+              <strikeout>false</strikeout>
+              <kerning>false</kerning>
+             </font>
+            </property>
             <property name="text">
              <string>Longitude : -- °</string>
             </property>
@@ -211,6 +243,14 @@
               <width>200</width>
               <height>16777215</height>
              </size>
+            </property>
+            <property name="font">
+             <font>
+              <bold>true</bold>
+              <underline>false</underline>
+              <strikeout>false</strikeout>
+              <kerning>false</kerning>
+             </font>
             </property>
             <property name="text">
              <string>Altitude GPS  :  -- m</string>
@@ -238,6 +278,14 @@
               <height>16777215</height>
              </size>
             </property>
+            <property name="font">
+             <font>
+              <bold>true</bold>
+              <underline>false</underline>
+              <strikeout>false</strikeout>
+              <kerning>false</kerning>
+             </font>
+            </property>
             <property name="text">
              <string>Altitude baro : -- m</string>
             </property>
@@ -257,6 +305,14 @@
               <height>16777215</height>
              </size>
             </property>
+            <property name="font">
+             <font>
+              <bold>true</bold>
+              <underline>false</underline>
+              <strikeout>false</strikeout>
+              <kerning>false</kerning>
+             </font>
+            </property>
             <property name="text">
              <string>Pressure:  -- hPa</string>
             </property>
@@ -275,6 +331,14 @@
               <width>200</width>
               <height>16777215</height>
              </size>
+            </property>
+            <property name="font">
+             <font>
+              <bold>true</bold>
+              <underline>false</underline>
+              <strikeout>false</strikeout>
+              <kerning>false</kerning>
+             </font>
             </property>
             <property name="text">
              <string>Temperature : -- °C</string>
@@ -302,6 +366,14 @@
               <height>16777215</height>
              </size>
             </property>
+            <property name="font">
+             <font>
+              <bold>true</bold>
+              <underline>false</underline>
+              <strikeout>false</strikeout>
+              <kerning>false</kerning>
+             </font>
+            </property>
             <property name="text">
              <string>Acceleration X : -- g</string>
             </property>
@@ -321,6 +393,14 @@
               <height>16777215</height>
              </size>
             </property>
+            <property name="font">
+             <font>
+              <bold>true</bold>
+              <underline>false</underline>
+              <strikeout>false</strikeout>
+              <kerning>false</kerning>
+             </font>
+            </property>
             <property name="text">
              <string>Acceleration Y : -- g</string>
             </property>
@@ -339,6 +419,14 @@
               <width>200</width>
               <height>16777215</height>
              </size>
+            </property>
+            <property name="font">
+             <font>
+              <bold>true</bold>
+              <underline>false</underline>
+              <strikeout>false</strikeout>
+              <kerning>false</kerning>
+             </font>
             </property>
             <property name="text">
              <string>Acceleration Z : -- g</string>

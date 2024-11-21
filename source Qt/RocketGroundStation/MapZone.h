@@ -7,7 +7,8 @@
 #include <QWidget>
 
 #include <QDesktopServices>
-#include <QtWebEngine>
+//#include <QtWebEngine>
+#include <QWebEngineGlobalSettings>
 #include <QWebEngineView>
 #include <QUrl>
 

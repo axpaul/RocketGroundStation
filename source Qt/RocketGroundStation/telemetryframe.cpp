@@ -2,14 +2,15 @@
 #include <QDebug>
 
 TelemetryFrame::TelemetryFrame(QObject *parent)
-    : QObject{parent}
-{}
+    : QObject{parent}{
 
-TelemetryFrame::~TelemetryFrame()
-{}
+}
 
-void TelemetryFrame::processData(bool receptionCheck, const QByteArray &data)
-{
+TelemetryFrame::~TelemetryFrame(){
+
+}
+
+void TelemetryFrame::processData(bool receptionCheck, const QByteArray &data){
     TmFrame_t frame;
     qDebug() << "[TelemetryFrame] CRC check (initial):" << receptionCheck;
 
@@ -27,8 +28,7 @@ void TelemetryFrame::processData(bool receptionCheck, const QByteArray &data)
     }
 }
 
-TmFrame_t TelemetryFrame::decodeFrame(const QByteArray &data)
-{
+TmFrame_t TelemetryFrame::decodeFrame(const QByteArray &data){
     TmFrame_t frame = {};
 
     frame.frame = data;
