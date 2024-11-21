@@ -72,6 +72,8 @@ signals:
     void setSerialSettingsSig(SerialPort::Settings);
     void serialOpened(SerialPort::Settings p);
     void serialClosed();
+    void triggerBeep();
+    void triggerSpeaker(uint8_t newStatus);
 
 private:
     // Définition des méthodes privées et des membres de données
@@ -89,6 +91,7 @@ private:
 
     void applyTelemetryPanelStyle();
 
+    void fontLabel();
     void updateLatitude(float latitude);
     void updateLongitude(float longitude);
     void updateAltitudeGPS(int altitude);
@@ -111,7 +114,6 @@ private:
 
     QString m_connection;
     QString m_versionSW;
-    bool m_serialRun;
     QFile m_logFile;
     int m_msgCounter = 0;
 

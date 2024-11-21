@@ -44,7 +44,7 @@
          </property>
          <property name="minimumSize">
           <size>
-           <width>200</width>
+           <width>220</width>
            <height>300</height>
           </size>
          </property>
@@ -53,6 +53,13 @@
            <width>300</width>
            <height>300</height>
           </size>
+         </property>
+         <property name="font">
+          <font>
+           <bold>true</bold>
+           <underline>false</underline>
+           <strikeout>false</strikeout>
+          </font>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_4">
           <item>
@@ -66,6 +73,13 @@
            </widget>
           </item>
           <item>
+           <widget class="Line" name="line">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
            <widget class="QLabel" name="flightStatusLabel">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -75,7 +89,7 @@
             </property>
             <property name="minimumSize">
              <size>
-              <width>200</width>
+              <width>220</width>
               <height>0</height>
              </size>
             </property>
@@ -97,7 +111,7 @@
            <widget class="QLabel" name="gnssStatusLabel">
             <property name="minimumSize">
              <size>
-              <width>200</width>
+              <width>220</width>
               <height>0</height>
              </size>
             </property>
@@ -107,8 +121,16 @@
               <height>16777215</height>
              </size>
             </property>
+            <property name="font">
+             <font>
+              <bold>true</bold>
+              <underline>false</underline>
+              <strikeout>false</strikeout>
+              <kerning>false</kerning>
+             </font>
+            </property>
             <property name="text">
-             <string>GNSS Statut : Wait</string>
+             <string>GNSS : Wait</string>
             </property>
            </widget>
           </item>
@@ -116,7 +138,7 @@
            <widget class="QLabel" name="crcCheckLabel">
             <property name="minimumSize">
              <size>
-              <width>200</width>
+              <width>220</width>
               <height>0</height>
              </size>
             </property>
@@ -127,7 +149,14 @@
              </size>
             </property>
             <property name="text">
-             <string>CrcCheck : Wait</string>
+             <string>CRC : Wait</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="Line" name="line_2">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
             </property>
            </widget>
           </item>
@@ -135,7 +164,7 @@
            <widget class="QLabel" name="latitudeLabel">
             <property name="minimumSize">
              <size>
-              <width>200</width>
+              <width>220</width>
               <height>0</height>
              </size>
             </property>
@@ -146,7 +175,7 @@
              </size>
             </property>
             <property name="text">
-             <string>Latitude : --</string>
+             <string>Latitude : -- °</string>
             </property>
            </widget>
           </item>
@@ -154,7 +183,7 @@
            <widget class="QLabel" name="longitudeLabel">
             <property name="minimumSize">
              <size>
-              <width>200</width>
+              <width>220</width>
               <height>0</height>
              </size>
             </property>
@@ -165,7 +194,7 @@
              </size>
             </property>
             <property name="text">
-             <string>Longitude : --</string>
+             <string>Longitude : -- °</string>
             </property>
            </widget>
           </item>
@@ -173,7 +202,7 @@
            <widget class="QLabel" name="altitudeGPSLabel">
             <property name="minimumSize">
              <size>
-              <width>200</width>
+              <width>220</width>
               <height>0</height>
              </size>
             </property>
@@ -189,10 +218,17 @@
            </widget>
           </item>
           <item>
+           <widget class="Line" name="line_3">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
            <widget class="QLabel" name="altitudeBaroLabel">
             <property name="minimumSize">
              <size>
-              <width>200</width>
+              <width>220</width>
               <height>0</height>
              </size>
             </property>
@@ -203,7 +239,7 @@
              </size>
             </property>
             <property name="text">
-             <string>Altitude Baro : -- m</string>
+             <string>Altitude baro : -- m</string>
             </property>
            </widget>
           </item>
@@ -211,7 +247,7 @@
            <widget class="QLabel" name="pressureLabel">
             <property name="minimumSize">
              <size>
-              <width>200</width>
+              <width>220</width>
               <height>0</height>
              </size>
             </property>
@@ -222,7 +258,7 @@
              </size>
             </property>
             <property name="text">
-             <string>Pression :  -- hPa</string>
+             <string>Pressure:  -- hPa</string>
             </property>
            </widget>
           </item>
@@ -230,7 +266,7 @@
            <widget class="QLabel" name="temperatureLabel">
             <property name="minimumSize">
              <size>
-              <width>200</width>
+              <width>220</width>
               <height>0</height>
              </size>
             </property>
@@ -241,26 +277,14 @@
              </size>
             </property>
             <property name="text">
-             <string>Température : -- °C</string>
+             <string>Temperature : -- °C</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QLabel" name="accZLabel">
-            <property name="minimumSize">
-             <size>
-              <width>200</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>200</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>Accélération Z : -- g</string>
+           <widget class="Line" name="line_4">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
             </property>
            </widget>
           </item>
@@ -268,7 +292,7 @@
            <widget class="QLabel" name="accXLabel">
             <property name="minimumSize">
              <size>
-              <width>200</width>
+              <width>220</width>
               <height>0</height>
              </size>
             </property>
@@ -279,7 +303,7 @@
              </size>
             </property>
             <property name="text">
-             <string>Accélération X : -- g</string>
+             <string>Acceleration X : -- g</string>
             </property>
            </widget>
           </item>
@@ -287,7 +311,7 @@
            <widget class="QLabel" name="accYLabel">
             <property name="minimumSize">
              <size>
-              <width>200</width>
+              <width>220</width>
               <height>0</height>
              </size>
             </property>
@@ -298,7 +322,33 @@
              </size>
             </property>
             <property name="text">
-             <string>Accélération Y : -- g</string>
+             <string>Acceleration Y : -- g</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="accZLabel">
+            <property name="minimumSize">
+             <size>
+              <width>220</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>200</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Acceleration Z : -- g</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="Line" name="line_5">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
             </property>
            </widget>
           </item>
@@ -321,7 +371,7 @@
        <item>
         <widget class="QTabWidget" name="tabWidget">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -329,7 +379,7 @@
          <property name="minimumSize">
           <size>
            <width>1200</width>
-           <height>800</height>
+           <height>500</height>
           </size>
          </property>
          <property name="currentIndex">
@@ -371,7 +421,7 @@
              <property name="minimumSize">
               <size>
                <width>1200</width>
-               <height>300</height>
+               <height>250</height>
               </size>
              </property>
             </widget>
@@ -387,7 +437,7 @@
              <property name="minimumSize">
               <size>
                <width>1200</width>
-               <height>300</height>
+               <height>250</height>
               </size>
              </property>
             </widget>
@@ -471,6 +521,7 @@
     </property>
     <addaction name="actionConfigure"/>
     <addaction name="actionClean"/>
+    <addaction name="actionSpeaker"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -483,8 +534,6 @@
     <property name="title">
      <string>Map</string>
     </property>
-    <addaction name="actionOnline"/>
-    <addaction name="actionOffline"/>
    </widget>
    <addaction name="menuConnect"/>
    <addaction name="menuTools"/>
@@ -569,14 +618,26 @@
     <string>Clean</string>
    </property>
   </action>
-  <action name="actionOnline">
-   <property name="text">
-    <string>Online</string>
+  <action name="actionSpeaker">
+   <property name="checkable">
+    <bool>true</bool>
    </property>
-  </action>
-  <action name="actionOffline">
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="icone.qrc">
+     <normaloff>:/iconeWindows/icone/sound.png</normaloff>
+     <normalon>:/iconeWindows/icone/mute.png</normalon>
+     <disabledoff>:/iconeWindows/icone/mute.png</disabledoff>
+     <activeoff>:/iconeWindows/icone/sound.png</activeoff>
+     <selectedoff>:/iconeWindows/icone/sound.png</selectedoff>:/iconeWindows/icone/sound.png</iconset>
+   </property>
    <property name="text">
-    <string>Offline</string>
+    <string>Speaker</string>
+   </property>
+   <property name="visible">
+    <bool>true</bool>
    </property>
   </action>
  </widget>

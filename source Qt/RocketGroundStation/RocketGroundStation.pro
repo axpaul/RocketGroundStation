@@ -1,4 +1,4 @@
-QT       += core gui serialport webenginecore webenginewidgets webengine location charts texttospeech
+QT       += core gui serialport webenginecore webenginewidgets webengine location charts texttospeech multimedia
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -44,7 +44,11 @@ RC_ICONS = antenne-satellite.ico
 
 RESOURCES += \
    icone.qrc \
-   map.qrc
+   map.qrc \
+   song.qrc
+
+DISTFILES += \
+    ressource/bleep-126625.mp3
 
 
 

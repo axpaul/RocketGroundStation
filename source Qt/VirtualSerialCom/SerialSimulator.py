@@ -22,7 +22,7 @@ def calculate_crc8(data):
 ser = serial.Serial('COM8', baudrate=9600, timeout=1)
 
 # Ouvrir le fichier contenant les messages hexadécimaux
-with open('C:/Users/paulm/OneDrive/Bureau/Software/VirtualCom/log-MSE.txt', 'r') as file:
+with open('C:/Users/paulm/OneDrive/Bureau/Software/RocketGroundStation/source Qt/VirtualSerialCom/log-MSE-2.txt', 'r') as file:
     for line in file:
         # Nettoyer la ligne en retirant les espaces et les sauts de ligne
         hex_data = line.strip().replace(' ', '')

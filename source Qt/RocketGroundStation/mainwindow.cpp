@@ -13,10 +13,10 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    qDebug() << "Window :" << QThread::currentThread() << Qt::endl;
+     qDebug() << "[" << QDateTime::currentDateTime().toString("dd-MM-yyyy_HH.mm.ss") << "][MAINWINDOW] " << QThread::currentThread();
 
-    m_serialRun = false;
     m_serialThread->start();
+    m_voiceManager->start();
 
     initActionsConnectionsPrio();
 
@@ -26,38 +26,22 @@ MainWindow::MainWindow(QWidget *parent)
 
     initActionsConnections();
     disactivateButtonSerial();
-
-    /*ui->latitudeLabel->setFixedSize(250, 25);
-    ui->longitudeLabel->setFixedSize(250, 25);
-    ui->altitudeLabel->setFixedSize(250, 25);
-    ui->pressureLabel->setFixedSize(250, 25);
-    ui->temperatureLabel->setFixedSize(250, 25);
-    ui->accXLabel->setFixedSize(250, 25);
-    ui->accYLabel_3->setFixedSize(250, 25);
-    ui->accZLabel->setFixedSize(250, 25);
-    ui->gnssStatusLabel->setFixedSize(250, 25);
-    ui->crcCheckLabel->setFixedSize(250, 25);
-    ui->flightStatusLabel->setFixedSize(250, 25);*/
-
     initGraphicAcc();
     initGraphicPressureAltitude();
 
-    m_voiceManager->isEnabled();
+    fontLabel();
 
-    qDebug() << "[" << QDateTime::currentDateTime().toString("dd-MM-yyyy_HH.mm.ss") << "][MAINWINDOW] " << QThread::currentThread();
+    m_voiceManager->isEnabled();
 }
 
 MainWindow::~MainWindow()
 {
-    /*m_serialThread->quit();
-    m_serialThread->wait();
-    delete m_serialThread;*/
-
+    delete m_status;
     delete m_frameTelemetry;
-    delete m_voiceManager;
+
     delete m_settings;
     delete m_settingsInfo;
-    delete m_status;
+
     delete ui;
 
     delete m_seriesAccX;
@@ -65,6 +49,13 @@ MainWindow::~MainWindow()
     delete m_seriesAccZ;
     delete m_axisAccX;
     delete m_axisAccY;
+    delete m_seriesPressure;
+    delete m_seriesAltitudeGNSS;
+    delete m_seriesAltitudeBaro;
+    delete m_axisPressX;
+    delete m_axisPressY;
+    delete m_axisAltY;
+
 }
 
 void MainWindow::initActionsConnectionsPrio(){
@@ -91,6 +82,10 @@ void MainWindow::initActionsConnections()
     connect(m_frameTelemetry, &TelemetryFrame::frameDecoded, this, &MainWindow::receptionData);
 
     connect(ui->chronoWidget, &TimeZone::watchdogTimeout, this, &MainWindow::watchdogLostHandler);
+
+    connect(ui->actionSpeaker, &QAction::triggered, m_voiceManager, &VoiceManager::setEnabled);
+    connect(this, &MainWindow::triggerBeep, m_voiceManager, &VoiceManager::emitBeep);
+    connect(this, &MainWindow::triggerSpeaker, m_voiceManager, &VoiceManager::updateStatus);
 }
 
 void MainWindow::handleErrorShow(QString error)
@@ -134,7 +129,6 @@ void MainWindow::setSerialSettings() {
 
 void MainWindow::openedSerial(SerialPort::Settings p) {
     qDebug() << "[" << QDateTime::currentDateTime().toString("dd-MM-yyyy_HH.mm.ss") << "][MAINWINDOW] Serial openned";
-    m_serialRun = true;
     showStatusMessage(QString("Connected to %1 : %2, %3, %4, %5, %6")
                       .arg(p.name).arg(p.stringBaudRate).arg(p.stringDataBits)
                       .arg(p.stringParity).arg(p.stringStopBits).arg(p.stringFlowControl));
@@ -145,9 +139,7 @@ void MainWindow::openedSerial(SerialPort::Settings p) {
 
 void MainWindow::closedSerial() {
     qDebug() << "[" << QDateTime::currentDateTime().toString("dd-MM-yyyy_HH.mm.ss")<< "][MAINWINDOW] Serial closed";
-    m_serialRun = false;
     showStatusMessage(QString("Disconnected"));
-
     disactivateButtonSerial();
 }
 
@@ -236,6 +228,7 @@ void MainWindow::receptionData(const TmFrame_t &frame, const QString &decodedStr
             addAccelerationsAndScroll(frame.accXFloat, frame.accYFloat, frame.accZFloat);
             addPressureAltitudeAndScroll(frame.pressureFloat, frame.altGNSS, frame.altitudeBaroFloat);
         }
+
 }
 
 /* Console management function */
@@ -266,6 +259,55 @@ void MainWindow::addText(const QString &text) {
     }
 }
 
+void MainWindow::fontLabel(){
+    // Appliquer un style en gras pour tous les labels
+    QFont boldFont("Segoe UI", 9, QFont::Bold);
+
+    // Labels de position
+    ui->latitudeLabel->setFont(boldFont);
+    ui->latitudeLabel->setText("Latitude : -- °");
+
+    ui->longitudeLabel->setFont(boldFont);
+    ui->longitudeLabel->setText("Longitude : -- °");
+
+    // Labels d'altitude et pression
+    ui->altitudeGPSLabel->setFont(boldFont);
+    ui->altitudeGPSLabel->setText("Altitude gnss : -- m");
+
+    ui->altitudeBaroLabel->setFont(boldFont);
+    ui->altitudeBaroLabel->setText("Altitude baro : -- m");
+
+    ui->pressureLabel->setFont(boldFont);
+    ui->pressureLabel->setText("Pressure : -- hPa");
+
+    ui->temperatureLabel->setFont(boldFont);
+    ui->temperatureLabel->setText("Temperature : -- °C");
+
+    // Labels d'accélération
+    ui->accXLabel->setFont(boldFont);
+    ui->accXLabel->setText("Acceleration X: -- g");
+
+    ui->accYLabel->setFont(boldFont);
+    ui->accYLabel->setText("Acceleration Y: -- g");
+
+    ui->accZLabel->setFont(boldFont);
+    ui->accZLabel->setText("Acceleration Z: -- g");
+
+    // Labels d'état
+    ui->gnssStatusLabel->setFont(boldFont);
+    ui->gnssStatusLabel->setText("GNSS : Wait");
+    ui->gnssStatusLabel->setStyleSheet("color: black;");
+
+    ui->crcCheckLabel->setFont(boldFont);
+    ui->crcCheckLabel->setText("CRC : Wait");
+    ui->crcCheckLabel->setStyleSheet("color: black;");
+
+    ui->flightStatusLabel->setFont(boldFont);
+    ui->flightStatusLabel->setText("Flight Status : Wait");
+    ui->flightStatusLabel->setStyleSheet("color: black;");
+
+}
+
 void MainWindow::clearConsole() {
     ui->console->clear();
 
@@ -289,21 +331,7 @@ void MainWindow::clearConsole() {
     }
 
     // Réinitialiser les labels de l'interface
-    ui->latitudeLabel->setText("Latitude : --");
-    ui->longitudeLabel->setText("Longitude : --");
-    ui->altitudeGPSLabel->setText("Altitude GPS : -- m");
-    ui->altitudeBaroLabel->setText("Altitude Baro : -- m");
-    ui->pressureLabel->setText("Pression : -- hPa");
-    ui->temperatureLabel->setText("Temperature : -- °C");
-    ui->accXLabel->setText("Accélération X: -- g");
-    ui->accYLabel->setText("Accélération Y: -- g");
-    ui->accZLabel->setText("Accélération Z: -- g");
-    ui->gnssStatusLabel->setText("GNSS Status: Wait");
-    ui->gnssStatusLabel->setStyleSheet("color: black;");
-    ui->crcCheckLabel->setText("CRCCheck : Wait");
-    ui->crcCheckLabel->setStyleSheet("color: black;");
-    ui->flightStatusLabel->setText("Flight Status : Wait");
-    ui->flightStatusLabel->setStyleSheet("color: black;");
+    fontLabel();
 
     // Ajouter un message dans la console
     addText("<span style='color: gray;'>Interface reset to initial state.</span>");
@@ -317,16 +345,19 @@ void MainWindow::clearConsole() {
 
 void MainWindow::updateLatitude(float latitude) {
     QString text = QString("Latitude : %1 °").arg(latitude, 0, 'f', 7);
+    ui->flightStatusLabel->setFont(QFont("Segoe UI", 9, QFont::Bold));
     ui->latitudeLabel->setText(text);
 }
 
 void MainWindow::updateLongitude(float longitude) {
     QString text = QString("Longitude : %1 °").arg(longitude, 0, 'f', 7);
+    ui->flightStatusLabel->setFont(QFont("Segoe UI", 9, QFont::Bold));
     ui->longitudeLabel->setText(text);
 }
 
 void MainWindow::updateAltitudeGPS(int altitude) {
-    QString text = QString("Altitude GPS : %1 m").arg(altitude);
+    QString text = QString("Altitude gnss : %1 m").arg(altitude);
+    ui->flightStatusLabel->setFont(QFont("Segoe UI", 9, QFont::Bold));
     ui->altitudeGPSLabel->setText(text);
 
     // Colorer en rouge si l'altitude dépasse 10 000 m
@@ -338,7 +369,8 @@ void MainWindow::updateAltitudeGPS(int altitude) {
 }
 
 void MainWindow::updateAltitudeBaro(float altitude) {
-    QString text = QString("Altitude Baro : %1 m").arg(altitude, 0, 'f', 2);
+    QString text = QString("Altitude baro : %1 m").arg(altitude, 0, 'f', 2);
+    ui->flightStatusLabel->setFont(QFont("Segoe UI", 9, QFont::Bold));
     ui->altitudeBaroLabel->setText(text);
 
     // Colorer en rouge si l'altitude dépasse 10 000 m
@@ -350,7 +382,8 @@ void MainWindow::updateAltitudeBaro(float altitude) {
 }
 
 void MainWindow::updatePressure(float pressure) {
-    QString text = QString("Pression : %1 mBar").arg(pressure, 0, 'f', 2);
+    QString text = QString("Pressure : %1 mBar").arg(pressure, 0, 'f', 2);
+    ui->flightStatusLabel->setFont(QFont("Segoe UI", 9, QFont::Bold));
     ui->pressureLabel->setText(text);
 
     // Coloration conditionnelle pour des valeurs anormales de pression
@@ -362,7 +395,8 @@ void MainWindow::updatePressure(float pressure) {
 }
 
 void MainWindow::updateTemperature(float temperature) {
-    QString text = QString("Température : %1 °C").arg(temperature, 0, 'f', 2);
+    QString text = QString("Temperature : %1 °C").arg(temperature, 0, 'f', 2);
+    ui->flightStatusLabel->setFont(QFont("Segoe UI", 9, QFont::Bold));
     ui->temperatureLabel->setText(text);
 
     // Changer en rouge si la température est critique
@@ -374,17 +408,20 @@ void MainWindow::updateTemperature(float temperature) {
 }
 
 void MainWindow::updateAccelerationX(float accX) {
-    QString text = QString("Accélération X : %1 g").arg(accX, 0, 'f', 3);
+    QString text = QString("Acceleration X : %1 g").arg(accX, 0, 'f', 3);
+    ui->flightStatusLabel->setFont(QFont("Segoe UI", 9, QFont::Bold));
     ui->accXLabel->setText(text);
 }
 
 void MainWindow::updateAccelerationY(float accY) {
-    QString text = QString("Accélération Y : %1 g").arg(accY, 0, 'f', 3);
+    QString text = QString("Acceleration Y : %1 g").arg(accY, 0, 'f', 3);
+    ui->flightStatusLabel->setFont(QFont("Segoe UI", 9, QFont::Bold));
     ui->accYLabel->setText(text);
 }
 
 void MainWindow::updateAccelerationZ(float accZ) {
-    QString text = QString("Accélération Z : %1 g").arg(accZ, 0, 'f', 3);
+    QString text = QString("Acceleration Z : %1 g").arg(accZ, 0, 'f', 3);
+    ui->flightStatusLabel->setFont(QFont("Segoe UI", 9, QFont::Bold));
     ui->accZLabel->setText(text);
 }
 
@@ -394,14 +431,15 @@ void MainWindow::updateGnssStatus(uint8_t gnssStatus) {
     QString colorStyle;
 
     if (gnssStatus == 0) {
-        statusText = "No signal";
+        statusText = "LOST";
         colorStyle = "color: red;";
     } else {
-        statusText = "Signal Ok";
+        statusText = "OK";
         colorStyle = "color: green;";
     }
 
-    ui->gnssStatusLabel->setText("GNSS Statut : " + statusText);
+    ui->flightStatusLabel->setFont(QFont("Segoe UI", 9, QFont::Bold));
+    ui->gnssStatusLabel->setText("GNSS : " + statusText);
     ui->gnssStatusLabel->setStyleSheet(colorStyle);
 }
 
@@ -417,7 +455,8 @@ void MainWindow::updateCrcCheckLabel(bool crcCheck){
         colorStyle = "color: red;";
     }
 
-    ui->crcCheckLabel->setText("CrcCheck : " + statusText);
+    ui->crcCheckLabel->setText("CRC : " + statusText);
+    ui->flightStatusLabel->setFont(QFont("Segoe UI", 9, QFont::Bold));
     ui->crcCheckLabel->setStyleSheet(colorStyle);
 }
 
@@ -428,7 +467,7 @@ void MainWindow::updateFlightStatus(uint8_t flightStatus) {
     // Attribuer un texte et une couleur en fonction du statut
     switch (flightStatus) {
     case PRE_FLIGHT:
-        statusText = "Pré-Vol";
+        statusText = "PREFLIGHT";
         colorStyle = "color: blue;";
         if(ui->chronoWidget->isChronoRunning() || ui->chronoWidget->getChrono_ms() != 0){
             ui->chronoWidget->stopChrono();
@@ -436,7 +475,7 @@ void MainWindow::updateFlightStatus(uint8_t flightStatus) {
         }
         break;
     case PYRO_RDY:
-        statusText = "Prêt Pyro";
+        statusText = "ARMED";
         colorStyle = "color: red;";
         if(ui->chronoWidget->isChronoRunning() || ui->chronoWidget->getChrono_ms() != 0){
             ui->chronoWidget->stopChrono();
@@ -444,42 +483,43 @@ void MainWindow::updateFlightStatus(uint8_t flightStatus) {
         }
         break;
     case ASCEND:
-        statusText = "Ascension";
+        statusText = "ASCENT";
         colorStyle = "color: green;";
         ui->chronoWidget->startChrono();
         break;
     case DEPLOY_ALGO:
-        statusText = "Algo";
+        statusText = "ALGO";
         colorStyle = "color: orange;";
         break;
     case DEPLOY_TIMER:
-        statusText = "Timer";
+        statusText = "TIMER";
         colorStyle = "color: purple;";
         break;
     case DESCEND:
-        statusText = "Descente";
+        statusText = "BALLISTIC";
         colorStyle = "color: brown;";
         break;
     case TOUCHDOWN:
-        statusText = "Atterrissage";
+        statusText = "LANDING";
         colorStyle = "color: gray;";
         ui->chronoWidget->stopChrono();
         break;
     case LOST:
-        statusText = "Signal perdu";
+        statusText = "LOST";
         colorStyle = "color: red;";
         break;
     default:
-        statusText = "Inconnu";
+        statusText = "UNKNOWN";
         colorStyle = "color: black;";
     }
 
     ui->flightStatusLabel->setText("Flight Statut : " + statusText);
+    ui->flightStatusLabel->setFont(QFont("Segoe UI", 9, QFont::Bold));
     ui->flightStatusLabel->setStyleSheet(colorStyle);
     ui->chronoWidget->setFlightStatus(flightStatus);
 
     // Appeler le gestionnaire pour lire la voix si nécessaire
-    m_voiceManager->updateStatus(flightStatus);
+    MainWindow::triggerSpeaker(flightStatus);
 }
 
 void MainWindow::watchdogLostHandler()
@@ -498,28 +538,28 @@ void MainWindow::initGraphicAcc() {
     }
 
     // Configurer le titre, légende et animation
-    //chart->setTitle("Graphique des accélérations");
+    //chart->setTitle("Acceleration graph");
     chart->legend()->setVisible(true); // Affiche la légende pour identifier les séries
     chart->setAnimationOptions(QChart::AllAnimations);
 
     // Créer les séries pour accX, accY et accZ
     m_seriesAccX = new QLineSeries();
-    m_seriesAccX->setName("Accélération X");
+    m_seriesAccX->setName("Acceleration X");
     chart->addSeries(m_seriesAccX);
 
     m_seriesAccY = new QLineSeries();
-    m_seriesAccY->setName("Accélération Y");
+    m_seriesAccY->setName("Acceleration Y");
     chart->addSeries(m_seriesAccY);
 
     m_seriesAccZ = new QLineSeries();
-    m_seriesAccZ->setName("Accélération Z");
+    m_seriesAccZ->setName("Acceleration Z");
     chart->addSeries(m_seriesAccZ);
 
     // Configurer l'axe X (temps)
     m_axisAccX = new QDateTimeAxis();
     m_axisAccX->setTickCount(15);
     m_axisAccX->setFormat("hh:mm:ss");
-    m_axisAccX->setTitleText("Temps");
+    m_axisAccX->setTitleText("Time");
     chart->addAxis(m_axisAccX, Qt::AlignBottom);
 
     // Attacher les séries à l'axe X
@@ -530,7 +570,7 @@ void MainWindow::initGraphicAcc() {
     // Configurer l'axe Y (accélération)
     m_axisAccY = new QValueAxis();
     m_axisAccY->setLabelFormat("%.2f");
-    m_axisAccY->setTitleText("Accélération (g)");
+    m_axisAccY->setTitleText("Acceleration (g)");
     m_axisAccY->setRange(-16, 16); // Ajustez selon vos besoins
     chart->addAxis(m_axisAccY, Qt::AlignLeft);
 
@@ -587,28 +627,28 @@ void MainWindow::initGraphicPressureAltitude() {
     }
 
     // Configurer le titre, légende et animation
-    //chart->setTitle("Graphique Pression et Altitude");
+    //chart->setTitle("Pressure and Altitude graph");
     chart->legend()->setVisible(true); // Affiche la légende pour identifier les séries
     chart->setAnimationOptions(QChart::AllAnimations);
 
     // Créer les séries pour pression et altitude
     m_seriesPressure = new QLineSeries();
-    m_seriesPressure->setName("Pression (hPa)");
+    m_seriesPressure->setName("Pressure (hPa)");
     chart->addSeries(m_seriesPressure);
 
     m_seriesAltitudeGNSS = new QLineSeries();
-    m_seriesAltitudeGNSS->setName("Altitude GNSS (m)");
+    m_seriesAltitudeGNSS->setName("GNSS altitude (m)");
     chart->addSeries(m_seriesAltitudeGNSS);
 
     m_seriesAltitudeBaro = new QLineSeries();
-    m_seriesAltitudeBaro ->setName("Altitude Baro (m)");
+    m_seriesAltitudeBaro ->setName("Baro altitude (m)");
     chart->addSeries(m_seriesAltitudeBaro);
 
     // Configurer l'axe X (temps)
     m_axisPressX = new QDateTimeAxis();
     m_axisPressX->setTickCount(15);
     m_axisPressX->setFormat("hh:mm:ss");
-    m_axisPressX->setTitleText("Temps");
+    m_axisPressX->setTitleText("Time");
     chart->addAxis(m_axisPressX, Qt::AlignBottom);
 
     // Attacher les séries à l'axe X

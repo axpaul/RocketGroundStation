@@ -31,7 +31,7 @@ public:
         QString stringFlowControl;
     };
 
-    SerialPort();
+    SerialPort(QObject *parent = nullptr);
     ~SerialPort();
 
 signals:
@@ -56,7 +56,7 @@ private:
     Settings *m_settingsPort;
     QSerialPort *m_serial;
     bool m_serialRun;
-    QMutex mut;
+    QMutex m_mut;
 };
 
 #endif // SERIALPORT_H

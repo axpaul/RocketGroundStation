@@ -3,7 +3,7 @@
 Q_DECLARE_METATYPE(QSerialPort::SerialPortError);
 Q_DECLARE_METATYPE(SerialPort::Settings);
 
-SerialPort::SerialPort() :
+SerialPort::SerialPort(QObject *parent) :
     QThread(nullptr),
     m_settingsPort(new Settings),
     m_serial(new QSerialPort(this)),
@@ -13,6 +13,8 @@ SerialPort::SerialPort() :
     qRegisterMetaType<SerialPort::Settings>();
 
     connect(m_serial, &QSerialPort::errorOccurred, this, &SerialPort::handleError);
+
+    qDebug() << "[" << QDateTime::currentDateTime().toString("dd-MM-yyyy_HH.mm.ss") << "][SERIAL] " << QThread::currentThread();
 }
 
 SerialPort::~SerialPort()
