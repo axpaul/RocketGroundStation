@@ -36,6 +36,18 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
+
+    if (m_serialThread) {
+        m_serialThread->stop();  // Signale au thread d'arrêter sa boucle
+        m_serialThread->quit();  // Stoppe la boucle d'événements, si utilisée
+        m_serialThread->wait();  // Attend que le thread se termine proprement
+    }
+
+    if(m_voiceManager) {
+        m_voiceManager->quit();
+        m_voiceManager->wait();
+    }
+
     delete m_status;
     delete m_frameTelemetry;
 
@@ -345,19 +357,19 @@ void MainWindow::clearConsole() {
 
 void MainWindow::updateLatitude(float latitude) {
     QString text = QString("Latitude : %1 °").arg(latitude, 0, 'f', 7);
-    ui->flightStatusLabel->setFont(QFont("Segoe UI", 9, QFont::Bold));
+    ui->latitudeLabel->setFont(QFont("Segoe UI", 9, QFont::Bold));
     ui->latitudeLabel->setText(text);
 }
 
 void MainWindow::updateLongitude(float longitude) {
     QString text = QString("Longitude : %1 °").arg(longitude, 0, 'f', 7);
-    ui->flightStatusLabel->setFont(QFont("Segoe UI", 9, QFont::Bold));
+    ui->longitudeLabel->setFont(QFont("Segoe UI", 9, QFont::Bold));
     ui->longitudeLabel->setText(text);
 }
 
 void MainWindow::updateAltitudeGPS(int altitude) {
     QString text = QString("Altitude gnss : %1 m").arg(altitude);
-    ui->flightStatusLabel->setFont(QFont("Segoe UI", 9, QFont::Bold));
+    ui->altitudeGPSLabel->setFont(QFont("Segoe UI", 9, QFont::Bold));
     ui->altitudeGPSLabel->setText(text);
 
     // Colorer en rouge si l'altitude dépasse 10 000 m
@@ -370,7 +382,7 @@ void MainWindow::updateAltitudeGPS(int altitude) {
 
 void MainWindow::updateAltitudeBaro(float altitude) {
     QString text = QString("Altitude baro : %1 m").arg(altitude, 0, 'f', 2);
-    ui->flightStatusLabel->setFont(QFont("Segoe UI", 9, QFont::Bold));
+    ui->altitudeBaroLabel->setFont(QFont("Segoe UI", 9, QFont::Bold));
     ui->altitudeBaroLabel->setText(text);
 
     // Colorer en rouge si l'altitude dépasse 10 000 m
@@ -383,7 +395,7 @@ void MainWindow::updateAltitudeBaro(float altitude) {
 
 void MainWindow::updatePressure(float pressure) {
     QString text = QString("Pressure : %1 mBar").arg(pressure, 0, 'f', 2);
-    ui->flightStatusLabel->setFont(QFont("Segoe UI", 9, QFont::Bold));
+    ui->pressureLabel->setFont(QFont("Segoe UI", 9, QFont::Bold));
     ui->pressureLabel->setText(text);
 
     // Coloration conditionnelle pour des valeurs anormales de pression
@@ -394,9 +406,28 @@ void MainWindow::updatePressure(float pressure) {
     }
 }
 
+void MainWindow::updateAnnexe1(float pressure) {
+    QString text = QString("Motor Pressure  : %1 Bar").arg(pressure, 0, 'f', 2);
+    ui->pressureLabel->setFont(QFont("Segoe UI", 9, QFont::Bold));
+    ui->pressureLabel->setText(text);
+}
+
+void MainWindow::updateAnnexe2(float pressure) {
+    QString text = QString("Tank Pressure : %1 Bar").arg(pressure, 0, 'f', 2);
+    ui->pressureLabel->setFont(QFont("Segoe UI", 9, QFont::Bold));
+    ui->pressureLabel->setText(text);
+
+    // Coloration conditionnelle pour des valeurs anormales de pression
+    if (pressure > 200) {
+        ui->pressureLabel->setStyleSheet("color: red;");
+    } else {
+        ui->pressureLabel->setStyleSheet("color: black;");
+    }
+}
+
 void MainWindow::updateTemperature(float temperature) {
     QString text = QString("Temperature : %1 °C").arg(temperature, 0, 'f', 2);
-    ui->flightStatusLabel->setFont(QFont("Segoe UI", 9, QFont::Bold));
+    ui->temperatureLabel->setFont(QFont("Segoe UI", 9, QFont::Bold));
     ui->temperatureLabel->setText(text);
 
     // Changer en rouge si la température est critique
@@ -409,19 +440,19 @@ void MainWindow::updateTemperature(float temperature) {
 
 void MainWindow::updateAccelerationX(float accX) {
     QString text = QString("Acceleration X : %1 g").arg(accX, 0, 'f', 3);
-    ui->flightStatusLabel->setFont(QFont("Segoe UI", 9, QFont::Bold));
+    ui->accXLabel->setFont(QFont("Segoe UI", 9, QFont::Bold));
     ui->accXLabel->setText(text);
 }
 
 void MainWindow::updateAccelerationY(float accY) {
     QString text = QString("Acceleration Y : %1 g").arg(accY, 0, 'f', 3);
-    ui->flightStatusLabel->setFont(QFont("Segoe UI", 9, QFont::Bold));
+    ui->accYLabel->setFont(QFont("Segoe UI", 9, QFont::Bold));
     ui->accYLabel->setText(text);
 }
 
 void MainWindow::updateAccelerationZ(float accZ) {
     QString text = QString("Acceleration Z : %1 g").arg(accZ, 0, 'f', 3);
-    ui->flightStatusLabel->setFont(QFont("Segoe UI", 9, QFont::Bold));
+    ui->accZLabel->setFont(QFont("Segoe UI", 9, QFont::Bold));
     ui->accZLabel->setText(text);
 }
 
@@ -438,7 +469,7 @@ void MainWindow::updateGnssStatus(uint8_t gnssStatus) {
         colorStyle = "color: green;";
     }
 
-    ui->flightStatusLabel->setFont(QFont("Segoe UI", 9, QFont::Bold));
+    ui->gnssStatusLabel->setFont(QFont("Segoe UI", 9, QFont::Bold));
     ui->gnssStatusLabel->setText("GNSS : " + statusText);
     ui->gnssStatusLabel->setStyleSheet(colorStyle);
 }
@@ -456,7 +487,7 @@ void MainWindow::updateCrcCheckLabel(bool crcCheck){
     }
 
     ui->crcCheckLabel->setText("CRC : " + statusText);
-    ui->flightStatusLabel->setFont(QFont("Segoe UI", 9, QFont::Bold));
+    ui->crcCheckLabel->setFont(QFont("Segoe UI", 9, QFont::Bold));
     ui->crcCheckLabel->setStyleSheet(colorStyle);
 }
 

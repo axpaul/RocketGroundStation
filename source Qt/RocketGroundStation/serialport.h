@@ -33,6 +33,7 @@ public:
 
     SerialPort(QObject *parent = nullptr);
     ~SerialPort();
+    void stop();
 
 signals:
     void errorEmit(QString);
@@ -47,7 +48,7 @@ public slots:
     void handleError(QSerialPort::SerialPortError error);
 
 protected:
-    void run() override;
+    void run() override;    
 
 private:
     uint8_t calculate_crc8(QByteArray data);

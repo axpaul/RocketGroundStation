@@ -24,7 +24,7 @@ valid_frames_count = 2
 frame_counter = 0
 
 # Ouvrir le fichier contenant les messages hexadécimaux
-with open('C:/Users/paulm/OneDrive/Bureau/Software/VirtualCom/log-MSE.txt', 'r') as file:
+with open('C:/Users/paulm/OneDrive/Bureau/Software/RocketGroundStation/source Qt/VirtualSerialCom/log-MSE.txt', 'r') as file:
     for line in file:
         hex_data = line.strip().replace(' ', '')
         byte_data = bytes.fromhex(hex_data)

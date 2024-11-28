@@ -20,6 +20,9 @@ SerialPort::SerialPort(QObject *parent) :
 SerialPort::~SerialPort()
 {
     m_serial->close();
+
+    stop();  // Signale au thread de s'arrêter
+    wait();  // Attend que le thread termine
     delete m_settingsPort;
     delete m_serial;
 }
@@ -139,4 +142,10 @@ uint8_t SerialPort::calculate_crc8(QByteArray data) {
         }
     }
     return crc;
+}
+
+void SerialPort::stop() {
+    QMutexLocker locker(&m_mut);  // Protège l'accès à m_serialRun
+    m_serialRun = false;          // Signal pour stopper toute logique métier
+    quit();                       // Quitte la boucle d'événements de exec()
 }

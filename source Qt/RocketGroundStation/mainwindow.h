@@ -104,6 +104,8 @@ private:
     void updateFlightStatus(uint8_t flightStatus);
     void updateCrcCheckLabel(bool crcCheck);
     void updateAltitudeBaro(float altitude);
+    void updateAnnexe1(float pressure);
+    void updateAnnexe2(float pressure);
 
     Ui::MainWindow *ui;
     QObject *m_parent;

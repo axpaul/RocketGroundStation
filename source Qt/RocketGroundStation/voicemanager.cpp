@@ -20,6 +20,8 @@ VoiceManager::VoiceManager(QObject *parent)
 }
 
 VoiceManager::~VoiceManager(){
+    quit();  // Signale au thread de s'arrêter
+    wait();  // Attend que le thread termine
     delete m_speech;
 }
 
