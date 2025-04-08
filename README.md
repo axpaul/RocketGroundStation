@@ -1,7 +1,7 @@
 # RocketGroundStation
 
 ## **Ground station** for experimental rocket using the LORA protocol
-## MSE (MarSauniquE) Rocket Serial Reception HMI
+> MSE (MarSauniquE) Rocket Serial Reception HMI
 
 MSE Rocket Serial Reception HMI est une application logicielle destinée à l'acquisition de données de fusées en temps réel via le module TTGO LORA 32. Cette application affiche de manière dynamique la trâme et la position GPS de la fusée. Elle permet également d'enregistrer les données dans un fichier local.
 
