@@ -64,19 +64,30 @@ TmFrame_t TelemetryFrame::decodeFrame(const QByteArray &data){
     frame.accZ = (data[21] & 0xFF) << 8 |
                  (data[20] & 0xFF);
 
-    frame.annex0 = (data[23] & 0xFF) << 8 |
-                   (data[22] & 0xFF);
+    frame.gyroX = (data[23] & 0xFF) << 8 |
+                 (data[22] & 0xFF);
 
-    frame.annex1 = (data[25] & 0xFF) << 8 |
-                   (data[24] & 0xFF);
+    frame.gyroY = (data[25] & 0xFF) << 8 |
+                 (data[24] & 0xFF);
+
+    frame.gyroZ = (data[27] & 0xFF) << 8 |
+                 (data[26] & 0xFF);
+
+    frame.annex0 = (data[29] & 0xFF) << 8 |
+                   (data[28] & 0xFF);
+
+    frame.annex1 = (data[31] & 0xFF) << 8 |
+                   (data[30] & 0xFF);
 
     // Extraction du statut (sts) de l'octet 26
-    frame.sts = data[26];
+    frame.sts = data[32];
 
-    // Décoder le statut
-    frame.id = (frame.sts & 0b11000000) >> 6;           // Bits 7-6 pour ID
-    frame.gnssStatus = (frame.sts & 0b00111000) >> 3;   // Bits 5-3 pour GNSS Status
-    frame.flightStatus = (frame.sts & 0b00000111);      // Bits 2-0 pour Flight Status
+    // Décodage le statut
+    frame.id           = (frame.sts & 0b11000000) >> 6;  // Bits 7-6 : ID
+    frame.gnssFix      = (frame.sts & 0b00100000) >> 5;  // Bit 5    : GNSS fix (0 = no fix, 1 = fix)
+    frame.gnssFixType  = (frame.sts & 0b00011000) >> 3;  // Bits 4-3 : GNSS fix type (00=no fix, 01=other, 10=2D, 11=3D)
+    frame.flightStatus =  frame.sts &  0b00000111;       // Bits 2-0 : Flight status (voir enum RocketState_t)
+
 
     // Initialisation des valeurs calculées en flottant
     frame.latFloat = frame.lat * 1e-7;
@@ -86,81 +97,93 @@ TmFrame_t TelemetryFrame::decodeFrame(const QByteArray &data){
     frame.accXFloat = frame.accX * acc_factor;
     frame.accYFloat = frame.accY * acc_factor;
     frame.accZFloat = frame.accZ * acc_factor;
-    frame.annex0Float = frame.annex0 * 1.0;
-    frame.annex1Float = frame.annex1 * 1.0;
+    frame.gyroXFloat = frame.gyroX * gyro_factor;
+    frame.gyroYFloat = frame.gyroY * gyro_factor;
+    frame.gyroZFloat = frame.gyroZ * gyro_factor;
+    frame.annex0Float = (frame.annex0 - 2048.0) * 1.0;
+    frame.annex1Float = (frame.annex1 - 2048.0) * 1.0;
+
     frame.altitudeBaroFloat = calculateAltitude(frame.pressureFloat);
 
     return frame;
 }
 
 QString TelemetryFrame::toString(const TmFrame_t &frame) {
-    return QString("<style>"
-                   "td { padding: 4px 8px; } "
-                   ".header { font-weight: bold; color: #4CAF50; } "
-                   ".value { color: #022d9c; } "
-                   ".critical { color: #FF5722; font-weight: bold; } "
-                   ".pre_flight { color: #1E90FF; font-weight: bold; } "  // Bleu clair pour PRE_FLIGHT
-                   ".pyro_rdy { color: #FF0000; font-weight: bold; } "    // Rouge pour PYRO_RDY
-                   ".ascend { color: #32CD32; font-weight: bold; } "      // Vert pour ASCEND
-                   ".deploy_algo { color: #FFA500; font-weight: bold; } " // Orange pour DEPLOY_ALGO
-                   ".deploy_timer { color: #800080; font-weight: bold; } "// Violet pour DEPLOY_TIMER
-                   ".descend { color: #8B4513; font-weight: bold; } "     // Marron pour DESCEND
-                   ".touchdown { color: #808080; font-weight: bold; } "   // Gris pour TOUCHDOWN
-                   "</style> "
-                   "<b>[Decoded data]</b> "
-                   "<span class='header'>sts:</span> <span class='%1'>%2</span> | "
-                   "<span class='header'>lat:</span> <span class='%3'>%4 °</span> | "
-                   "<span class='header'>lon:</span> <span class='%5'>%6 °</span> | "
-                   "<span class='header'>altGNSS:</span> <span class='%7'>%8 m</span> | "
-                   "<span class='header'>AltBaro:</span> <span class='%29'>%30 m</span> | "
-                   "<span class='header'>pressure:</span> <span class='%9'>%10 mBar</span> | "
-                   "<span class='header'>temp:</span> <span class='%11'>%12 °C</span> | "
-                   "<span class='header'>annex0:</span> <span class='%13'>%14 V</span> | "
-                   "<span class='header'>annex1:</span> <span class='%15'>%16 V</span> | "
-                   "<span class='header'>accX:</span> <span class='%17'>%18 g</span> | "
-                   "<span class='header'>accY:</span> <span class='%19'>%20 g</span> | "
-                   "<span class='header'>accZ:</span> <span class='%21'>%22 g</span> | "
-                   "<span class='header'>id:</span> <span class='%23'>%24</span> | "
-                   "<span class='header'>gnssStatus:</span> <span class='%25'>%26</span> | "
-                   "<span class='header'>flightStatus:</span> <span class='%27'>%28</span")
+    auto cls = [](bool ok) { return ok ? "value" : "critical"; };
+    auto fmt = [](double val, int prec = 2) { return QString::number(val, 'f', prec); };
 
-        .arg(frame.sts == 0 ? "critical" : "value",
-                 QString::number(frame.sts),
-                 frame.latFloat < -90 || frame.latFloat > 90 ? "critical" : "value",
-                 QString::number(frame.latFloat, 'f', 7),
-                 frame.lonFloat < -180 || frame.lonFloat > 180 ? "critical" : "value",
-                 QString::number(frame.lonFloat, 'f', 7),
-                 frame.altGNSS < 0 || frame.altGNSS > 10000 ? "critical" : "value",
-                 QString::number(frame.altGNSS),
-                 frame.pressureFloat < 0.1 || frame.pressureFloat > 1200 ? "critical" : "value",
-                 QString::number(frame.pressureFloat, 'f', 2),
-                 frame.tempFloat > 50 ? "critical" : "value",
-                 QString::number(frame.tempFloat, 'f', 2),
-                 frame.annex0Float < 0 || frame.annex0Float > 5 ? "critical" : "value",
-                 QString::number(frame.annex0Float, 'f', 2),
-                 frame.annex1Float < 0 || frame.annex1Float > 5 ? "critical" : "value",
-                 QString::number(frame.annex1Float, 'f', 2),
-                 frame.accXFloat < -16 || frame.accXFloat > 16 ? "critical" : "value",
-                 QString::number(frame.accXFloat, 'f', 5),
-                 frame.accYFloat < -16 || frame.accYFloat > 16 ? "critical" : "value",
-                 QString::number(frame.accYFloat, 'f', 5),
-                 frame.accZFloat < -16 || frame.accZFloat > 16 ? "critical" : "value",
-                 QString::number(frame.accZFloat, 'f', 5),
-                 frame.id == 0 ? "critical" : "value",
-                 QString::number(frame.id),
-                 frame.gnssStatus == 0 ? "critical" : "value",
-                 QString::number(frame.gnssStatus),
-                 frame.flightStatus == PRE_FLIGHT ? "pre_flight" :
-                     frame.flightStatus == PYRO_RDY ? "pyro_rdy" :
-                     frame.flightStatus == ASCEND ? "ascend" :
-                     frame.flightStatus == DEPLOY_ALGO ? "deploy_algo" :
-                     frame.flightStatus == DEPLOY_TIMER ? "deploy_timer" :
-                     frame.flightStatus == DESCEND ? "descend" :
-                     "touchdown",
-                 QString::number(frame.flightStatus),
-                 frame.altitudeBaroFloat < 0 || frame.altitudeBaroFloat > 10000 ? "critical" : "value",
-                 QString::number(frame.altitudeBaroFloat));
+    QString gnssFixStr   = frame.gnssFix ? "Fix" : "No fix";
+    QString gnssFixClass = cls(frame.gnssFix);
+
+    QString gnssFixTypeStr = "No fix";
+    QString gnssFixTypeClass = "critical";
+    if (frame.gnssFixType == GNSS_2D_FIX)      { gnssFixTypeStr = "2D";   gnssFixTypeClass = "value"; }
+    else if (frame.gnssFixType == GNSS_3D_FIX) { gnssFixTypeStr = "3D";   gnssFixTypeClass = "value"; }
+    else if (frame.gnssFixType == GNSS_OTHER_FIX) { gnssFixTypeStr = "Other"; }
+
+    QString flightStr, flightClass = "critical";
+    switch (frame.flightStatus) {
+    case PRE_FLIGHT:    flightStr = "PRE_FLIGHT";    flightClass = "pre_flight"; break;
+    case PYRO_RDY:      flightStr = "PYRO_RDY";      flightClass = "pyro_rdy"; break;
+    case ASCEND:        flightStr = "ASCEND";        flightClass = "ascend"; break;
+    case DEPLOY_ALGO:   flightStr = "DEPLOY_ALGO";   flightClass = "deploy_algo"; break;
+    case DEPLOY_TIMER:  flightStr = "DEPLOY_TIMER";  flightClass = "deploy_timer"; break;
+    case DESCEND:       flightStr = "DESCEND";       flightClass = "descend"; break;
+    case TOUCHDOWN:     flightStr = "TOUCHDOWN";     flightClass = "touchdown"; break;
+    case LOST:          flightStr = "LOST";          break;
+    default:            flightStr = "UNKNOWN";       break;
+    }
+
+    return QString(
+               "<style>"
+               ".value { color: #00BCD4; } "
+               ".critical { color: #FF5722; font-weight: bold; } "
+               ".header { font-weight: bold; color: #E0E0E0; } "
+               ".pre_flight { color:#29B6F6; font-weight:bold; } "
+               ".pyro_rdy { color:#E53935; font-weight:bold; } "
+               ".ascend { color:#66BB6A; font-weight:bold; } "
+               ".deploy_algo { color:#FFA726; font-weight:bold; } "
+               ".deploy_timer { color:#AB47BC; font-weight:bold; } "
+               ".descend { color:#8D6E63; font-weight:bold; } "
+               ".touchdown { color:#BDBDBD; font-weight:bold; }"
+               "</style>"
+               "<b>[Telemetry]</b> "
+               "State: <span class='%1'>%2</span> | "
+               "Fix: <span class='%3'>%4</span> | "
+               "FixType: <span class='%5'>%6</span> | "
+               "STS: <span class='%7'>%8</span> | "
+               "Lat: <span class='%9'>%10°</span> | "
+               "Lon: <span class='%11'>%12°</span> | "
+               "Alt: <span class='%13'>%14m</span> | "
+               "Baro: <span class='%15'>%16m</span> | "
+               "Press: <span class='%17'>%18mBar</span> | "
+               "Temp: <span class='%19'>%20°C</span> | "
+               "AccX: <span class='%21'>%22g</span> | "
+               "AccY: <span class='%23'>%24g</span> | "
+               "AccZ: <span class='%25'>%26g</span> | "
+               "GyroX: <span class='%27'>%28°/s</span> | "
+               "GyroY: <span class='%29'>%30°/s</span> | "
+               "GyroZ: <span class='%31'>%32°/s</span>")
+        .arg(
+            flightClass, flightStr,
+            gnssFixClass, gnssFixStr,
+            gnssFixTypeClass, gnssFixTypeStr,
+            cls(frame.sts), QString::number(frame.sts),
+            cls(frame.latFloat >= -90 && frame.latFloat <= 90), fmt(frame.latFloat, 6),
+            cls(frame.lonFloat >= -180 && frame.lonFloat <= 180), fmt(frame.lonFloat, 6),
+            cls(frame.altGNSS >= 0 && frame.altGNSS < 20000), QString::number(frame.altGNSS),
+            cls(frame.altitudeBaroFloat >= 0 && frame.altitudeBaroFloat < 20000), fmt(frame.altitudeBaroFloat),
+            cls(frame.pressureFloat > 0.1 && frame.pressureFloat < 1200), fmt(frame.pressureFloat),
+            cls(frame.tempFloat <= 50), fmt(frame.tempFloat),
+            cls(frame.accXFloat >= -16 && frame.accXFloat <= 16), fmt(frame.accXFloat, 5),
+            cls(frame.accYFloat >= -16 && frame.accYFloat <= 16), fmt(frame.accYFloat, 5),
+            cls(frame.accZFloat >= -16 && frame.accZFloat <= 16), fmt(frame.accZFloat, 5),
+            cls(frame.gyroXFloat >= -2000 && frame.gyroXFloat <= 2000), fmt(frame.gyroXFloat),
+            cls(frame.gyroYFloat >= -2000 && frame.gyroYFloat <= 2000), fmt(frame.gyroYFloat),
+            cls(frame.gyroZFloat >= -2000 && frame.gyroZFloat <= 2000), fmt(frame.gyroZFloat)
+            );
 }
+
 
 float TelemetryFrame::calculateAltitude(float pressure) {
     // Constante : Pression au niveau de la mer (standard)

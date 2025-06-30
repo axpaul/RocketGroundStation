@@ -9,14 +9,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1600</width>
-    <height>1100</height>
+    <width>1658</width>
+    <height>1079</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>1600</width>
-    <height>1100</height>
+    <width>1366</width>
+    <height>768</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -35,7 +35,7 @@
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_3">
        <item>
-        <widget class="QWidget" name="telemetryPanel" native="true">
+        <widget class="QFrame" name="telemetryPanel">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
            <horstretch>0</horstretch>
@@ -73,392 +73,445 @@
            </widget>
           </item>
           <item>
-           <widget class="Line" name="line">
-            <property name="orientation">
-             <enum>Qt::Orientation::Horizontal</enum>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="flightStatusLabel">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
+           <widget class="QFrame" name="frame">
             <property name="minimumSize">
              <size>
-              <width>220</width>
-              <height>0</height>
+              <width>200</width>
+              <height>400</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>200</width>
+              <width>300</width>
               <height>16777215</height>
              </size>
             </property>
-            <property name="font">
-             <font>
-              <bold>true</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
-              <kerning>false</kerning>
-             </font>
+            <property name="frameShape">
+             <enum>QFrame::Shape::StyledPanel</enum>
             </property>
-            <property name="text">
-             <string>Flight Statut :  Wait</string>
+            <property name="frameShadow">
+             <enum>QFrame::Shadow::Raised</enum>
             </property>
-            <property name="scaledContents">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="gnssStatusLabel">
-            <property name="minimumSize">
-             <size>
-              <width>220</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>200</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <bold>true</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
-              <kerning>false</kerning>
-             </font>
-            </property>
-            <property name="text">
-             <string>GNSS : Wait</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="crcCheckLabel">
-            <property name="minimumSize">
-             <size>
-              <width>220</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>200</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <bold>true</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
-              <kerning>false</kerning>
-             </font>
-            </property>
-            <property name="text">
-             <string>CRC : Wait</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="Line" name="line_2">
-            <property name="orientation">
-             <enum>Qt::Orientation::Horizontal</enum>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="latitudeLabel">
-            <property name="minimumSize">
-             <size>
-              <width>220</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>200</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <bold>true</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
-              <kerning>false</kerning>
-             </font>
-            </property>
-            <property name="text">
-             <string>Latitude : -- °</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="longitudeLabel">
-            <property name="minimumSize">
-             <size>
-              <width>220</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>200</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <bold>true</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
-              <kerning>false</kerning>
-             </font>
-            </property>
-            <property name="text">
-             <string>Longitude : -- °</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="altitudeGPSLabel">
-            <property name="minimumSize">
-             <size>
-              <width>220</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>200</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <bold>true</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
-              <kerning>false</kerning>
-             </font>
-            </property>
-            <property name="text">
-             <string>Altitude GPS  :  -- m</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="Line" name="line_3">
-            <property name="orientation">
-             <enum>Qt::Orientation::Horizontal</enum>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="altitudeBaroLabel">
-            <property name="minimumSize">
-             <size>
-              <width>220</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>200</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <bold>true</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
-              <kerning>false</kerning>
-             </font>
-            </property>
-            <property name="text">
-             <string>Altitude baro : -- m</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="pressureLabel">
-            <property name="minimumSize">
-             <size>
-              <width>220</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>200</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <bold>true</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
-              <kerning>false</kerning>
-             </font>
-            </property>
-            <property name="text">
-             <string>Pressure:  -- hPa</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="temperatureLabel">
-            <property name="minimumSize">
-             <size>
-              <width>220</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>200</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <bold>true</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
-              <kerning>false</kerning>
-             </font>
-            </property>
-            <property name="text">
-             <string>Temperature : -- °C</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="Line" name="line_4">
-            <property name="orientation">
-             <enum>Qt::Orientation::Horizontal</enum>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="accXLabel">
-            <property name="minimumSize">
-             <size>
-              <width>220</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>200</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <bold>true</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
-              <kerning>false</kerning>
-             </font>
-            </property>
-            <property name="text">
-             <string>Acceleration X : -- g</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="accYLabel">
-            <property name="minimumSize">
-             <size>
-              <width>220</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>200</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <bold>true</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
-              <kerning>false</kerning>
-             </font>
-            </property>
-            <property name="text">
-             <string>Acceleration Y : -- g</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="accZLabel">
-            <property name="minimumSize">
-             <size>
-              <width>220</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>200</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <bold>true</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
-              <kerning>false</kerning>
-             </font>
-            </property>
-            <property name="text">
-             <string>Acceleration Z : -- g</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="Line" name="line_5">
-            <property name="orientation">
-             <enum>Qt::Orientation::Horizontal</enum>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="annexe1Label">
-            <property name="text">
-             <string>Motor Pressure : -- Bar</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="annexe2Label">
-            <property name="text">
-             <string>Tank Pressure : -- Bar</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="Line" name="line_6">
-            <property name="orientation">
-             <enum>Qt::Orientation::Horizontal</enum>
-            </property>
+            <layout class="QVBoxLayout" name="verticalLayout">
+             <item>
+              <widget class="QLabel" name="flightStatusLabel">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>220</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>200</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                 <bold>true</bold>
+                 <underline>false</underline>
+                 <strikeout>false</strikeout>
+                 <kerning>false</kerning>
+                </font>
+               </property>
+               <property name="text">
+                <string>Flight Statut :  Wait</string>
+               </property>
+               <property name="scaledContents">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="gnssStatusLabel">
+               <property name="minimumSize">
+                <size>
+                 <width>220</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>200</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                 <bold>true</bold>
+                 <underline>false</underline>
+                 <strikeout>false</strikeout>
+                 <kerning>false</kerning>
+                </font>
+               </property>
+               <property name="text">
+                <string>GNSS : Wait</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="crcCheckLabel">
+               <property name="minimumSize">
+                <size>
+                 <width>220</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>200</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                 <bold>true</bold>
+                 <underline>false</underline>
+                 <strikeout>false</strikeout>
+                 <kerning>false</kerning>
+                </font>
+               </property>
+               <property name="text">
+                <string>CRC : Wait</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="Line" name="line_2">
+               <property name="orientation">
+                <enum>Qt::Orientation::Horizontal</enum>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="latitudeLabel">
+               <property name="minimumSize">
+                <size>
+                 <width>220</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>200</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                 <bold>true</bold>
+                 <underline>false</underline>
+                 <strikeout>false</strikeout>
+                 <kerning>false</kerning>
+                </font>
+               </property>
+               <property name="text">
+                <string>Latitude : -- °</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="longitudeLabel">
+               <property name="minimumSize">
+                <size>
+                 <width>220</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>200</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                 <bold>true</bold>
+                 <underline>false</underline>
+                 <strikeout>false</strikeout>
+                 <kerning>false</kerning>
+                </font>
+               </property>
+               <property name="text">
+                <string>Longitude : -- °</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="altitudeGPSLabel">
+               <property name="minimumSize">
+                <size>
+                 <width>220</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>200</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                 <bold>true</bold>
+                 <underline>false</underline>
+                 <strikeout>false</strikeout>
+                 <kerning>false</kerning>
+                </font>
+               </property>
+               <property name="text">
+                <string>Altitude GPS  :  -- m</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="Line" name="line_3">
+               <property name="orientation">
+                <enum>Qt::Orientation::Horizontal</enum>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="altitudeBaroLabel">
+               <property name="minimumSize">
+                <size>
+                 <width>220</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>200</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                 <bold>true</bold>
+                 <underline>false</underline>
+                 <strikeout>false</strikeout>
+                 <kerning>false</kerning>
+                </font>
+               </property>
+               <property name="text">
+                <string>Altitude baro : -- m</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="pressureLabel">
+               <property name="minimumSize">
+                <size>
+                 <width>220</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>200</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                 <bold>true</bold>
+                 <underline>false</underline>
+                 <strikeout>false</strikeout>
+                 <kerning>false</kerning>
+                </font>
+               </property>
+               <property name="text">
+                <string>Pressure:  -- hPa</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="temperatureLabel">
+               <property name="minimumSize">
+                <size>
+                 <width>220</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>200</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                 <bold>true</bold>
+                 <underline>false</underline>
+                 <strikeout>false</strikeout>
+                 <kerning>false</kerning>
+                </font>
+               </property>
+               <property name="text">
+                <string>Temperature : -- °C</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="Line" name="line_4">
+               <property name="orientation">
+                <enum>Qt::Orientation::Horizontal</enum>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="accXLabel">
+               <property name="minimumSize">
+                <size>
+                 <width>220</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>200</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                 <bold>true</bold>
+                 <underline>false</underline>
+                 <strikeout>false</strikeout>
+                 <kerning>false</kerning>
+                </font>
+               </property>
+               <property name="text">
+                <string>Acceleration X : -- g</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="accYLabel">
+               <property name="minimumSize">
+                <size>
+                 <width>220</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>200</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                 <bold>true</bold>
+                 <underline>false</underline>
+                 <strikeout>false</strikeout>
+                 <kerning>false</kerning>
+                </font>
+               </property>
+               <property name="text">
+                <string>Acceleration Y : -- g</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="accZLabel">
+               <property name="minimumSize">
+                <size>
+                 <width>220</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>200</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                 <bold>true</bold>
+                 <underline>false</underline>
+                 <strikeout>false</strikeout>
+                 <kerning>false</kerning>
+                </font>
+               </property>
+               <property name="text">
+                <string>Acceleration Z : -- g</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="Line" name="line_5">
+               <property name="orientation">
+                <enum>Qt::Orientation::Horizontal</enum>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="gyroXLabel">
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                 <bold>true</bold>
+                 <underline>false</underline>
+                 <strikeout>false</strikeout>
+                </font>
+               </property>
+               <property name="text">
+                <string>angular velocity X : -- deg/s</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="gyroYLabel">
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                 <bold>true</bold>
+                 <underline>false</underline>
+                 <strikeout>false</strikeout>
+                </font>
+               </property>
+               <property name="text">
+                <string>angular velocity Y : -- deg/s</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="gyroZLabel">
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                 <bold>true</bold>
+                 <underline>false</underline>
+                 <strikeout>false</strikeout>
+                </font>
+               </property>
+               <property name="text">
+                <string>angular velocity Z : -- deg/s</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
            </widget>
           </item>
           <item>
@@ -617,8 +670,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1600</width>
-     <height>18</height>
+     <width>1658</width>
+     <height>17</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuConnect">

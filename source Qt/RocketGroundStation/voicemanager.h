@@ -8,8 +8,6 @@
 #include <QtDebug>
 #include <QtCore/QDateTime>
 
-#include "telemetryframe.h"
-
 //typedef enum {PRE_FLIGHT = 0, PYRO_RDY, ASCEND, DEPLOY_ALGO, DEPLOY_TIMER, DESCEND, TOUCHDOWN, LOST} RocketStateVoice_t;
 
 class VoiceManager : public QThread

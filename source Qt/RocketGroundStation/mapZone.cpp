@@ -1,5 +1,5 @@
-#include "MapZone.h"
-#include "ui_MapZone.h"
+#include "mapZone.h"
+#include "ui_mapZone.h"
 #include <QUrl>
 
 MapZone::MapZone(QWidget *parent) :

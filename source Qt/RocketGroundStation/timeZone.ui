@@ -6,19 +6,19 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>150</width>
+    <width>250</width>
     <height>100</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>150</width>
+    <width>250</width>
     <height>100</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>16777215</width>
+    <width>300</width>
     <height>16777215</height>
    </size>
   </property>
@@ -36,15 +36,15 @@
      </property>
      <property name="minimumSize">
       <size>
-       <width>0</width>
+       <width>200</width>
        <height>0</height>
       </size>
      </property>
      <property name="frameShape">
-      <enum>QFrame::StyledPanel</enum>
+      <enum>QFrame::Shape::StyledPanel</enum>
      </property>
      <property name="frameShadow">
-      <enum>QFrame::Sunken</enum>
+      <enum>QFrame::Shadow::Sunken</enum>
      </property>
      <property name="lineWidth">
       <number>5</number>
@@ -63,21 +63,21 @@
         </property>
         <property name="font">
          <font>
-          <pointsize>15</pointsize>
+          <pointsize>20</pointsize>
          </font>
         </property>
         <property name="text">
          <string>10:56</string>
         </property>
         <property name="alignment">
-         <set>Qt::AlignCenter</set>
+         <set>Qt::AlignmentFlag::AlignCenter</set>
         </property>
        </widget>
       </item>
       <item>
        <widget class="Line" name="line_2">
         <property name="orientation">
-         <enum>Qt::Horizontal</enum>
+         <enum>Qt::Orientation::Horizontal</enum>
         </property>
        </widget>
       </item>
@@ -86,7 +86,7 @@
         <item>
          <spacer name="horizontalSpacer">
           <property name="orientation">
-           <enum>Qt::Horizontal</enum>
+           <enum>Qt::Orientation::Horizontal</enum>
           </property>
           <property name="sizeHint" stdset="0">
            <size>
@@ -112,14 +112,14 @@
           </property>
           <property name="font">
            <font>
-            <pointsize>10</pointsize>
+            <pointsize>15</pointsize>
            </font>
           </property>
           <property name="text">
            <string>t +</string>
           </property>
           <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
           </property>
          </widget>
         </item>
@@ -139,7 +139,7 @@
           </property>
           <property name="font">
            <font>
-            <pointsize>13</pointsize>
+            <pointsize>20</pointsize>
            </font>
           </property>
           <property name="text">
@@ -150,7 +150,7 @@
         <item>
          <spacer name="horizontalSpacer_2">
           <property name="orientation">
-           <enum>Qt::Horizontal</enum>
+           <enum>Qt::Orientation::Horizontal</enum>
           </property>
           <property name="sizeHint" stdset="0">
            <size>

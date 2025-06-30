@@ -9,30 +9,32 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-   MapZone.cpp \
-   TimeZone.cpp \
+   chart.cpp \
+   dashboard.cpp \
    main.cpp \
    mainwindow.cpp \
+   mapZone.cpp \
    serialport.cpp \
    settingsdialog.cpp \
    telemetryframe.cpp \
+   timeZone.cpp \
    voicemanager.cpp
 
 HEADERS += \
-   MapZone.h \
-   TimeZone.h \
    mainwindow.h \
+   mapZone.h \
    serialport.h \
    settingsdialog.h \
    telemetryframe.h \
+   timeZone.h \
    voicemanager.h
 
 
 FORMS += \
-   MapZone.ui \
-   TimeZone.ui \
    mainwindow.ui \
-   settingsdialog.ui
+   mapZone.ui \
+   settingsdialog.ui \
+   timeZone.ui
 
 
 # Default rules for deployment.

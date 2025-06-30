@@ -6,52 +6,69 @@
 #include <QString>
 
 constexpr float acc_factor = 16.0 / 32768.0;
+constexpr float gyro_factor = 2000.0/32768.0;
 
 // Structure pour représenter la trame décodée
 struct TmFrame_t {
-    QByteArray frame;  // Trame brute
-    uint8_t sts;       // Status de la fusée
-    int32_t lat;       // Latitude GNSS (en microdegrés)
-    int32_t lon;       // Longitude GNSS (en microdegrés)
-    int16_t altGNSS;       // Altitude GNSS (en mètres)
-    int32_t pressure;  // Pression ambiante (en pascals)
-    int16_t temp;      // Température ambiante (en dixièmes de degré Celsius)
-    int16_t accX;      // Accélération selon l'axe X (en milli-g)
-    int16_t accY;      // Accélération selon l'axe Y (en milli-g)
-    int16_t accZ;      // Accélération selon l'axe Z (en milli-g)
-    int16_t annex0;    // Valeur ADC0
-    int16_t annex1;    // Valeur ADC1
-    uint8_t crcReceived;  // CRC reçu avec la trame
-    uint8_t crcCalculated;  // CRC calculé à partir des données de la trame
-    bool crcCheck;  // Informe si le CRC est calculé correpond à celui recu
-    uint8_t id; // identification Software
-    uint8_t gnssStatus; // GNSS reception
-    uint8_t flightStatus; // Statut du vol
+    QByteArray frame;     // Trame brute
 
-    // Champs calculés en flottant avec coefficients appliqués
-    float latFloat;         // Latitude GNSS en degrés
-    float lonFloat ;         // Longitude GNSS en degrés
-    float pressureFloat; // Pression en mBar
-    float tempFloat;      // Température en °C
-    float accXFloat;     // Accélération X en g
-    float accYFloat;     // Accélération Y en g
-    float accZFloat;     // Accélération Z en g
-    float annex0Float;    // Valeur ADC0 en V
-    float annex1Float;    // Valeur ADC1 en V
-    float altitudeBaroFloat; // Altitude calculée à partir de la pression mesurée
+    // Données brutes
+    uint8_t  sts;
+    int32_t  lat, lon;
+    int16_t  altGNSS;
+    int32_t  pressure;
+    int16_t  temp;
+    int16_t  accX, accY, accZ;
+    int16_t  gyroX, gyroY, gyroZ;
+    int16_t  annex0, annex1;
 
-    // Constructeur par défaut pour initialiser toutes les valeurs à 0
+    // Métadonnées
+    uint8_t  crcReceived;
+    uint8_t  crcCalculated;
+    bool     crcCheck;
+    uint8_t  id;
+    uint8_t  gnssFix;
+    uint8_t  gnssFixType;
+    uint8_t  flightStatus;
+
+    // Champs calculés
+    float latFloat, lonFloat;
+    float pressureFloat, tempFloat;
+    float accXFloat, accYFloat, accZFloat;
+    float gyroXFloat, gyroYFloat, gyroZFloat;
+    float annex0Float, annex1Float;
+    float altitudeBaroFloat;
+
+    // Constructeur par défaut
     TmFrame_t()
         : frame(),
-        sts(0), lat(0), lon(0), altGNSS(0), pressure(0), temp(0),
-        accX(0), accY(0), accZ(0), annex0(0), annex1(0),
-        crcReceived(0), crcCalculated(0), crcCheck(0), id(0),
-        gnssStatus(0), flightStatus(0),
-        latFloat(0.0f), lonFloat(0.0f), pressureFloat(0.0f), tempFloat(0.0f),
-        accXFloat(0.0f), accYFloat(0.0f), accZFloat(0.0f),
-        annex0Float(0.0f), annex1Float(0.0f), altitudeBaroFloat(0.0f)
-    {}
 
+        // Init brutes
+        sts(0), lat(0), lon(0), altGNSS(0),
+        pressure(0), temp(0),
+        accX(0), accY(0), accZ(0),
+        gyroX(0), gyroY(0), gyroZ(0),
+        annex0(0), annex1(0),
+
+        // Init méta
+        crcReceived(0), crcCalculated(0), crcCheck(false),
+        id(0), gnssFix(0), gnssFixType(0), flightStatus(0),
+
+        // Init flottants
+        latFloat(0.0f), lonFloat(0.0f),
+        pressureFloat(0.0f), tempFloat(0.0f),
+        accXFloat(0.0f), accYFloat(0.0f), accZFloat(0.0f),
+        gyroXFloat(0.0f), gyroYFloat(0.0f), gyroZFloat(0.0f),
+        annex0Float(0.0f), annex1Float(0.0f),
+        altitudeBaroFloat(0.0f)
+    {}
+};
+
+enum GnssFixType : uint8_t {
+    GNSS_NO_FIX       = 0b00,
+    GNSS_OTHER_FIX    = 0b01,
+    GNSS_2D_FIX       = 0b10,
+    GNSS_3D_FIX       = 0b11
 };
 
 typedef enum {PRE_FLIGHT = 0, PYRO_RDY, ASCEND, DEPLOY_ALGO, DEPLOY_TIMER, DESCEND, TOUCHDOWN, LOST} RocketState_t;

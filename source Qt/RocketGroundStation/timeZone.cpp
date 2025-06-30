@@ -1,5 +1,5 @@
-#include "TimeZone.h"
-#include "ui_TimeZone.h"
+#include "timeZone.h"
+#include "ui_timeZone.h"
 #include "telemetryframe.h"
 
 TimeZone::TimeZone(QWidget *parent) :

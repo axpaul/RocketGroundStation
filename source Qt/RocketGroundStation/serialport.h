@@ -7,7 +7,7 @@
 #include <QMutex>
 #include <QtDebug>
 
-#define NbTrame  27
+#define NbTrame  33
 #define CRC8_DPOLY 0x31
 
 class SettingsDialog;

@@ -194,53 +194,58 @@ void MainWindow::disactivateButtonSerial(){
 /* Function reception and data distribution */
 
 void MainWindow::receptionData(const TmFrame_t &frame, const QString &decodedString) {
+    QString timestamp = QDateTime::currentDateTime().toString("[hh:mm:ss.zzz] ");
+    QString frameHex = frame.frame.toHex(' ');
 
-        QString timestamp = QDateTime::currentDateTime().toString("[hh:mm:ss.zzz] ");
+    // Console display
+    addText(timestamp + frameHex);
+    addText(decodedString);
 
-        // Générer une chaîne contenant la trame en hexadécimal pour le fichier
-        QString frameFile = frame.frame.toHex(' ');
+    // Update UI elements
+    updateLatitude(frame.latFloat);
+    updateLongitude(frame.lonFloat);
+    updateAltitudeGPS(frame.altGNSS);
+    updateAltitudeBaro(frame.altitudeBaroFloat);
+    updatePressure(frame.pressureFloat);
+    updateTemperature(frame.tempFloat);
+    updateAccelerationX(frame.accXFloat);
+    updateAccelerationY(frame.accYFloat);
+    updateAccelerationZ(frame.accZFloat);
+    updateGnssStatus(frame.gnssFix);
+    updateFlightStatus(frame.flightStatus);
+    updateCrcCheckLabel(frame.crcCheck);
 
-        addText(timestamp + " " + frameFile);
-        addText(decodedString);
+    // Update map
+    ui->mapzone->setPosition((double)frame.lat * 1e-7, (double)frame.lon * 1e-7);
 
-        updateLatitude(frame.latFloat);
-        updateLongitude(frame.lonFloat);
-        updateAltitudeGPS(frame.altGNSS);
-        updatePressure(frame.pressureFloat);
-        updateTemperature(frame.tempFloat);
-        updateAccelerationX(frame.accXFloat);
-        updateAccelerationY(frame.accYFloat);
-        updateAccelerationZ(frame.accZFloat);
-        updateGnssStatus(frame.gnssStatus);
-        updateFlightStatus(frame.flightStatus);
-        updateCrcCheckLabel(frame.crcCheck);
-        updateAltitudeBaro(frame.altitudeBaroFloat);
+    // Reset watchdog
+    ui->chronoWidget->resetWatchdog();
 
-        ui->mapzone->setPosition((double)frame.lat * 1e-7, (double)frame.lon * 1e-7);
-        ui->chronoWidget->resetWatchdog();
+    // Log to file
+    if (m_logFile.isOpen()) {
+        QTextStream out(&m_logFile);
+        out << timestamp << ";" << frameHex << ";"
+            << frame.sts << ";"
+            << frame.flightStatus << ";"
+            << frame.gnssFix << ";"
+            << frame.lat << ";"
+            << frame.lon << ";"
+            << frame.altGNSS << ";"
+            << frame.altitudeBaroFloat << ";"
+            << frame.pressure << ";"
+            << frame.temp << ";"
+            << frame.accX << ";"
+            << frame.accY << ";"
+            << frame.accZ << ";"
+            << frame.annex0 << ";"
+            << frame.annex1 << "\n";
+    }
 
-        if (m_logFile.isOpen()) {
-                QTextStream out(&m_logFile);
-                out << timestamp << ";" << frameFile << ";"
-                    << frame.sts << ";"
-                    << frame.lat << ";"
-                    << frame.lon << ";"
-                    << frame.altGNSS << ";"
-                    << frame.altitudeBaroFloat << ";"
-                    << frame.pressure << ";"
-                    << frame.temp << ";"
-                    << frame.accX << ";"
-                    << frame.accY << ";"
-                    << frame.accZ << ";"
-                    << frame.annex0 << ";"
-                    << frame.annex1 << "\n";
-        }
-
-        if (frame.crcCheck){
-            addAccelerationsAndScroll(frame.accXFloat, frame.accYFloat, frame.accZFloat);
-            addPressureAltitudeAndScroll(frame.pressureFloat, frame.altGNSS, frame.altitudeBaroFloat);
-        }
-
+    // Plot updates if frame is valid
+    if (frame.crcCheck) {
+        addAccelerationsAndScroll(frame.accXFloat, frame.accYFloat, frame.accZFloat);
+        addPressureAltitudeAndScroll(frame.pressureFloat, frame.altGNSS, frame.altitudeBaroFloat);
+    }
 }
 
 /* Console management function */
@@ -318,6 +323,15 @@ void MainWindow::fontLabel(){
     ui->flightStatusLabel->setText("Flight Status : Wait");
     ui->flightStatusLabel->setStyleSheet("color: black;");
 
+    //Labels d'état
+    ui->gyroXLabel->setFont(boldFont);
+    ui->gyroXLabel->setText("Motor Pressure : -- Bar");
+    ui->gyroXLabel->setStyleSheet("color: black;");
+
+    ui->gyroYLabel->setFont(boldFont);
+    ui->gyroYLabel->setText("Tank Pressure : -- Bar");
+    ui->gyroYLabel->setStyleSheet("color: black;");
+
 }
 
 void MainWindow::clearConsole() {
@@ -353,397 +367,11 @@ void MainWindow::clearConsole() {
              << "][MAINWINDOW] Interface reset.";
 }
 
-/* Dashboard update function */
-
-void MainWindow::updateLatitude(float latitude) {
-    QString text = QString("Latitude : %1 °").arg(latitude, 0, 'f', 7);
-    ui->latitudeLabel->setFont(QFont("Segoe UI", 9, QFont::Bold));
-    ui->latitudeLabel->setText(text);
-}
-
-void MainWindow::updateLongitude(float longitude) {
-    QString text = QString("Longitude : %1 °").arg(longitude, 0, 'f', 7);
-    ui->longitudeLabel->setFont(QFont("Segoe UI", 9, QFont::Bold));
-    ui->longitudeLabel->setText(text);
-}
-
-void MainWindow::updateAltitudeGPS(int altitude) {
-    QString text = QString("Altitude gnss : %1 m").arg(altitude);
-    ui->altitudeGPSLabel->setFont(QFont("Segoe UI", 9, QFont::Bold));
-    ui->altitudeGPSLabel->setText(text);
-
-    // Colorer en rouge si l'altitude dépasse 10 000 m
-    if (altitude > 10000) {
-        ui->altitudeGPSLabel->setStyleSheet("color: red;");
-    } else {
-        ui->altitudeGPSLabel->setStyleSheet("color: black;");
-    }
-}
-
-void MainWindow::updateAltitudeBaro(float altitude) {
-    QString text = QString("Altitude baro : %1 m").arg(altitude, 0, 'f', 2);
-    ui->altitudeBaroLabel->setFont(QFont("Segoe UI", 9, QFont::Bold));
-    ui->altitudeBaroLabel->setText(text);
-
-    // Colorer en rouge si l'altitude dépasse 10 000 m
-    if (altitude > 10000) {
-        ui->altitudeBaroLabel->setStyleSheet("color: red;");
-    } else {
-        ui->altitudeBaroLabel->setStyleSheet("color: black;");
-    }
-}
-
-void MainWindow::updatePressure(float pressure) {
-    QString text = QString("Pressure : %1 mBar").arg(pressure, 0, 'f', 2);
-    ui->pressureLabel->setFont(QFont("Segoe UI", 9, QFont::Bold));
-    ui->pressureLabel->setText(text);
-
-    // Coloration conditionnelle pour des valeurs anormales de pression
-    if (pressure < 300 || pressure > 1200) {
-        ui->pressureLabel->setStyleSheet("color: orange;");
-    } else {
-        ui->pressureLabel->setStyleSheet("color: black;");
-    }
-}
-
-void MainWindow::updateAnnexe1(float pressure) {
-    QString text = QString("Motor Pressure  : %1 Bar").arg(pressure, 0, 'f', 2);
-    ui->pressureLabel->setFont(QFont("Segoe UI", 9, QFont::Bold));
-    ui->pressureLabel->setText(text);
-}
-
-void MainWindow::updateAnnexe2(float pressure) {
-    QString text = QString("Tank Pressure : %1 Bar").arg(pressure, 0, 'f', 2);
-    ui->pressureLabel->setFont(QFont("Segoe UI", 9, QFont::Bold));
-    ui->pressureLabel->setText(text);
-
-    // Coloration conditionnelle pour des valeurs anormales de pression
-    if (pressure > 200) {
-        ui->pressureLabel->setStyleSheet("color: red;");
-    } else {
-        ui->pressureLabel->setStyleSheet("color: black;");
-    }
-}
-
-void MainWindow::updateTemperature(float temperature) {
-    QString text = QString("Temperature : %1 °C").arg(temperature, 0, 'f', 2);
-    ui->temperatureLabel->setFont(QFont("Segoe UI", 9, QFont::Bold));
-    ui->temperatureLabel->setText(text);
-
-    // Changer en rouge si la température est critique
-    if (temperature > 50) {
-        ui->temperatureLabel->setStyleSheet("color: red;");
-    } else {
-        ui->temperatureLabel->setStyleSheet("color: black;");
-    }
-}
-
-void MainWindow::updateAccelerationX(float accX) {
-    QString text = QString("Acceleration X : %1 g").arg(accX, 0, 'f', 3);
-    ui->accXLabel->setFont(QFont("Segoe UI", 9, QFont::Bold));
-    ui->accXLabel->setText(text);
-}
-
-void MainWindow::updateAccelerationY(float accY) {
-    QString text = QString("Acceleration Y : %1 g").arg(accY, 0, 'f', 3);
-    ui->accYLabel->setFont(QFont("Segoe UI", 9, QFont::Bold));
-    ui->accYLabel->setText(text);
-}
-
-void MainWindow::updateAccelerationZ(float accZ) {
-    QString text = QString("Acceleration Z : %1 g").arg(accZ, 0, 'f', 3);
-    ui->accZLabel->setFont(QFont("Segoe UI", 9, QFont::Bold));
-    ui->accZLabel->setText(text);
-}
-
-void MainWindow::updateGnssStatus(uint8_t gnssStatus) {
-
-    QString statusText;
-    QString colorStyle;
-
-    if (gnssStatus == 0) {
-        statusText = "LOST";
-        colorStyle = "color: red;";
-    } else {
-        statusText = "OK";
-        colorStyle = "color: green;";
-    }
-
-    ui->gnssStatusLabel->setFont(QFont("Segoe UI", 9, QFont::Bold));
-    ui->gnssStatusLabel->setText("GNSS : " + statusText);
-    ui->gnssStatusLabel->setStyleSheet(colorStyle);
-}
-
-void MainWindow::updateCrcCheckLabel(bool crcCheck){
-    QString statusText;
-    QString colorStyle;
-
-    if (crcCheck) {
-        statusText = "OK";
-        colorStyle = "color: green;";
-    } else {
-        statusText = "ERROR";
-        colorStyle = "color: red;";
-    }
-
-    ui->crcCheckLabel->setText("CRC : " + statusText);
-    ui->crcCheckLabel->setFont(QFont("Segoe UI", 9, QFont::Bold));
-    ui->crcCheckLabel->setStyleSheet(colorStyle);
-}
-
-void MainWindow::updateFlightStatus(uint8_t flightStatus) {
-    QString statusText;
-    QString colorStyle;
-
-    // Attribuer un texte et une couleur en fonction du statut
-    switch (flightStatus) {
-    case PRE_FLIGHT:
-        statusText = "PREFLIGHT";
-        colorStyle = "color: blue;";
-        if(ui->chronoWidget->isChronoRunning() || ui->chronoWidget->getChrono_ms() != 0){
-            ui->chronoWidget->stopChrono();
-            ui->chronoWidget->resetChrono();
-        }
-        break;
-    case PYRO_RDY:
-        statusText = "ARMED";
-        colorStyle = "color: red;";
-        if(ui->chronoWidget->isChronoRunning() || ui->chronoWidget->getChrono_ms() != 0){
-            ui->chronoWidget->stopChrono();
-            ui->chronoWidget->resetChrono();
-        }
-        break;
-    case ASCEND:
-        statusText = "ASCENT";
-        colorStyle = "color: green;";
-        ui->chronoWidget->startChrono();
-        break;
-    case DEPLOY_ALGO:
-        statusText = "ALGO";
-        colorStyle = "color: orange;";
-        break;
-    case DEPLOY_TIMER:
-        statusText = "TIMER";
-        colorStyle = "color: purple;";
-        break;
-    case DESCEND:
-        statusText = "BALLISTIC";
-        colorStyle = "color: brown;";
-        break;
-    case TOUCHDOWN:
-        statusText = "LANDING";
-        colorStyle = "color: gray;";
-        ui->chronoWidget->stopChrono();
-        break;
-    case LOST:
-        statusText = "LOST";
-        colorStyle = "color: red;";
-        break;
-    default:
-        statusText = "UNKNOWN";
-        colorStyle = "color: black;";
-    }
-
-    ui->flightStatusLabel->setText("Flight Statut : " + statusText);
-    ui->flightStatusLabel->setFont(QFont("Segoe UI", 9, QFont::Bold));
-    ui->flightStatusLabel->setStyleSheet(colorStyle);
-    ui->chronoWidget->setFlightStatus(flightStatus);
-
-    // Appeler le gestionnaire pour lire la voix si nécessaire
-    MainWindow::triggerSpeaker(flightStatus);
-}
-
 void MainWindow::watchdogLostHandler()
 {
     updateFlightStatus(LOST);
 }
 
-/* Chart management function */
 
-void MainWindow::initGraphicAcc() {
-    // Obtenir le QChart déjà associé au QChartView
-    QChart *chart = ui->graphicsViewAcceleration->chart();
-    if (!chart) {
-        qDebug() << "Erreur : Le graphique (chart) n'est pas initialisé.";
-        return; // Assurez-vous que le QChart existe
-    }
-
-    // Configurer le titre, légende et animation
-    //chart->setTitle("Acceleration graph");
-    chart->legend()->setVisible(true); // Affiche la légende pour identifier les séries
-    chart->setAnimationOptions(QChart::AllAnimations);
-
-    // Créer les séries pour accX, accY et accZ
-    m_seriesAccX = new QLineSeries();
-    m_seriesAccX->setName("Acceleration X");
-    chart->addSeries(m_seriesAccX);
-
-    m_seriesAccY = new QLineSeries();
-    m_seriesAccY->setName("Acceleration Y");
-    chart->addSeries(m_seriesAccY);
-
-    m_seriesAccZ = new QLineSeries();
-    m_seriesAccZ->setName("Acceleration Z");
-    chart->addSeries(m_seriesAccZ);
-
-    // Configurer l'axe X (temps)
-    m_axisAccX = new QDateTimeAxis();
-    m_axisAccX->setTickCount(15);
-    m_axisAccX->setFormat("hh:mm:ss");
-    m_axisAccX->setTitleText("Time");
-    chart->addAxis(m_axisAccX, Qt::AlignBottom);
-
-    // Attacher les séries à l'axe X
-    m_seriesAccX->attachAxis(m_axisAccX);
-    m_seriesAccY->attachAxis(m_axisAccX);
-    m_seriesAccZ->attachAxis(m_axisAccX);
-
-    // Configurer l'axe Y (accélération)
-    m_axisAccY = new QValueAxis();
-    m_axisAccY->setLabelFormat("%.2f");
-    m_axisAccY->setTitleText("Acceleration (g)");
-    m_axisAccY->setRange(-16, 16); // Ajustez selon vos besoins
-    chart->addAxis(m_axisAccY, Qt::AlignLeft);
-
-    // Attacher les séries à l'axe Y
-    m_seriesAccX->attachAxis(m_axisAccY);
-    m_seriesAccY->attachAxis(m_axisAccY);
-    m_seriesAccZ->attachAxis(m_axisAccY);
-
-    // Définir les limites initiales de l'axe X
-    m_axisAccX->setMin(QDateTime::currentDateTime().addSecs(0)); // Afficher les 30 dernières secondes
-    m_axisAccX->setMax(QDateTime::currentDateTime().addSecs(120));
-
-    QPen penX(Qt::red);
-    penX.setWidth(2);
-    m_seriesAccX->setPen(penX);
-
-    QPen penY(Qt::green);
-    penY.setWidth(2);
-    m_seriesAccY->setPen(penY);
-
-    QPen penZ(Qt::blue);
-    penZ.setWidth(2);
-    m_seriesAccZ->setPen(penZ);
-}
-
-void MainWindow::addAccelerationsAndScroll(float accX, float accY, float accZ) {
-    // Obtenir le temps actuel
-    qint64 currentTime = QDateTime::currentDateTime().toMSecsSinceEpoch();
-
-    // Ajouter les données aux séries respectives
-    m_seriesAccX->append(currentTime, accX);
-    m_seriesAccY->append(currentTime, accY);
-    m_seriesAccZ->append(currentTime, accZ);
-
-    // Vérifier si le temps actuel dépasse la limite de l'axe X
-    if (QDateTime::currentDateTime() >= m_axisAccX->max()) {
-        ui->graphicsViewAcceleration->chart()->scroll(120, 0); // Faire défiler le graphique vers la droite
-    }
-
-    // Limiter le nombre de points dans chaque série pour éviter une surcharge
-    if (m_seriesAccX->count() > 1000) {
-        m_seriesAccX->remove(0);
-        m_seriesAccY->remove(0);
-        m_seriesAccZ->remove(0);
-    }
-}
-
-void MainWindow::initGraphicPressureAltitude() {
-    // Obtenir le QChart associé au QChartView pour la pression et l'altitude
-    QChart *chart = ui->graphicsViewAltitude->chart();
-    if (!chart) {
-        qDebug() << "Erreur : Le graphique (chart) n'est pas initialisé.";
-        return; // Vérifiez que le QChart existe
-    }
-
-    // Configurer le titre, légende et animation
-    //chart->setTitle("Pressure and Altitude graph");
-    chart->legend()->setVisible(true); // Affiche la légende pour identifier les séries
-    chart->setAnimationOptions(QChart::AllAnimations);
-
-    // Créer les séries pour pression et altitude
-    m_seriesPressure = new QLineSeries();
-    m_seriesPressure->setName("Pressure (hPa)");
-    chart->addSeries(m_seriesPressure);
-
-    m_seriesAltitudeGNSS = new QLineSeries();
-    m_seriesAltitudeGNSS->setName("GNSS altitude (m)");
-    chart->addSeries(m_seriesAltitudeGNSS);
-
-    m_seriesAltitudeBaro = new QLineSeries();
-    m_seriesAltitudeBaro ->setName("Baro altitude (m)");
-    chart->addSeries(m_seriesAltitudeBaro);
-
-    // Configurer l'axe X (temps)
-    m_axisPressX = new QDateTimeAxis();
-    m_axisPressX->setTickCount(15);
-    m_axisPressX->setFormat("hh:mm:ss");
-    m_axisPressX->setTitleText("Time");
-    chart->addAxis(m_axisPressX, Qt::AlignBottom);
-
-    // Attacher les séries à l'axe X
-    m_seriesPressure->attachAxis(m_axisPressX);
-    m_seriesAltitudeGNSS->attachAxis(m_axisPressX);
-    m_seriesAltitudeBaro->attachAxis(m_axisPressX);
-
-    // Configurer l'axe Y (pression)
-    m_axisPressY = new QValueAxis();
-    m_axisPressY->setLabelFormat("%.2f");
-    m_axisPressY->setTitleText("Pressure (hP)");
-    m_axisPressY->setRange(500, 1100);
-    chart->addAxis(m_axisPressY, Qt::AlignLeft);
-
-    // Configurer l'axe Y (altitude)
-    m_axisAltY = new QValueAxis();
-    m_axisAltY->setLabelFormat("%.2f");
-    m_axisAltY->setTitleText("Altitude (m)");
-    m_axisAltY->setRange(0, 5000);
-    chart->addAxis(m_axisAltY, Qt::AlignRight);
-
-    // Attacher les séries à l'axe Y
-    m_seriesPressure->attachAxis(m_axisPressY);
-    m_seriesAltitudeGNSS->attachAxis(m_axisAltY);
-    m_seriesAltitudeBaro->attachAxis(m_axisAltY);
-
-    // Définir les limites initiales de l'axe X
-    m_axisPressX->setMin(QDateTime::currentDateTime().addSecs(0));
-    m_axisPressX->setMax(QDateTime::currentDateTime().addSecs(120));
-
-    // Personnaliser les couleurs des séries
-    QPen penPressure(Qt::magenta);
-    penPressure.setWidth(2);
-    m_seriesPressure->setPen(penPressure);
-
-    QPen penAltitudeGNSS(Qt::cyan);
-    penAltitudeGNSS.setWidth(2);
-    m_seriesAltitudeGNSS->setPen(penAltitudeGNSS);
-
-    QPen penAltitudeBaro(Qt::gray);
-    penAltitudeBaro.setWidth(2);
-    m_seriesAltitudeGNSS->setPen(penAltitudeBaro);
-}
-
-void MainWindow::addPressureAltitudeAndScroll(float pressure, float altitudeGNSS, float altitudeBaro) {
-    // Obtenir le temps actuel
-    qint64 currentTime = QDateTime::currentDateTime().toMSecsSinceEpoch();
-
-    // Ajouter les données aux séries respectives
-    m_seriesPressure->append(currentTime, pressure);
-    m_seriesAltitudeGNSS->append(currentTime, altitudeGNSS);
-    m_seriesAltitudeBaro->append(currentTime, altitudeBaro);
-
-
-    // Vérifier si le temps actuel dépasse la limite de l'axe X
-    if (QDateTime::currentDateTime() >= m_axisPressX->max()) {
-        ui->graphicsViewAltitude->chart()->scroll(120, 0); // Faire défiler le graphique vers la droite
-    }
-
-    // Limiter le nombre de points dans chaque série
-    while (m_seriesPressure->count() > 1000) {
-        m_seriesPressure->remove(0);
-        m_seriesAltitudeGNSS->remove(0);
-    }
-}
 
 

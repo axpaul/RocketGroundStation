@@ -1,7 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#define VERSION_SERIAL 1.2f // Définition de la version du protocole série
+#define VERSION_SERIAL 1.3f // Définition de la version du protocole série
 
 #include <QMainWindow>
 #include <QSerialPort>
@@ -104,8 +104,9 @@ private:
     void updateFlightStatus(uint8_t flightStatus);
     void updateCrcCheckLabel(bool crcCheck);
     void updateAltitudeBaro(float altitude);
-    void updateAnnexe1(float pressure);
-    void updateAnnexe2(float pressure);
+    void updateGyroX(float gyroX);
+    void updategyroY(float gyroY);
+    void updategyroZ(float gyroZ);
 
     Ui::MainWindow *ui;
     QObject *m_parent;
