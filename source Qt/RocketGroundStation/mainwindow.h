@@ -85,9 +85,10 @@ private:
     void clearConsole();
 
     void initGraphicAcc();
-    void addAccelerationsAndScroll(float accX, float accY, float accZ);
+    void addAccelerationsAndScroll(float accX, float accY, float accZ, float gyroX, float gyroY, float gyroZ);
     void initGraphicPressureAltitude();
     void addPressureAltitudeAndScroll(float pressure, float altitudeGNSS, float altitudeBaro);
+    void applyChartTheme(QChart *chart, bool darkMode);
 
     void applyTelemetryPanelStyle();
 
@@ -100,13 +101,13 @@ private:
     void updateAccelerationX(float accX);
     void updateAccelerationY(float accY);
     void updateAccelerationZ(float accZ);
-    void updateGnssStatus(uint8_t gnssStatus);
+    void updateGnssStatus(uint8_t gnssFix, uint8_t gnssFixType);
     void updateFlightStatus(uint8_t flightStatus);
     void updateCrcCheckLabel(bool crcCheck);
     void updateAltitudeBaro(float altitude);
     void updateGyroX(float gyroX);
-    void updategyroY(float gyroY);
-    void updategyroZ(float gyroZ);
+    void updateGyroY(float gyroY);
+    void updateGyroZ(float gyroZ);
 
     Ui::MainWindow *ui;
     QObject *m_parent;
@@ -127,7 +128,12 @@ private:
     QLineSeries *m_seriesAccY;
     QLineSeries *m_seriesAccZ;
     QDateTimeAxis *m_axisAccX;
+    QLineSeries *m_seriesGyroX;
+    QLineSeries *m_seriesGyroY;
+    QLineSeries *m_seriesGyroZ;
+    QValueAxis *m_axisGyroY;
     QValueAxis *m_axisAccY;
+    bool m_isDarkMode = true; // Par défaut clair
 
     QLineSeries *m_seriesPressure;
     QLineSeries *m_seriesAltitudeGNSS;

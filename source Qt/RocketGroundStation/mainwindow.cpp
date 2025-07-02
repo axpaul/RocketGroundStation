@@ -163,10 +163,27 @@ void MainWindow::openSerialPort() {
     QString filename = "log-" + QDateTime::currentDateTime().toString("yyyyMMdd-hhmmss") + ".csv";
     m_logFile.setFileName(filename);
 
-    if (m_logFile.open(QIODevice::Append | QIODevice::Text)) {
+    if (m_logFile.open(QIODevice::Append | QIODevice::Text) && m_logFile.size() == 0) {
         QTextStream out(&m_logFile);
-        // Écrire l'en-tête si le fichier est nouveau
-        out << "Timestamp;Frame;Sts;Lat;Lon;Altitude;Pressure;Temperature;Acceleration X;Acceleration Y;Acceleration Z; Annex 0;Annex 1;\n";
+        out << "Timestamp;"
+            << "Frame HEX;"
+            << "ID;Sts;"
+            << "FlightStatus;GNSS Fix;GNSS Fix Type;"
+            << "Lat;LatFloat;"
+            << "Lon;LonFloat;"
+            << "Altitude GNSS;"
+            << "Altitude Baro;"
+            << "Pressure;Pressure Float;"
+            << "Temperature;Temperature Float;"
+            << "Acc X;Acc X Float;"
+            << "Acc Y;Acc Y Float;"
+            << "Acc Z;Acc Z Float;"
+            << "Gyro X;Gyro X Float;"
+            << "Gyro Y;Gyro Y Float;"
+            << "Gyro Z;Gyro Z Float;"
+            << "Annex 0;Annex 0 Float;"
+            << "Annex 1;Annex 1 Float;"
+            << "CRC Received;CRC Calculated;CRC Check\n";
     }
     m_serialThread->openSerial();
 }
@@ -211,7 +228,10 @@ void MainWindow::receptionData(const TmFrame_t &frame, const QString &decodedStr
     updateAccelerationX(frame.accXFloat);
     updateAccelerationY(frame.accYFloat);
     updateAccelerationZ(frame.accZFloat);
-    updateGnssStatus(frame.gnssFix);
+    updateGyroX(frame.gyroXFloat);
+    updateGyroY(frame.gyroYFloat);
+    updateGyroZ(frame.gyroZFloat);
+    updateGnssStatus(frame.gnssFix, frame.gnssFixType);
     updateFlightStatus(frame.flightStatus);
     updateCrcCheckLabel(frame.crcCheck);
 
@@ -224,30 +244,42 @@ void MainWindow::receptionData(const TmFrame_t &frame, const QString &decodedStr
     // Log to file
     if (m_logFile.isOpen()) {
         QTextStream out(&m_logFile);
-        out << timestamp << ";" << frameHex << ";"
+        out << timestamp << ";"
+            << frameHex << ";"
+            << frame.id << ";"
             << frame.sts << ";"
             << frame.flightStatus << ";"
             << frame.gnssFix << ";"
-            << frame.lat << ";"
-            << frame.lon << ";"
+            << frame.gnssFixType << ";"
+            << frame.lat << ";" << frame.latFloat << ";"
+            << frame.lon << ";" << frame.lonFloat << ";"
             << frame.altGNSS << ";"
             << frame.altitudeBaroFloat << ";"
-            << frame.pressure << ";"
-            << frame.temp << ";"
-            << frame.accX << ";"
-            << frame.accY << ";"
-            << frame.accZ << ";"
-            << frame.annex0 << ";"
-            << frame.annex1 << "\n";
+            << frame.pressure << ";" << frame.pressureFloat << ";"
+            << frame.temp << ";" << frame.tempFloat << ";"
+            << frame.accX << ";" << frame.accXFloat << ";"
+            << frame.accY << ";" << frame.accYFloat << ";"
+            << frame.accZ << ";" << frame.accZFloat << ";"
+            << frame.gyroX << ";" << frame.gyroXFloat << ";"
+            << frame.gyroY << ";" << frame.gyroYFloat << ";"
+            << frame.gyroZ << ";" << frame.gyroZFloat << ";"
+            << frame.annex0 << ";" << frame.annex0Float << ";"
+            << frame.annex1 << ";" << frame.annex1Float << ";"
+            << frame.crcReceived << ";" << frame.crcCalculated << ";" << frame.crcCheck
+            << "\n";
     }
 
-    // Plot updates if frame is valid
+    // Graphes si trame valide
     if (frame.crcCheck) {
-        addAccelerationsAndScroll(frame.accXFloat, frame.accYFloat, frame.accZFloat);
-        addPressureAltitudeAndScroll(frame.pressureFloat, frame.altGNSS, frame.altitudeBaroFloat);
+        addAccelerationsAndScroll(frame.accXFloat, frame.accYFloat, frame.accZFloat, frame.gyroXFloat, frame.gyroYFloat, frame.gyroZFloat);
+        if(frame.gnssFix){
+            addPressureAltitudeAndScroll(frame.pressureFloat, frame.altGNSS, frame.altitudeBaroFloat);
+        }
+        else{
+            addPressureAltitudeAndScroll(frame.pressureFloat, 0.0, frame.altitudeBaroFloat);
+        }
     }
 }
-
 /* Console management function */
 
 void MainWindow::addText(const QString &text) {
@@ -278,7 +310,7 @@ void MainWindow::addText(const QString &text) {
 
 void MainWindow::fontLabel(){
     // Appliquer un style en gras pour tous les labels
-    QFont boldFont("Segoe UI", 9, QFont::Bold);
+    QFont boldFont("Segoe UI", 10, QFont::Bold);
 
     // Labels de position
     ui->latitudeLabel->setFont(boldFont);
@@ -313,25 +345,22 @@ void MainWindow::fontLabel(){
     // Labels d'état
     ui->gnssStatusLabel->setFont(boldFont);
     ui->gnssStatusLabel->setText("GNSS : Wait");
-    ui->gnssStatusLabel->setStyleSheet("color: black;");
 
     ui->crcCheckLabel->setFont(boldFont);
     ui->crcCheckLabel->setText("CRC : Wait");
-    ui->crcCheckLabel->setStyleSheet("color: black;");
 
     ui->flightStatusLabel->setFont(boldFont);
     ui->flightStatusLabel->setText("Flight Status : Wait");
-    ui->flightStatusLabel->setStyleSheet("color: black;");
 
     //Labels d'état
     ui->gyroXLabel->setFont(boldFont);
-    ui->gyroXLabel->setText("Motor Pressure : -- Bar");
-    ui->gyroXLabel->setStyleSheet("color: black;");
+    ui->gyroXLabel->setText("Gyro X : -- °/s");
 
     ui->gyroYLabel->setFont(boldFont);
-    ui->gyroYLabel->setText("Tank Pressure : -- Bar");
-    ui->gyroYLabel->setStyleSheet("color: black;");
+    ui->gyroYLabel->setText("Gyro Y : -- °/s");
 
+    ui->gyroZLabel->setFont(boldFont);
+    ui->gyroZLabel->setText("Gyro Z : -- °/s");
 }
 
 void MainWindow::clearConsole() {

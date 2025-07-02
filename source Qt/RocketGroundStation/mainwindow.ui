@@ -471,6 +471,7 @@
                <property name="font">
                 <font>
                  <pointsize>10</pointsize>
+                 <italic>false</italic>
                  <bold>true</bold>
                  <underline>false</underline>
                  <strikeout>false</strikeout>
@@ -671,7 +672,7 @@
      <x>0</x>
      <y>0</y>
      <width>1658</width>
-     <height>17</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuConnect">
@@ -698,15 +699,9 @@
     <addaction name="actionAbout"/>
     <addaction name="actionAbout_Qt"/>
    </widget>
-   <widget class="QMenu" name="menuMap">
-    <property name="title">
-     <string>Map</string>
-    </property>
-   </widget>
    <addaction name="menuConnect"/>
    <addaction name="menuTools"/>
    <addaction name="menuHelp"/>
-   <addaction name="menuMap"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <widget class="QToolBar" name="toolBar">

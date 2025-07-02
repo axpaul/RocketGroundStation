@@ -19,10 +19,10 @@ def calculate_crc8(data):
     return crc
 
 # Configurer le port COM (remplacer 'COM7' par le port série utilisé)
-ser = serial.Serial('COM12', baudrate=9600, timeout=1)
+ser = serial.Serial('COM6', baudrate=9600, timeout=1)
 
 # Ouvrir le fichier contenant les messages hexadécimaux
-with open('C:/Users/paulm/OneDrive/Bureau/Software/RocketGroundStation/source Qt/VirtualSerialCom/log-sirius.txt', 'r') as file:
+with open('C:/Users/dtnav/Desktop/SOFTWARE/RocketGroundStation/source Qt/VirtualSerialCom/log-sirius.txt', 'r') as file:
     for line in file:
         # Nettoyer la ligne en retirant les espaces et les sauts de ligne
         hex_data = line.strip().replace(' ', '')

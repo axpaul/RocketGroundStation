@@ -89,13 +89,13 @@ void TimeZone::setFlightStatus(uint8_t flightStatus){
     // Définir les couleurs en fonction du statut
     switch (flightStatus) {
     case PRE_FLIGHT:
-        colorStyle = "color: blue;";
+        colorStyle = "color: green;";
         break;
     case PYRO_RDY:
         colorStyle = "color: red;";
         break;
     case ASCEND:
-        colorStyle = "color: green;";
+        colorStyle = "color: cyan;";
         break;
     case DEPLOY_ALGO:
         colorStyle = "color: orange;";

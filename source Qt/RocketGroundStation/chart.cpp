@@ -4,19 +4,16 @@
 /* Chart management function */
 
 void MainWindow::initGraphicAcc() {
-    // Obtenir le QChart déjà associé au QChartView
     QChart *chart = ui->graphicsViewAcceleration->chart();
     if (!chart) {
         qDebug() << "Erreur : Le graphique (chart) n'est pas initialisé.";
-        return; // Assurez-vous que le QChart existe
+        return;
     }
 
-    // Configurer le titre, légende et animation
-    //chart->setTitle("Acceleration graph");
-    chart->legend()->setVisible(true); // Affiche la légende pour identifier les séries
+    chart->legend()->setVisible(true);
     chart->setAnimationOptions(QChart::AllAnimations);
 
-    // Créer les séries pour accX, accY et accZ
+    // --- Séries Accélération ---
     m_seriesAccX = new QLineSeries();
     m_seriesAccX->setName("Acceleration X");
     chart->addSeries(m_seriesAccX);
@@ -29,66 +26,105 @@ void MainWindow::initGraphicAcc() {
     m_seriesAccZ->setName("Acceleration Z");
     chart->addSeries(m_seriesAccZ);
 
-    // Configurer l'axe X (temps)
+    // --- Séries Gyroscope ---
+    m_seriesGyroX = new QLineSeries();
+    m_seriesGyroX->setName("Gyro X");
+    chart->addSeries(m_seriesGyroX);
+
+    m_seriesGyroY = new QLineSeries();
+    m_seriesGyroY->setName("Gyro Y");
+    chart->addSeries(m_seriesGyroY);
+
+    m_seriesGyroZ = new QLineSeries();
+    m_seriesGyroZ->setName("Gyro Z");
+    chart->addSeries(m_seriesGyroZ);
+
+    // --- Axe X Temps ---
     m_axisAccX = new QDateTimeAxis();
     m_axisAccX->setTickCount(15);
     m_axisAccX->setFormat("hh:mm:ss");
     m_axisAccX->setTitleText("Time");
     chart->addAxis(m_axisAccX, Qt::AlignBottom);
 
-    // Attacher les séries à l'axe X
+    // Lier toutes les séries à l'axe X
     m_seriesAccX->attachAxis(m_axisAccX);
     m_seriesAccY->attachAxis(m_axisAccX);
     m_seriesAccZ->attachAxis(m_axisAccX);
+    m_seriesGyroX->attachAxis(m_axisAccX);
+    m_seriesGyroY->attachAxis(m_axisAccX);
+    m_seriesGyroZ->attachAxis(m_axisAccX);
 
-    // Configurer l'axe Y (accélération)
+    // --- Axe Y gauche pour l'accélération ---
     m_axisAccY = new QValueAxis();
     m_axisAccY->setLabelFormat("%.2f");
     m_axisAccY->setTitleText("Acceleration (g)");
-    m_axisAccY->setRange(-16, 16); // Ajustez selon vos besoins
+    m_axisAccY->setRange(-16, 16);
     chart->addAxis(m_axisAccY, Qt::AlignLeft);
 
-    // Attacher les séries à l'axe Y
     m_seriesAccX->attachAxis(m_axisAccY);
     m_seriesAccY->attachAxis(m_axisAccY);
     m_seriesAccZ->attachAxis(m_axisAccY);
 
-    // Définir les limites initiales de l'axe X
-    m_axisAccX->setMin(QDateTime::currentDateTime().addSecs(0)); // Afficher les 30 dernières secondes
-    m_axisAccX->setMax(QDateTime::currentDateTime().addSecs(120));
+    // --- Axe Y droit pour le gyroscope ---
+    m_axisGyroY = new QValueAxis();
+    m_axisGyroY->setLabelFormat("%.2f");
+    m_axisGyroY->setTitleText("Gyro (°/s)");
+    m_axisGyroY->setRange(-500, 500); // Adapte selon les valeurs de tes gyros
+    chart->addAxis(m_axisGyroY, Qt::AlignRight);
 
-    QPen penX(Qt::red);
-    penX.setWidth(2);
-    m_seriesAccX->setPen(penX);
+    m_seriesGyroX->attachAxis(m_axisGyroY);
+    m_seriesGyroY->attachAxis(m_axisGyroY);
+    m_seriesGyroZ->attachAxis(m_axisGyroY);
 
-    QPen penY(Qt::green);
-    penY.setWidth(2);
-    m_seriesAccY->setPen(penY);
+    // --- Limites initiales de l’axe X ---
+    QDateTime now = QDateTime::currentDateTime();
+    m_axisAccX->setMin(now);
+    m_axisAccX->setMax(now.addSecs(120));
 
-    QPen penZ(Qt::blue);
-    penZ.setWidth(2);
-    m_seriesAccZ->setPen(penZ);
+    // --- Couleurs ---
+    m_seriesAccX->setPen(QPen(Qt::red, 2));
+    m_seriesAccY->setPen(QPen(Qt::green, 2));
+    m_seriesAccZ->setPen(QPen(Qt::blue, 2));
+
+    m_seriesGyroX->setPen(QPen(Qt::cyan, 2));
+    m_seriesGyroY->setPen(QPen(Qt::magenta, 2));
+    m_seriesGyroZ->setPen(QPen(Qt::yellow, 2));
+
+    // Appliquer un style sombre au fond du graphique et de la zone de dessin
+    applyChartTheme(chart, m_isDarkMode);
+
 }
 
-void MainWindow::addAccelerationsAndScroll(float accX, float accY, float accZ) {
+void MainWindow::addAccelerationsAndScroll(float accX, float accY, float accZ,
+                                           float gyroX, float gyroY, float gyroZ) {
     // Obtenir le temps actuel
     qint64 currentTime = QDateTime::currentDateTime().toMSecsSinceEpoch();
 
-    // Ajouter les données aux séries respectives
+    // Ajouter les données aux séries d'accélération
     m_seriesAccX->append(currentTime, accX);
     m_seriesAccY->append(currentTime, accY);
     m_seriesAccZ->append(currentTime, accZ);
 
+    // Ajouter les données aux séries de gyroscope
+    m_seriesGyroX->append(currentTime, gyroX);
+    m_seriesGyroY->append(currentTime, gyroY);
+    m_seriesGyroZ->append(currentTime, gyroZ);
+
     // Vérifier si le temps actuel dépasse la limite de l'axe X
     if (QDateTime::currentDateTime() >= m_axisAccX->max()) {
-        ui->graphicsViewAcceleration->chart()->scroll(120, 0); // Faire défiler le graphique vers la droite
+        ui->graphicsViewAcceleration->chart()->scroll(120, 0); // Défilement horizontal
     }
 
-    // Limiter le nombre de points dans chaque série pour éviter une surcharge
-    if (m_seriesAccX->count() > 1000) {
+    // Limiter le nombre de points pour éviter surcharge mémoire
+    const int maxPoints = 1000;
+    if (m_seriesAccX->count() > maxPoints) {
         m_seriesAccX->remove(0);
         m_seriesAccY->remove(0);
         m_seriesAccZ->remove(0);
+
+        m_seriesGyroX->remove(0);
+        m_seriesGyroY->remove(0);
+        m_seriesGyroZ->remove(0);
     }
 }
 
@@ -162,9 +198,12 @@ void MainWindow::initGraphicPressureAltitude() {
     penAltitudeGNSS.setWidth(2);
     m_seriesAltitudeGNSS->setPen(penAltitudeGNSS);
 
-    QPen penAltitudeBaro(Qt::gray);
+    QPen penAltitudeBaro(Qt::yellow);
     penAltitudeBaro.setWidth(2);
-    m_seriesAltitudeGNSS->setPen(penAltitudeBaro);
+    m_seriesAltitudeBaro->setPen(penAltitudeBaro);
+
+    // Appliquer un style sombre au fond du graphique et de la zone de dessin
+    applyChartTheme(chart, m_isDarkMode);
 }
 
 void MainWindow::addPressureAltitudeAndScroll(float pressure, float altitudeGNSS, float altitudeBaro) {
@@ -186,5 +225,35 @@ void MainWindow::addPressureAltitudeAndScroll(float pressure, float altitudeGNSS
     while (m_seriesPressure->count() > 1000) {
         m_seriesPressure->remove(0);
         m_seriesAltitudeGNSS->remove(0);
+    }
+}
+
+void MainWindow::applyChartTheme(QChart *chart, bool darkMode) {
+    if (!chart) return;
+
+    if (darkMode) {
+        chart->setBackgroundBrush(QBrush(Qt::black));
+        chart->setPlotAreaBackgroundBrush(QBrush(QColor(30, 30, 30)));
+        chart->setPlotAreaBackgroundVisible(true);
+        chart->legend()->setLabelColor(Qt::white);
+
+        for (QAbstractAxis *axis : chart->axes()) {
+            QPen axisPen(Qt::white);
+            axis->setLinePen(axisPen);
+            axis->setLabelsBrush(QBrush(Qt::white));
+            axis->setTitleBrush(QBrush(Qt::white));
+        }
+    } else {
+        chart->setBackgroundBrush(QBrush(Qt::white));
+        chart->setPlotAreaBackgroundBrush(QBrush(Qt::white));
+        chart->setPlotAreaBackgroundVisible(true);
+        chart->legend()->setLabelColor(Qt::black);
+
+        for (QAbstractAxis *axis : chart->axes()) {
+            QPen axisPen(Qt::black);
+            axis->setLinePen(axisPen);
+            axis->setLabelsBrush(QBrush(Qt::black));
+            axis->setTitleBrush(QBrush(Qt::black));
+        }
     }
 }

@@ -13,8 +13,8 @@ VoiceManager::VoiceManager(QObject *parent)
     m_speech->setVolume(1.0);  // Volume maximum
 
     // Set the English language
-    m_speech->setLocale(QLocale(QLocale::English, QLocale::UnitedStates));
-    //m_speech->setLocale(QLocale(QLocale::French, QLocale::France));
+    //m_speech->setLocale(QLocale(QLocale::English, QLocale::UnitedStates));
+    m_speech->setLocale(QLocale(QLocale::French, QLocale::France));
 
     qDebug() << "[" << QDateTime::currentDateTime().toString("dd-MM-yyyy_HH.mm.ss") << "][VOICEMANAGER] " << QThread::currentThread();
 }
