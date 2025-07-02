@@ -2,12 +2,13 @@
 
 🎯 **RocketGroundStation** est une application Qt/C++ permettant de visualiser en temps réel les données de télémétrie d'une fusée expérimentale via une liaison série. L'interface offre une lecture claire des paramètres GNSS, barométriques, d'accélération et de gyroscope, accompagnée de graphiques dynamiques.
 
+![Demo](https://github.com/axpaul/RocketGroundStation/blob/main/video%20Qt/Test%20V%C2%B02.gif)
+
 ---
 
 ## 🎥 Aperçu vidéo
 
 [![YouTube](https://img.shields.io/badge/Vidéo%20Demo-YouTube-red?logo=youtube)](https://youtu.be/wsO3MDKmM1w)
-![Demo](https://github.com/axpaul/RocketGroundStation/blob/main/video%20Qt/Test%20V%C2%B02.gif)
 
 ---
 
