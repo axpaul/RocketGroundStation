@@ -21,7 +21,7 @@ MSE Rocket Serial Reception HMI est une application logicielle destinée à l'ac
 
 ## Vidéo 
 
-[![nom_du_lien](http://img.youtube.com/vi/_3WRKk8k2yQ/0.jpg)](http://www.youtube.com/watch?v=_3WRKk8k2yQ "Démo IHM")
+[![Watch on YouTube](https://img.youtube.com/vi/wsO3MDKmM1w/0.jpg)](https://youtu.be/wsO3MDKmM1w)
 
 
 ## Commons Clause
