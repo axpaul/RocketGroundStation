@@ -1,34 +1,102 @@
 # RocketGroundStation
 
-## **Ground station** for experimental rocket using the LORA protocol
-> MSE (MarSauniquE) Rocket Serial Reception HMI
+🎯 **RocketGroundStation** est une application Qt/C++ permettant de visualiser en temps réel les données de télémétrie d'une fusée expérimentale via une liaison série. L'interface offre une lecture claire des paramètres GNSS, barométriques, d'accélération et de gyroscope, accompagnée de graphiques dynamiques.
 
-MSE Rocket Serial Reception HMI est une application logicielle destinée à l'acquisition de données de fusées en temps réel via le module TTGO LORA 32. Cette application affiche de manière dynamique la trâme et la position GPS de la fusée. Elle permet également d'enregistrer les données dans un fichier local.
+---
 
-*Apache License 2.0 with Commons Clause, Copyright 2023 Miailhe Paul, all rights reserved*
+## 🎥 Aperçu vidéo
 
-## Caractéristiques
+[![YouTube](https://img.shields.io/badge/Vidéo%20Demo-YouTube-red?logo=youtube)](https://youtu.be/wsO3MDKmM1w)
 
-- **Acquisition de données en temps réel** : Le système acquiert les données de la fusée en temps réel grâce à l'intégration du module TTGO LORA 32.
+---
 
-- **Affichage dynamique de la trâme et de la position GPS** : L'application est capable d'afficher dynamiquement la trâme et la position GPS de la fusée.
+## 🚀 Fonctionnalités principales
 
-- **Enregistrement des données** : L'application permet d'enregistrer les données recueillies dans un fichier local pour une analyse ultérieure.
+* Connexion série en temps réel
+* Vérification CRC8 des trames
+* Affichage graphique de :
 
-## Gif
+  * Accélérations (X, Y, Z)
+  * Gyroscopes (X, Y, Z)
+  * Pression (hPa)
+  * Altitude GNSS / barométrique
+* Statuts dynamiques (GNSS Fix, CRC, Flight Status)
+* Compatible avec le mode clair et sombre
+* Log CSV automatique des données reçues
 
-![Alt Text](https://github.com/axpaul/RocketGroundStation/blob/main/video%20Qt/test%20GPS%20n%C2%B02.gif)
+---
 
-## Vidéo 
+## 📡 Format de trame
 
-[![Watch on YouTube](https://img.youtube.com/vi/wsO3MDKmM1w/0.jpg)](https://youtu.be/wsO3MDKmM1w)
+Chaque trame est transmise sous forme binaire sur le port série et suit la structure suivante :
 
+```
++------------+------------+---------------------+--------------+
+| Start Byte |   CRC8     |     Payload         |  End Byte    |
+|  (0xEE)    |  (1 byte)  |  (NbTrame = 38B)    |   (ignored)  |
++------------+------------+---------------------+--------------+
+```
 
-## Commons Clause
+* `Start Byte` : toujours 0xEE
+* `CRC` : calculé sur le `Payload` uniquement
+* `Payload` (taille fixée à 38 octets) contient :
 
-Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, 
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+  * Latitude (float)
+  * Longitude (float)
+  * Altitude GNSS (int32\_t)
+  * Altitude baro (float)
+  * Pression (float)
+  * Température (float)
+  * Acc X/Y/Z (float x3)
+  * Gyro X/Y/Z (float x3)
+  * GNSS Fix (uint8\_t)
+  * GNSS Fix Type (uint8\_t)
+  * Flight Status (uint8\_t)
 
-The Software is provided to you by the Licensor under the License, as defined below, subject to the following condition.
-Without limiting other conditions in the License, the grant of rights under the License will not include, and the License does not grant to you, the right to Sell the Software.
-For purposes of the foregoing, “Sell” means practicing any or all of the rights granted to you under the License to provide to third parties, for a fee or other consideration (including without limitation fees for hosting or consulting/ support services related to the Software), a product or service whose value derives, entirely or substantially, from the functionality of the Software.
+Le CRC est validé via :
+
+```cpp
+uint8_t receivedCrc = frame.at(1);
+QByteArray receivedData = frame.mid(2, NbTrame);
+uint8_t calculatedCrc = calculate_crc8(receivedData);
+```
+
+---
+
+## 📅 Capture d'écran
+
+![UI RocketGroundStation](https://user-images.githubusercontent.com/placeholder/rocket-ui.png)
+
+---
+
+## 🔧 Configuration
+
+L'application Qt utilise les composants suivants :
+
+* `QSerialPort` pour la communication série
+* `QChart` (QtCharts) pour l'affichage des courbes
+* `QDateTimeAxis` pour les axes X en temps réel
+* Gestion automatique du thème sombre ou clair selon le système
+
+---
+
+## 📂 Enregistrement des données
+
+Un fichier CSV est généré automatiquement au lancement dans un dossier dédié :
+
+```csv
+Timestamp;Frame;Sts;Lat;Lon;Altitude;Pressure;Temperature;Acceleration X;Acceleration Y;Acceleration Z;Gyro X;Gyro Y;Gyro Z
+```
+
+---
+
+## 📦 Dépendances
+
+* Qt 5.15+ ou Qt 6
+* Module QtCharts
+
+---
+
+## 📘 Licence
+
+Projet open-source sous licence MIT. Utilisable librement dans un cadre éducatif ou amateur.
