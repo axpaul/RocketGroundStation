@@ -19,10 +19,10 @@ def calculate_crc8(data):
     return crc
 
 # Configurer le port COM (remplacer 'COM7' par le port série utilisé)
-ser = serial.Serial('COM7', baudrate=9600, timeout=1)
+ser = serial.Serial('COM6', baudrate=9600, timeout=1)
 
 # Ouvrir le fichier contenant les messages hexadécimaux
-with open('C:/Users/paulm/OneDrive/Bureau/Software/VirtualCom/log-MSE.txt', 'r') as file:
+with open('C:/Users/dtnav/Desktop/SOFTWARE/RocketGroundStation/source Qt/VirtualSerialCom/log-sirius.txt', 'r') as file:
     for line in file:
         # Nettoyer la ligne en retirant les espaces et les sauts de ligne
         hex_data = line.strip().replace(' ', '')
@@ -31,7 +31,7 @@ with open('C:/Users/paulm/OneDrive/Bureau/Software/VirtualCom/log-MSE.txt', 'r')
         byte_data = bytes.fromhex(hex_data)
 
         # Vérifier que la trame fait bien 27 octets
-        if len(byte_data) == 27:
+        if len(byte_data) == 33:
             # Calculer le CRC sur les données
             crc = calculate_crc8(byte_data)
 

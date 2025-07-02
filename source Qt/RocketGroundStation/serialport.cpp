@@ -3,7 +3,7 @@
 Q_DECLARE_METATYPE(QSerialPort::SerialPortError);
 Q_DECLARE_METATYPE(SerialPort::Settings);
 
-SerialPort::SerialPort() :
+SerialPort::SerialPort(QObject *parent) :
     QThread(nullptr),
     m_settingsPort(new Settings),
     m_serial(new QSerialPort(this)),
@@ -13,11 +13,16 @@ SerialPort::SerialPort() :
     qRegisterMetaType<SerialPort::Settings>();
 
     connect(m_serial, &QSerialPort::errorOccurred, this, &SerialPort::handleError);
+
+    qDebug() << "[" << QDateTime::currentDateTime().toString("dd-MM-yyyy_HH.mm.ss") << "][SERIAL] " << QThread::currentThread();
 }
 
 SerialPort::~SerialPort()
 {
     m_serial->close();
+
+    stop();  // Signale au thread de s'arrêter
+    wait();  // Attend que le thread termine
     delete m_settingsPort;
     delete m_serial;
 }
@@ -115,7 +120,7 @@ void SerialPort::readingData() {
         std::uint8_t calculatedCrc = calculate_crc8(receivedData);
         if (receivedCrc != calculatedCrc) {
             qDebug() << "[" << QDateTime::currentDateTime().toString("dd-MM-yyyy_HH.mm.ss") << "][SERIAL] CRC check failed, calculated: " << QString::number(calculatedCrc, 16);
-            emit dataEmit(false, QByteArray());
+            emit dataEmit(false, receivedData);
         } else {
             qDebug() << "[" << QDateTime::currentDateTime().toString("dd-MM-yyyy_HH.mm.ss") << "][SERIAL] CRC check passed, emitting data";
             emit dataEmit(true, receivedData);
@@ -137,4 +142,10 @@ uint8_t SerialPort::calculate_crc8(QByteArray data) {
         }
     }
     return crc;
+}
+
+void SerialPort::stop() {
+    QMutexLocker locker(&m_mut);  // Protège l'accès à m_serialRun
+    m_serialRun = false;          // Signal pour stopper toute logique métier
+    quit();                       // Quitte la boucle d'événements de exec()
 }

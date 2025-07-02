@@ -1,7 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#define VERSION_SERIAL 1.2f // Définition de la version du protocole série
+#define VERSION_SERIAL 1.3f // Définition de la version du protocole série
 
 #include <QMainWindow>
 #include <QSerialPort>
@@ -16,9 +16,21 @@
 #include <QFileDialog>
 #include <QMutex>
 
+#include <QtCharts/QChart>
+#include <QtCharts/QChartView>
+#include <QtCharts/QLineSeries>
+#include <QtCharts/QDateTimeAxis>
+#include <QtCharts/QValueAxis>
+#include <QtCharts/QSplineSeries>
+#include <QtCharts/QAbstractAxis>
+
+#include <QtCore/QTimer>
+#include <QtCore/QDateTime>
+
 #include "serialport.h"
 #include "settingsdialog.h"
 #include "telemetryframe.h"
+#include "voicemanager.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -42,22 +54,6 @@ public:
     QString getSerialError();
     void addText(const QString &text);
 
-    // // Définition de toutes les structures de données
-    // typedef struct {
-    //     uint8_t sts; // status of rocket
-    //     int32_t lat; // GNSS latitute
-    //     int32_t lon; // GNSS longitude
-    //     int16_t alt; // GNSS Altitude
-    //     int32_t pressure; // ambiant pressure
-    //     int16_t temp; // ambiant temperature
-    //     int16_t accX; // Acceleration X
-    //     int16_t accY; // Acceleration Y
-    //     int16_t accZ; // Acceleration Z
-    //     int16_t annex0; // ADC0
-    //     int16_t annex1; // ADC1
-    // }TmFrame_t;
-
-
 public slots:
     // Slots qui vont être utilisés pour connecter les signaux et les méthodes.
     void handleErrorShow(QString error);
@@ -69,12 +65,15 @@ public slots:
     void closeSerialPort();
     void receptionData(const TmFrame_t &frame, const QString &decodedString);
     void about();
+    void watchdogLostHandler();
 
 signals:
     // Définition des signaux qui peuvent être émis par l'objet MainWindow
     void setSerialSettingsSig(SerialPort::Settings);
     void serialOpened(SerialPort::Settings p);
     void serialClosed();
+    void triggerBeep();
+    void triggerSpeaker(uint8_t newStatus);
 
 private:
     // Définition des méthodes privées et des membres de données
@@ -83,21 +82,65 @@ private:
     void activateButtonSerial();
     void disactivateButtonSerial();
     void showStatusMessage(const QString &stringConnection);
+    void clearConsole();
+
+    void initGraphicAcc();
+    void addAccelerationsAndScroll(float accX, float accY, float accZ, float gyroX, float gyroY, float gyroZ);
+    void initGraphicPressureAltitude();
+    void addPressureAltitudeAndScroll(float pressure, float altitudeGNSS, float altitudeBaro);
+    void applyChartTheme(QChart *chart, bool darkMode);
+
+    void applyTelemetryPanelStyle();
+
+    void fontLabel();
+    void updateLatitude(float latitude);
+    void updateLongitude(float longitude);
+    void updateAltitudeGPS(int altitude);
+    void updatePressure(float pressure);
+    void updateTemperature(float temperature);
+    void updateAccelerationX(float accX);
+    void updateAccelerationY(float accY);
+    void updateAccelerationZ(float accZ);
+    void updateGnssStatus(uint8_t gnssFix, uint8_t gnssFixType);
+    void updateFlightStatus(uint8_t flightStatus);
+    void updateCrcCheckLabel(bool crcCheck);
+    void updateAltitudeBaro(float altitude);
+    void updateGyroX(float gyroX);
+    void updateGyroY(float gyroY);
+    void updateGyroZ(float gyroZ);
 
     Ui::MainWindow *ui;
     QObject *m_parent;
     QLabel *m_status = nullptr;
     SerialPort *m_serialThread = nullptr;
-    TelemetryFrame *m_frameTelemetry = nullptr;;
+    TelemetryFrame *m_frameTelemetry = nullptr;
+    VoiceManager *m_voiceManager = nullptr;
 
     QString m_connection;
     QString m_versionSW;
-    bool m_serialRun;
     QFile m_logFile;
     int m_msgCounter = 0;
 
     SettingsDialog *m_settings = nullptr;
     SerialPort::Settings *m_settingsInfo = nullptr;
+
+    QLineSeries *m_seriesAccX;
+    QLineSeries *m_seriesAccY;
+    QLineSeries *m_seriesAccZ;
+    QDateTimeAxis *m_axisAccX;
+    QLineSeries *m_seriesGyroX;
+    QLineSeries *m_seriesGyroY;
+    QLineSeries *m_seriesGyroZ;
+    QValueAxis *m_axisGyroY;
+    QValueAxis *m_axisAccY;
+    bool m_isDarkMode = true; // Par défaut clair
+
+    QLineSeries *m_seriesPressure;
+    QLineSeries *m_seriesAltitudeGNSS;
+    QLineSeries *m_seriesAltitudeBaro;
+    QDateTimeAxis *m_axisPressX;
+    QValueAxis *m_axisPressY;
+    QValueAxis *m_axisAltY;
 };
 
 #endif // MAINWINDOW_H

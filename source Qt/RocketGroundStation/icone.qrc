@@ -3,12 +3,26 @@
         <file>icone/disconnect.png</file>
         <file>icone/settings.png</file>
         <file>icone/usb.png</file>
+        <file>icone/ethernet off.png</file>
+        <file>icone/ethernet on.png</file>
     </qresource>
     <qresource prefix="/iconeWindows">
         <file>icone/Qt_logo_2016.svg.png</file>
         <file>icone/question.png</file>
         <file>icone/remove.png</file>
-        <file>icone/usb.png</file>
         <file>icone/antenne-satellite.png</file>
+        <file>icone/broom.png</file>
+        <file>icone/gray mute.png</file>
+        <file>icone/gray speaker.png</file>
+        <file>icone/blue mute.png</file>
+        <file>icone/blue speaker.png</file>
+        <file>icone/mute.png</file>
+        <file>icone/sound.png</file>
+    </qresource>
+    <qresource prefix="/IconeFlight">
+        <file>icone/air.png</file>
+        <file>icone/latitude.png</file>
+        <file>icone/longitude.png</file>
+        <file>icone/radar.png</file>
     </qresource>
 </RCC>

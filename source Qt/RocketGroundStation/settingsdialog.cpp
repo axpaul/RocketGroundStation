@@ -8,8 +8,7 @@
 static const char blankString[] = "N/A";
 
 SettingsDialog::SettingsDialog(QWidget *parent) :
-    QDialog(parent), m_ui(new Ui::SettingsDialog), m_intValidator(new QIntValidator(0, 4000000, this))
-{
+    QDialog(parent), m_ui(new Ui::SettingsDialog), m_intValidator(new QIntValidator(0, 4000000, this)){
     m_ui->setupUi(this);
 
     m_ui->baudRateBox->setInsertPolicy(QComboBox::NoInsert);
@@ -25,18 +24,15 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     updateSettings();
 }
 
-SettingsDialog::~SettingsDialog()
-{
+SettingsDialog::~SettingsDialog(){
     delete m_ui;
 }
 
-SerialPort::Settings SettingsDialog::settings() const
-{
+SerialPort::Settings SettingsDialog::settings() const{
     return m_currentSettings;
 }
 
-void SettingsDialog::showPortInfo(int idx)
-{
+void SettingsDialog::showPortInfo(int idx){
     if (idx == -1)
         return;
 
@@ -54,15 +50,13 @@ void SettingsDialog::showSetting() {
     this->show();
 }
 
-void SettingsDialog::apply()
-{
+void SettingsDialog::apply(){
     updateSettings();
     emit applyParameter();
     hide();
 }
 
-void SettingsDialog::checkCustomBaudRatePolicy(int idx)
-{
+void SettingsDialog::checkCustomBaudRatePolicy(int idx){
     const bool isCustomBaudRate = !m_ui->baudRateBox->itemData(idx).isValid();
     m_ui->baudRateBox->setEditable(isCustomBaudRate);
     if (isCustomBaudRate)
@@ -73,16 +67,14 @@ void SettingsDialog::checkCustomBaudRatePolicy(int idx)
     }
 }
 
-void SettingsDialog::checkCustomDevicePathPolicy(int idx)
-{
+void SettingsDialog::checkCustomDevicePathPolicy(int idx){
     const bool isCustomPath = !m_ui->serialPortInfoListBox->itemData(idx).isValid();
     m_ui->serialPortInfoListBox->setEditable(isCustomPath);
     if (isCustomPath)
         m_ui->serialPortInfoListBox->clearEditText();
 }
 
-void SettingsDialog::fillPortsParameters()
-{
+void SettingsDialog::fillPortsParameters(){
     m_ui->baudRateBox->addItem(QStringLiteral("9600"), QSerialPort::Baud9600);
     m_ui->baudRateBox->addItem(QStringLiteral("115200"), QSerialPort::Baud115200);
     m_ui->baudRateBox->addItem(QStringLiteral("19200"), QSerialPort::Baud19200);
@@ -112,8 +104,7 @@ void SettingsDialog::fillPortsParameters()
     m_ui->flowControlBox->addItem(tr("XON/XOFF"), QSerialPort::SoftwareControl);
 }
 
-void SettingsDialog::fillPortsInfo()
-{
+void SettingsDialog::fillPortsInfo(){
     m_ui->serialPortInfoListBox->clear();
     QString description;
     QString manufacturer;
@@ -141,8 +132,7 @@ void SettingsDialog::fillPortsInfo()
     m_ui->serialPortInfoListBox->addItem(tr("Custom"));
 }
 
-void SettingsDialog::updateSettings()
-{
+void SettingsDialog::updateSettings() {
     m_currentSettings.name = m_ui->serialPortInfoListBox->currentText();
 
     if (m_ui->baudRateBox->currentIndex() == 4)

@@ -1,0 +1,14 @@
+<RCC>
+    <qresource prefix="/song/bip">
+        <file>sound/beep-07a.wav</file>
+        <file>sound/beep-21.wav</file>
+        <file>sound/beep-22.wav</file>
+        <file>sound/beep-23.wav</file>
+        <file>sound/beep-24.wav</file>
+        <file>sound/beep-25.wav</file>
+        <file>sound/beep-26.wav</file>
+        <file>sound/bleep-126625.wav</file>
+        <file>sound/button-35.wav</file>
+        <file>sound/button-42.wav</file>
+    </qresource>
+</RCC>

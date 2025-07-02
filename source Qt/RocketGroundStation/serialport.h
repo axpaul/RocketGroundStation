@@ -7,7 +7,7 @@
 #include <QMutex>
 #include <QtDebug>
 
-#define NbTrame  27
+#define NbTrame  33
 #define CRC8_DPOLY 0x31
 
 class SettingsDialog;
@@ -31,8 +31,9 @@ public:
         QString stringFlowControl;
     };
 
-    SerialPort();
+    SerialPort(QObject *parent = nullptr);
     ~SerialPort();
+    void stop();
 
 signals:
     void errorEmit(QString);
@@ -47,7 +48,7 @@ public slots:
     void handleError(QSerialPort::SerialPortError error);
 
 protected:
-    void run() override;
+    void run() override;    
 
 private:
     uint8_t calculate_crc8(QByteArray data);
@@ -56,7 +57,7 @@ private:
     Settings *m_settingsPort;
     QSerialPort *m_serial;
     bool m_serialRun;
-    QMutex mut;
+    QMutex m_mut;
 };
 
 #endif // SERIALPORT_H
