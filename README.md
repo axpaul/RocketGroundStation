@@ -62,13 +62,6 @@ uint8_t receivedCrc = frame.at(1);
 QByteArray receivedData = frame.mid(2, NbTrame);
 uint8_t calculatedCrc = calculate_crc8(receivedData);
 ```
-
----
-
-## 📅 Capture d'écran
-
-![UI RocketGroundStation](https://user-images.githubusercontent.com/placeholder/rocket-ui.png)
-
 ---
 
 ## 🔧 Configuration
